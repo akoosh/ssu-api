@@ -1,0 +1,12 @@
+{
+  "name": "node-api",
+  "main": "server.js",
+  "dependencies": {
+    "express": "~4.11.1",
+    "mongoose": "~3.8.22",
+    "body-parser": "~1.10.2"
+  },
+  "devDependencies": {
+    "faker": "~2.1.2"
+  }
+}
