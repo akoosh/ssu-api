@@ -1,6 +1,6 @@
 var mongoose   = require('mongoose');
 var faker      = require('faker');
-var Student    = require('./api/models/student');
+var Student    = require('./api/models/student')(mongoose);
 
 mongoose.connect('mongodb://localhost/students');
 
