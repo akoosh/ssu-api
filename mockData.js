@@ -4,7 +4,7 @@ var Student    = require('./api/models/student')(mongoose);
 
 mongoose.connect('mongodb://localhost/students');
 
-var NUM_TO_SAVE = 5;
+var NUM_TO_SAVE = 20;
 
 for (var i = 0; i < NUM_TO_SAVE; i++) {
     var student = new Student({
