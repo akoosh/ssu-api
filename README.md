@@ -10,6 +10,14 @@ This is one part of a three part project:
 - A web-based client
 - An iOS client targeting iPad
 
+## Project Discussion/Planning
+
+Project discussion, planning, and notes should reside in the [Issues](https://github.com/kjanssen/ssu-api/issues)
+section of this repository. Issues are easily tagged and filtered, which
+helps with organization. If there is no issue for a particular topic or
+feature, there is probably no work being done on it. Likewise, if there is
+work being done on some topic or feature, an issue should be created for
+it as a place to discuss it.
 
 ## Dependencies
 - [Node.js](nodejs.org)
