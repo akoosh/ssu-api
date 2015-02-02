@@ -40,7 +40,7 @@ outlined a little better in [this stackoverflow post](http://stackoverflow.com/q
 
 3. Start the server with `node server.js`.
 
-4. Test to see if the server is working by navigating to [localhost:8080/api/students](http://localhost:8080/api/students).
+4. Test to see if the server is working by navigating to [localhost:8080/api/v0/students](http://localhost:8080/api/v0/students).
 You should see a JSON listing of all the `student` entries in the database. If you
 are looking at raw JSON and are using Chrome, I recommend the [JSON Formatter](https://chrome.google.com/webstore/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa?hl=en)
 Chrome extension. You can also use [Postman](https://chrome.google.com/webstore/detail/postman-rest-client/fdmmgilgnpjigdojojpjoooidkmcomcm?hl=en)
