@@ -1,16 +1,21 @@
 // database.js
 
-var mongoose = require('mongoose');
-var Student  = require('./models/student')(mongoose);
-var Faculty  = require('./models/faculty')(mongoose);
-var Course   = require('./models/course')(mongoose);
-var Class    = require('./models/class')(mongoose);
+var StudentModule     = require('./models/student');
+var FacultyModule     = require('./models/faculty')(mongoose);
+var CourseModule      = require('./models/course')(mongoose);
+var ClassModule       = require('./models/class')(mongoose);
+var EnrollmentModule  = require('./models/enrollment')(mongoose);
 
-module.exports = function() {
+module.exports = function(mongoose) {
     'use strict';
 
     mongoose.connect('mongodb://localhost/students');
 
+    var Student     = new StudentModule(mongoose);
+    var Faculty     = new FacultyModule(mongoose);
+    var Course      = new CourseModule(mongoose);
+    var Class       = new ClassModule(mongoose);
+    var Enrollment  = new EnrollmentModule(mongoose);
     var exports = {};
 
     exports.getAllStudents = function(callback) {
