@@ -5,10 +5,11 @@ module.exports = function(mongoose) {
 
     var schema = new mongoose.Schema({
         subject: { type: String, required: true },
-        catalog: { type: String, required: true },
-        description: { type: String, required: true },
+        number: { type: String, required: true },
+        title: { type: String, required: true },
         type: { type: String, required: true },
-        units: { type: Number, required: true }
+        units: { type: Number, required: true },
+        career: { type: String, required: true }
     });
 
     // Enforce uniqueness of subject-catalog combinations, i.e. 'CS 242'
