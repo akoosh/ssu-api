@@ -1,7 +1,8 @@
 // router.js
 
-module.exports = function(express, mongoose) {
-    var db      = require('./database')(mongoose);
+module.exports = function(express, db) {
+    'use strict';
+
     var router  = express.Router();
 
     router.use(function(req, res, next) {
@@ -10,29 +11,22 @@ module.exports = function(express, mongoose) {
     });
 
     router.get('/students', function(req, res) {
-        db.Student.find(function(err, students) {
-            if (err)
+        db.getAllStudents(function(err, students) {
+            if (err) {
                 res.send(err);
-
-            res.json(students);
-        });
-    });
-
-    router.get('/:major/students', function(req, res) {
-        db.Student.find({major: req.params.major}, function(err, students) {
-            if (err)
-                res.send(err);
-
-            res.json(students);
+            } else {
+                res.json(students);
+            }
         });
     });
 
     router.get('/students/:sid', function(req, res) {
-        db.Student.find({sid: req.params.sid}, function(err, students) {
-            if (err)
+        db.getStudentById(req.params.sid, function(err, student) {
+            if (err) {
                 res.send(err);
-
-            res.json(students);
+            } else {
+                res.json(student);
+            }
         });
     });
 
