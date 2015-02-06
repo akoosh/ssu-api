@@ -4,24 +4,36 @@ var Student    = require('./api/models/student')(mongoose);
 
 mongoose.connect('mongodb://localhost/students');
 
-var NUM_TO_SAVE = 20;
+var NUM_TO_SAVE = 5;
+var num_saved = 0;
+
+function saveCallback(err, student) {
+    num_saved++;
+
+    if (err) {
+        console.log(err);
+        console.log('Student was not saved.');
+    } else {
+        console.log('Student saved: ' + student.firstName);
+    }
+
+    if (num_saved === NUM_TO_SAVE) {
+        mongoose.disconnect();
+    }
+}
 
 for (var i = 0; i < NUM_TO_SAVE; i++) {
     var student = new Student({
         sid: String('00000000' + faker.helpers.randomNumber(10000000)).slice(-9),
-        name: [faker.name.firstName(), faker.name.lastName()].join(' '),
-        major: ['CS', 'MATH', 'CHEM', 'BIOL', 'ENGL'][faker.helpers.randomNumber(4)],
-        gpa: Number((faker.helpers.randomNumber(100) / 50 + 2).toPrecision(3))
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+        acadPlan: 'test',
+        acadLv: 'test',
+        termUnits: 12,
+        gender: 'test',
+        ethnicGrp: 'test',
+        advisor: mongoose.Types.ObjectId()
     });
 
-    student.save(function(err) {
-        if (err) {
-            console.log(err);
-            console.log('Student was not saved:');
-            console.log(student);
-        } else {
-            console.log('Student saved:');
-            console.log(student);
-        }
-    });
+    student.save(saveCallback);
 }
