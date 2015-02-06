@@ -31,12 +31,7 @@ it as a place to discuss it.
 node modules listed as dependencies in `package.json` necessary to run the server.
 
 2. Once you have a MongoDB service running, run `node mockData.js`. This will
-inject some student data into the database with random names, student IDs, GPAs,
-and majors. Unfortunately, you'll have to kill the script manually using `Ctrl+c`,
-since I'm not sure how to properly close the MongoDB connection in this script.
-The issue is that the save operations are async, and would finish after the the
-connection was closed if the script closed the connection itself. The problem is
-outlined a little better in [this stackoverflow post](http://stackoverflow.com/questions/8813838/properly-close-mongooses-connection-once-youre-done).
+inject some student data into the database with random names and student IDs.
 
 3. Start the server with `node server.js`.
 
