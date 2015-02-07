@@ -1,10 +1,14 @@
 // database.js
 
+// models
 var StudentModule     = require('./models/student');
-var FacultyModule     = require('./models/faculty')(mongoose);
-var CourseModule      = require('./models/course')(mongoose);
-var ClassModule       = require('./models/class')(mongoose);
-var EnrollmentModule  = require('./models/enrollment')(mongoose);
+var FacultyModule     = require('./models/faculty');
+var CourseModule      = require('./models/course');
+var ClassModule       = require('./models/class');
+var EnrollmentModule  = require('./models/enrollment');
+
+// utils
+var parser            = require('./utils/csvParser');
 
 module.exports = function(mongoose) {
     'use strict';
@@ -43,4 +47,4 @@ module.exports = function(mongoose) {
     };
 
     return exports;
-}();
+};

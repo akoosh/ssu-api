@@ -30,5 +30,11 @@ module.exports = function(express, db) {
         });
     });
 
+    router.post('/update/csv', function(req, res) {
+        console.log(req.body);
+        console.log(req.files);
+        res.send("Thank you!");
+    });
+
     return router;
 };
