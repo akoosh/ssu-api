@@ -5,11 +5,6 @@ module.exports = function(express, db) {
 
     var router  = express.Router();
 
-    router.use(function(req, res, next) {
-        console.log('Something is happening.');
-        next();
-    });
-
     router.get('/students', function(req, res) {
         db.getAllStudents(function(err, students) {
             if (err) {
@@ -31,8 +26,6 @@ module.exports = function(express, db) {
     });
 
     router.post('/update/csv', function(req, res) {
-        console.log(req.body);
-        console.log(req.files);
         res.send("Thank you!");
     });
 

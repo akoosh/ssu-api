@@ -5,7 +5,8 @@
     "express": "~4.11.1",
     "mongoose": "~3.8.22",
     "body-parser": "~1.10.2",
-    "multer": "~0.1.7"
+    "multer": "~0.1.7",
+    "morgan": "~1.5.1"
   },
   "devDependencies": {
     "faker": "~2.1.2"
