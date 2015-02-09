@@ -20,7 +20,7 @@ work being done on some topic or feature, an issue should be created for
 it as a place to discuss it.
 
 ## Dependencies
-- [Node.js](nodejs.org)
+- [Node.js](nodejs.org) - The command is `nodejs` on Linux, but I make a link `/usr/bin/node -> /usr/bin/nodejs`
 - [MongoDB](mongodb.org) - Installation instructions:
     [Ubuntu](http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/),
     [OSX](http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/)
