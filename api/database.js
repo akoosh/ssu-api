@@ -8,7 +8,8 @@ var ClassModule       = require('./models/class');
 var EnrollmentModule  = require('./models/enrollment');
 
 // utils
-var parser            = require('./utils/csvParser');
+var fs     = require('fs');
+var parse  = require('csv-parse');
 
 module.exports = function(mongoose) {
     'use strict';
@@ -21,6 +22,32 @@ module.exports = function(mongoose) {
     var Class       = new ClassModule(mongoose);
     var Enrollment  = new EnrollmentModule(mongoose);
     var exports = {};
+
+    var processCSV = function (data, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        // Data is good
+        callback(null);
+    };
+
+    exports.processUploadedFile = function(filepath, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        fs.readFile(filepath, 'utf8', function(err, data) {
+            if (err) {
+                callback(err);
+            } else {
+                parse(data, function(err, data) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        // Data is good
+                        processCSV(data, callback);
+                    }
+                });
+            }
+        });
+    };
 
     exports.getAllStudents = function(callback) {
         callback = (typeof callback === 'function') ? callback : function() {};

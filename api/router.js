@@ -26,7 +26,13 @@ module.exports = function(express, db) {
     });
 
     router.post('/update/csv', function(req, res) {
-        res.send("Thank you!");
+        db.processUploadedFile(req.files.file.path, function(err) {
+            if (err) {
+                res.send(err);
+            } else {
+                res.send("Thank you!");
+            }
+        });
     });
 
     return router;
