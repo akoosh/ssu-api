@@ -25,12 +25,12 @@ module.exports = function(express, db) {
         });
     });
 
-    router.post('/update/csv', function(req, res) {
+    router.put('/update/csv', function(req, res) {
         db.processUploadedFile(req.files.file.path, function(err) {
             if (err) {
                 res.send(err);
             } else {
-                res.send("Thank you!");
+                res.sendStatus(201);
             }
         });
     });
