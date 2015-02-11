@@ -6,6 +6,7 @@ var FacultyModule     = require('./models/faculty');
 var CourseModule      = require('./models/course');
 var ClassModule       = require('./models/class');
 var EnrollmentModule  = require('./models/enrollment');
+var AdvisementModule  = require('./models/advisement');
 
 // utils
 var fs          = require('fs');
@@ -23,7 +24,8 @@ module.exports = function(mongoose) {
         Faculty     : new FacultyModule(mongoose),
         Course      : new CourseModule(mongoose),
         Class       : new ClassModule(mongoose),
-        Enrollment  : new EnrollmentModule(mongoose)
+        Enrollment  : new EnrollmentModule(mongoose),
+        Advisement  : new AdvisementModule(mongoose)
     };
 
     exports.processUploadedFile = function(filepath, callback) {
