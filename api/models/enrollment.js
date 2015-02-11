@@ -7,9 +7,9 @@ module.exports = function(mongoose) {
     var schema = new mongoose.Schema({
         student: { type: ObjectId, required: true },
         class: { type: ObjectId, required: true },
-        status: { type: String, required: true },
-        addDate: { type: Date, required: true },
-        grade: { type: String, required: true },
+        reason: { type: String, required: true },
+        add_dt: { type: Date, required: true },
+        grade: { type: String, required: false },
     });
 
     // A student cannot be enrolled in the same class twice

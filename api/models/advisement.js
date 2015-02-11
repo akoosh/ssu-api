@@ -8,6 +8,7 @@ module.exports = function(mongoose) {
         student: { type: ObjectId, required: true },
         advisor: { type: ObjectId, required: true },
         term: { type: String, required: true },
+        term_description: { type: String, required: true },
         department: { type: Date, required: true },
     });
 

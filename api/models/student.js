@@ -4,14 +4,15 @@ module.exports = function(mongoose) {
     'use strict';
 
     return mongoose.model('Student', new mongoose.Schema({
-        sid: { type: String, required: true, unique: true, index: true },
-        firstName: { type: String, required: true },
-        lastName: { type: String, required: true },
-        acadPlan: { type: String, required: true },
-        acadLv: { type: String, required: true },
-        termUnits: { term: String, units: Number },
-        gender: String,
-        ethnicGrp: String,
+        student_id: { type: String, required: true, unique: true, index: true },
+        last_name: { type: String, required: true },
+        first_name: { type: String, required: true },
+        acad_plan: { type: String, required: true },
+        acad_plan_descr: { type: String, required: true },
+        // academic_level: { type: String, required: true },
+        // term_units: { term: String, units: Number },
+        gender: { type: String, required: true },
+        ethnic_grp: { type: String, required: true },
         advisor: { type: mongoose.Schema.Types.ObjectId, required: true }
     }));
 };
