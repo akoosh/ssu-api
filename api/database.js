@@ -8,26 +8,22 @@ var ClassModule       = require('./models/class');
 var EnrollmentModule  = require('./models/enrollment');
 
 // utils
-var fs     = require('fs');
-var parse  = require('csv-parse');
+var fs          = require('fs');
+var parse       = require('csv-parse');
+var loadData    = require('./utils/loadData');
 
 module.exports = function(mongoose) {
     'use strict';
 
     mongoose.connect('mongodb://localhost/students');
 
-    var Student     = new StudentModule(mongoose);
-    var Faculty     = new FacultyModule(mongoose);
-    var Course      = new CourseModule(mongoose);
-    var Class       = new ClassModule(mongoose);
-    var Enrollment  = new EnrollmentModule(mongoose);
     var exports = {};
-
-    var processCSV = function (data, callback) {
-        callback = (typeof callback === 'function') ? callback : function() {};
-
-        // Data is good
-        callback(null);
+    var models = {
+        Student     : new StudentModule(mongoose),
+        Faculty     : new FacultyModule(mongoose),
+        Course      : new CourseModule(mongoose),
+        Class       : new ClassModule(mongoose),
+        Enrollment  : new EnrollmentModule(mongoose)
     };
 
     exports.processUploadedFile = function(filepath, callback) {
@@ -41,8 +37,8 @@ module.exports = function(mongoose) {
                     if (err) {
                         callback(err);
                     } else {
-                        // Data is good
-                        processCSV(data, callback);
+                        // data is valid CSV
+                        loadData(data, models, callback);
                     }
                 });
             }
