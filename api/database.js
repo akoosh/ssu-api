@@ -50,7 +50,7 @@ module.exports = function(mongoose) {
     exports.getAllStudents = function(callback) {
         callback = (typeof callback === 'function') ? callback : function() {};
 
-        Student.find(function(err, students) {
+        models.Student.find(function(err, students) {
             if (err) {
                 callback(err);
             } else {
@@ -62,7 +62,7 @@ module.exports = function(mongoose) {
     exports.getStudentById = function(sid, callback) {
         callback = (typeof callback === 'function') ? callback : function() {};
 
-        Student.find({sid: sid}, function(err, student) {
+        models.Student.find({sid: sid}, function(err, student) {
             if (err) {
                 callback(err);
             } else {
