@@ -4,8 +4,8 @@ module.exports = function(mongoose) {
     'use strict';
 
     return mongoose.model('Faculty', new mongoose.Schema({
-        fid: { type: String, required: true, unique: true, index: true },
-        firstName: { type: String, required: true },
-        lastName: { type: String, required: true },
+        faculty_id: { type: String, required: true, unique: true, index: true },
+        last_name: { type: String, required: true },
+        first_name: { type: String, required: false }
     }));
 };

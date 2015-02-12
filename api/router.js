@@ -5,11 +5,6 @@ module.exports = function(express, db) {
 
     var router  = express.Router();
 
-    router.use(function(req, res, next) {
-        console.log('Something is happening.');
-        next();
-    });
-
     router.get('/students', function(req, res) {
         db.getAllStudents(function(err, students) {
             if (err) {
@@ -26,6 +21,16 @@ module.exports = function(express, db) {
                 res.send(err);
             } else {
                 res.json(student);
+            }
+        });
+    });
+
+    router.put('/update/csv', function(req, res) {
+        db.processUploadedFile(req.files.file.path, function(err) {
+            if (err) {
+                res.send(err);
+            } else {
+                res.sendStatus(201);
             }
         });
     });

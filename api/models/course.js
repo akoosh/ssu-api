@@ -5,10 +5,10 @@ module.exports = function(mongoose) {
 
     var schema = new mongoose.Schema({
         subject: { type: String, required: true },
-        number: { type: String, required: true },
-        title: { type: String, required: true },
-        type: { type: String, required: true },
-        units: { type: Number, required: true },
+        catalog: { type: String, required: true },
+        class_description: { type: String, required: true },
+        class_type: { type: String, required: true },
+        class_units: { type: Number, required: true },
         career: { type: String, required: true }
     });
 

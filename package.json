@@ -4,7 +4,10 @@
   "dependencies": {
     "express": "~4.11.1",
     "mongoose": "~3.8.22",
-    "body-parser": "~1.10.2"
+    "body-parser": "~1.10.2",
+    "multer": "~0.1.7",
+    "morgan": "~1.5.1",
+    "csv-parse": "0.0.6"
   },
   "devDependencies": {
     "faker": "~2.1.2"
