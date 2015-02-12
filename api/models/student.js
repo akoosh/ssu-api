@@ -12,7 +12,6 @@ module.exports = function(mongoose) {
         // academic_level: { type: String, required: true },
         // term_units: { term: String, units: Number },
         gender: { type: String, required: true },
-        ethnic_grp: { type: String, required: true },
-        advisor: { type: mongoose.Schema.Types.ObjectId, required: true }
+        ethnic_grp: { type: String, required: true }
     }));
 };

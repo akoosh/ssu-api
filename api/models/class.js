@@ -13,7 +13,7 @@ module.exports = function(mongoose) {
         section: { type: String, required: true },
         component: { type: String, required: true },
         designation: { type: String, required: false },
-        facil_id: { type: String, required: true },
+        facil_id: { type: String, required: false },
         mtg_start: { type: String, required: true },
         mtg_end: { type: String, required: true },
         pat: { type: String, required: true }
