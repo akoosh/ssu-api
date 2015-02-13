@@ -15,12 +15,22 @@ module.exports = function(express, db) {
         });
     });
 
-    router.get('/students/:sid', function(req, res) {
-        db.getStudentById(req.params.sid, function(err, student) {
+    router.get('/students/:student_id', function(req, res) {
+        db.getStudentById(req.params.student_id, function(err, student) {
             if (err) {
                 res.send(err);
             } else {
                 res.json(student);
+            }
+        });
+    });
+
+    router.get('/classes/:student_id', function(req, res) {
+        db.getClassesByStudentId(req.params.student_id, function(err, classes) {
+            if (err) {
+                res.send(err);
+            } else {
+                res.json(classes);
             }
         });
     });

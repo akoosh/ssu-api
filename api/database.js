@@ -59,14 +59,39 @@ module.exports = function(mongoose) {
         });
     };
 
-    exports.getStudentById = function(sid, callback) {
+    exports.getStudentById = function(student_id, callback) {
         callback = (typeof callback === 'function') ? callback : function() {};
 
-        models.Student.find({sid: sid}, function(err, student) {
+        models.Student.findOne({student_id: student_id}, function(err, student) {
             if (err) {
                 callback(err);
             } else {
                 callback(null, student);
+            }
+        });
+    };
+
+    exports.getClassesByStudentId = function(student_id, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        models.Student.findOne({student_id: student_id}, function(err, student) {
+            if (err) {
+                callback(err);
+            } else {
+                models.Enrollment.find({student: student._id}, function(err, enrollments) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        var class_ids = enrollments.map(function(enrollment) { return enrollment.class; });
+                        models.Class.find({_id: {$in: class_ids }}, function(err, classes) {
+                            if (err) {
+                                callback(err);
+                            } else {
+                                callback(null, classes);
+                            }
+                        });
+                    }
+                });
             }
         });
     };
