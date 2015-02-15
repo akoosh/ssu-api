@@ -224,7 +224,7 @@ function buildAdvisement(data, models, products, callback) {
             // duplicate key
             var params = {
                 student:    advisement.student,
-                advisor:    advisement.class,
+                advisor:    advisement.advisor,
                 term:       advisement.term
             };
 
