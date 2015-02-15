@@ -250,15 +250,23 @@ module.exports = function(csvData, models, callback) {
     
     callback = (typeof callback === 'function') ? callback : function() {};
 
+    var numRows = csvData.length;
+
+    var successes = 0;
     var loadingError = false;
-    var someCallback = function(err, products) {
-        if (err) {
+    var extractAndLoadCallback = function(err, products) {
+        if (err && !loadingError) {
             loadingError = true;
             callback(err);
+        } else if (err) {
+            // an error has happened but it's not the first one
+        } else {
+            successes++;
+            if (successes === numRows - 1) {
+                callback(null);
+            }
         }
     };
-
-    var numRows = csvData.length;
 
     if (numRows === 0) {
         callback('CSV Data is empty.');
@@ -269,7 +277,7 @@ module.exports = function(csvData, models, callback) {
         var fieldNames = csvData[0].map(newFieldName);
         var numFields = fieldNames.length;
 
-        for (var rowNum = 1; rowNum < numRows && !loadingError; rowNum++) {
+        for (var rowNum = 1; rowNum < numRows; rowNum++) {
             var row = csvData[rowNum];
 
             // build object for row data
@@ -278,11 +286,7 @@ module.exports = function(csvData, models, callback) {
                 rowData[fieldNames[fieldNum]] = row[fieldNum];
             }
 
-            exractAndLoad(rowData, models, someCallback);
-        }
-
-        if (!loadingError) {
-            callback(null);
+            exractAndLoad(rowData, models, extractAndLoadCallback);
         }
     }
 };
