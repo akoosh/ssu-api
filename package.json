@@ -19,7 +19,7 @@
     "faker": "~2.1.2"
   },
   "scripts": {
-    "start": "forever start --minUptime 1000 --spinSleepTime 1000 --watch server.js",
+    "start": "forever --minUptime 1000 --spinSleepTime 1000 --watch server.js",
     "stop": "forever stop server.js"
   }
 }
