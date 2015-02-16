@@ -1,7 +1,7 @@
 // multerOptions.js
+'use strict';
 
 module.exports = function() {
-    'use strict';
 
     var options = {};
 

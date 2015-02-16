@@ -1,7 +1,7 @@
 // advisement.js
+'use strict';
 
 module.exports = function(mongoose) {
-    'use strict';
 
     var ObjectId = mongoose.Schema.Types.ObjectId;
     var schema = new mongoose.Schema({

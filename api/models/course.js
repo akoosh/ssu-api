@@ -1,7 +1,7 @@
 // course.js
+'use strict';
 
 module.exports = function(mongoose) {
-    'use strict';
 
     var schema = new mongoose.Schema({
         subject: { type: String, required: true },

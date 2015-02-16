@@ -1,7 +1,7 @@
 // student.js
+'use strict';
 
 module.exports = function(mongoose) {
-    'use strict';
 
     var schema = new mongoose.Schema({
         student_id: { type: String, required: true, index: {unique: true } },

@@ -1,7 +1,7 @@
 // router.js
+'use strict';
 
 module.exports = function(express, db) {
-    'use strict';
 
     var router  = express.Router();
 

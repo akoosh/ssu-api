@@ -1,4 +1,5 @@
 // database.js
+'use strict';
 
 // models
 var StudentModule     = require('./models/student');
@@ -14,7 +15,6 @@ var parse       = require('csv-parse');
 var loadData    = require('./utils/loadData');
 
 module.exports = function(mongoose) {
-    'use strict';
 
     mongoose.connect('mongodb://localhost/students');
 

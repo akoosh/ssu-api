@@ -1,7 +1,7 @@
 // loadData.js
+'use strict';
 
 function newFieldName(old) {
-    'use strict';
     return old.toLowerCase().replace(/ /g, '_');
 }
 
@@ -246,7 +246,6 @@ function buildAdvisement(data, models, products, callback) {
 }
 
 module.exports = function(csvData, models, callback) {
-    'use strict';
     
     callback = (typeof callback === 'function') ? callback : function() {};
 
