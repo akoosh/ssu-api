@@ -33,7 +33,8 @@ node modules listed as dependencies in `package.json` necessary to run the serve
 2. Once you have a MongoDB service running, run `node mockData.js`. This will
 inject some student data into the database with random names and student IDs.
 
-3. Start the server with `node server.js`.
+3. Start the server with `npm start`. This will run the server using [Forever](https://github.com/foreverjs/forever),
+which will restart the server if it crashes or if you change its source files.
 
 4. Test to see if the server is working by navigating to [localhost:8080/api/v0/students](http://localhost:8080/api/v0/students).
 You should see a JSON listing of all the `student` entries in the database. If you
