@@ -1,10 +1,10 @@
 // student.js
+'use strict';
 
 module.exports = function(mongoose) {
-    'use strict';
 
-    return mongoose.model('Student', new mongoose.Schema({
-        student_id: { type: String, required: true, unique: true, index: true },
+    var schema = new mongoose.Schema({
+        student_id: { type: String, required: true, index: {unique: true } },
         last_name: { type: String, required: true },
         first_name: { type: String, required: true },
         acad_plan: { type: String, required: true },
@@ -13,5 +13,15 @@ module.exports = function(mongoose) {
         // term_units: { term: String, units: Number },
         gender: { type: String, required: true },
         ethnic_grp: { type: String, required: true }
-    }));
+    });
+
+    schema.set('toJSON', {
+        transform: function(doc, ret, options) {
+            delete ret._id;
+            delete ret.__v;
+            return ret;
+        }
+    });
+
+    return mongoose.model('Student', schema);
 };

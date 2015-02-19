@@ -1,4 +1,5 @@
 // database.js
+'use strict';
 
 // models
 var StudentModule     = require('./models/student');
@@ -14,7 +15,6 @@ var parse       = require('csv-parse');
 var loadData    = require('./utils/loadData');
 
 module.exports = function(mongoose) {
-    'use strict';
 
     mongoose.connect('mongodb://localhost/students');
 
@@ -83,7 +83,7 @@ module.exports = function(mongoose) {
                         callback(err);
                     } else {
                         var class_ids = enrollments.map(function(enrollment) { return enrollment.class; });
-                        models.Class.find({_id: {$in: class_ids }}, function(err, classes) {
+                        models.Class.find({_id: {$in: class_ids }}).populate('instructor course').exec(function(err, classes) {
                             if (err) {
                                 callback(err);
                             } else {
