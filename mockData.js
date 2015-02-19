@@ -14,7 +14,7 @@ function saveCallback(err, student) {
         console.log(err);
         console.log('Student was not saved.');
     } else {
-        console.log('Student saved: ' + student.firstName);
+        console.log('Student saved: ' + student.first_name);
     }
 
     if (num_saved === NUM_TO_SAVE) {
@@ -24,15 +24,13 @@ function saveCallback(err, student) {
 
 for (var i = 0; i < NUM_TO_SAVE; i++) {
     var student = new Student({
-        sid: String('00000000' + faker.helpers.randomNumber(10000000)).slice(-9),
-        firstName: faker.name.firstName(),
-        lastName: faker.name.lastName(),
-        acadPlan: 'test',
-        acadLv: 'test',
-        termUnits: 12,
+        student_id: String('00000000' + faker.helpers.randomNumber(10000000)).slice(-9),
+        first_name: faker.name.firstName(),
+        last_name: faker.name.lastName(),
+        acad_plan: 'test',
+        acad_plan_descr: 'test',
         gender: 'test',
-        ethnicGrp: 'test',
-        advisor: mongoose.Types.ObjectId()
+        ethnic_grp: 'test'
     });
 
     student.save(saveCallback);
