@@ -10,6 +10,7 @@ module.exports = function(mongoose, plugins) {
         term: { type: String, required: true },
         term_description: { type: String, required: true },
         acad_plan: { type: String, required: true },
+        acad_plan_descr: { type: String, required: true }
     });
 
     // A student cannot have the same advisor twice in the same term
