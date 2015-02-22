@@ -106,6 +106,52 @@ module.exports = function(mongoose) {
     };
 
 
+    // Instructor functions
+
+    exports.getAllInstructors = function(callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        models.Faculty.find(function(err, instructors) {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, instructors);
+            }
+        });
+    };
+
+    exports.getInstructorById = function(instructor_id, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        models.Faculty.findOne({faculty_id: instructor_id}, function(err, instructor) {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, instructor);
+            }
+        });
+    };
+
+    exports.getClassesByInstructorId = function(instructor_id, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        models.Faculty.findOne({faculty_id: instructor_id}, function(err, instructor) {
+            if (err) {
+                callback(err);
+            } else {
+                models.Class.find({instructor: instructor._id}).populate('course').exec(function(err, classes) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        classes.forEach(function(c) { c.instructor = undefined; });
+                        callback(null, classes);
+                    }
+                });
+            }
+        });
+    };
+
+
     // Advisor functions
 
     exports.getAllAdvisors = function(callback) {

@@ -45,6 +45,21 @@ module.exports = function(express, db) {
     });
 
 
+    // Instructor routes
+
+    router.get('/instructors', function(req, res) {
+        db.getAllInstructors(getRequestHandler(res));
+    });
+
+    router.get('/instructors/:instructor_id', function(req, res) {
+        db.getInstructorById(req.params.instructor_id, getRequestHandler(res));
+    });
+
+    router.get('/instructors/:instructor_id/classes', function(req, res) {
+        db.getClassesByInstructorId(req.params.instructor_id, getRequestHandler(res));
+    });
+
+
     // Advisor routes
 
     router.get('/advisors', function(req, res) {
