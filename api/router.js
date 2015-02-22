@@ -36,9 +36,9 @@ module.exports = function(express, db) {
         db.getStudentById(req.params.student_id, getRequestHandler(res));
     });
 
-    // router.get('/students/:student_id/advisors', function(req, res) {
-    //     db.getAdvisorsByStudentId(req.params.student_id, getRequestHandler(res));
-    // });
+    router.get('/students/:student_id/advisors', function(req, res) {
+        db.getAdvisorsByStudentId(req.params.student_id, getRequestHandler(res));
+    });
 
     router.get('/students/:student_id/classes', function(req, res) {
         db.getClassesByStudentId(req.params.student_id, getRequestHandler(res));

@@ -67,6 +67,25 @@ module.exports = function(mongoose) {
         });
     };
 
+    exports.getAdvisorsByStudentId = function(student_id, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        models.Student.findOne({student_id: student_id}, function(err, student) {
+            if (err) {
+                callback(err);
+            } else {
+                models.Advisement.find({student: student._id}).populate('advisor').exec(function(err, advisements) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        advisements.forEach(function(advisement) { advisement.student = undefined; });
+                        callback(null, advisements);
+                    }
+                });
+            }
+        });
+    };
+
     exports.getClassesByStudentId = function(student_id, callback) {
         callback = (typeof callback === 'function') ? callback : function() {};
 
