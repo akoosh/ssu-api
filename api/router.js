@@ -25,6 +25,9 @@ module.exports = function(express, db) {
         };
     };
 
+
+    // Student routes
+
     router.get('/students', function(req, res) {
         db.getAllStudents(getRequestHandler(res));
     });
@@ -33,9 +36,31 @@ module.exports = function(express, db) {
         db.getStudentById(req.params.student_id, getRequestHandler(res));
     });
 
-    router.get('/classes/:student_id', function(req, res) {
+    // router.get('/students/:student_id/advisors', function(req, res) {
+    //     db.getAdvisorsByStudentId(req.params.student_id, getRequestHandler(res));
+    // });
+
+    router.get('/students/:student_id/classes', function(req, res) {
         db.getClassesByStudentId(req.params.student_id, getRequestHandler(res));
     });
+
+
+    // Advisor routes
+
+    // router.get('/advisors', function(req, res) {
+    //     db.getAllAdvisors(getRequestHandler(res));
+    // });
+
+    // router.get('/advisors/:faculty_id', function(req, res) {
+    //     db.getAdvisorById(req.params.faculty_id, getRequestHandler(res));
+    // });
+
+    // router.get('/advisors/:faculty_id/students', function(req, res) {
+    //     db.getStudentByAvisorId(req.params.faculty_id, getRequestHandler(res));
+    // });
+
+
+    // Data loading routes
 
     router.put('/update/csv', function(req, res) {
         db.processUploadedFile(req.files.file.path, putRequestHandler(res));

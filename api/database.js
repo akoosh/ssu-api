@@ -41,24 +41,7 @@ module.exports = function(mongoose) {
         Advisement  : new AdvisementModule(mongoose, plugins)
     };
 
-    exports.processUploadedFile = function(filepath, callback) {
-        callback = (typeof callback === 'function') ? callback : function() {};
-
-        fs.readFile(filepath, 'utf8', function(err, data) {
-            if (err) {
-                callback(err);
-            } else {
-                parse(data, function(err, data) {
-                    if (err) {
-                        callback(err);
-                    } else {
-                        // data is valid CSV
-                        loadData(data, models, callback);
-                    }
-                });
-            }
-        });
-    };
+    // Student functions
 
     exports.getAllStudents = function(callback) {
         callback = (typeof callback === 'function') ? callback : function() {};
@@ -103,6 +86,28 @@ module.exports = function(mongoose) {
                                 callback(null, classes);
                             }
                         });
+                    }
+                });
+            }
+        });
+    };
+
+
+    // Data loading functions
+
+    exports.processUploadedFile = function(filepath, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        fs.readFile(filepath, 'utf8', function(err, data) {
+            if (err) {
+                callback(err);
+            } else {
+                parse(data, function(err, data) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        // data is valid CSV
+                        loadData(data, models, callback);
                     }
                 });
             }
