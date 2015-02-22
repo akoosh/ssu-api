@@ -18,6 +18,9 @@ module.exports = function(mongoose) {
 
     mongoose.connect('mongodb://localhost/students');
 
+    // Enable this to see mongoose activity
+    // mongoose.set('debug', true);
+
     var exports = {};
     var models = {
         Student     : new StudentModule(mongoose),

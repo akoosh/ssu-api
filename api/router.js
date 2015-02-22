@@ -5,44 +5,40 @@ module.exports = function(express, db) {
 
     var router  = express.Router();
 
-    router.get('/students', function(req, res) {
-        db.getAllStudents(function(err, students) {
+    var getRequestHandler = function(res) {
+        return function(err, product) {
             if (err) {
                 res.send(err);
             } else {
-                res.json(students);
+                res.json(product);
             }
-        });
-    });
+        };
+    };
 
-    router.get('/students/:student_id', function(req, res) {
-        db.getStudentById(req.params.student_id, function(err, student) {
-            if (err) {
-                res.send(err);
-            } else {
-                res.json(student);
-            }
-        });
-    });
-
-    router.get('/classes/:student_id', function(req, res) {
-        db.getClassesByStudentId(req.params.student_id, function(err, classes) {
-            if (err) {
-                res.send(err);
-            } else {
-                res.json(classes);
-            }
-        });
-    });
-
-    router.put('/update/csv', function(req, res) {
-        db.processUploadedFile(req.files.file.path, function(err) {
+    var putRequestHandler = function(res) {
+        return function(err, product) {
             if (err) {
                 res.send(err);
             } else {
                 res.sendStatus(201);
             }
-        });
+        };
+    };
+
+    router.get('/students', function(req, res) {
+        db.getAllStudents(getRequestHandler(res));
+    });
+
+    router.get('/students/:student_id', function(req, res) {
+        db.getStudentById(req.params.student_id, getRequestHandler(res));
+    });
+
+    router.get('/classes/:student_id', function(req, res) {
+        db.getClassesByStudentId(req.params.student_id, getRequestHandler(res));
+    });
+
+    router.put('/update/csv', function(req, res) {
+        db.processUploadedFile(req.files.file.path, putRequestHandler(res));
     });
 
     return router;
