@@ -74,18 +74,12 @@ module.exports = function(mongoose) {
             if (err) {
                 callback(err);
             } else {
-                models.Enrollment.find({student: student._id}, function(err, enrollments) {
+                models.Enrollment.find({student: student._id}).deepPopulate('class class.instructor class.course').exec(function(err, enrollments) {
                     if (err) {
                         callback(err);
                     } else {
-                        var class_ids = enrollments.map(function(enrollment) { return enrollment.class; });
-                        models.Class.find({_id: {$in: class_ids }}).populate('instructor course').exec(function(err, classes) {
-                            if (err) {
-                                callback(err);
-                            } else {
-                                callback(null, classes);
-                            }
-                        });
+                        enrollments.forEach(function(enrollment) { enrollment.student = undefined; });
+                        callback(null, enrollments);
                     }
                 });
             }
