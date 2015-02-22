@@ -210,6 +210,19 @@ module.exports = function(mongoose) {
     };
 
 
+    // Course routes
+
+    exports.getAllCourses = function(callback) {};
+
+    exports.getAllSubjects = function(callback) {};
+
+    exports.getCourseBySubject = function(subject, callback) {};
+
+    exports.getCourseBySubjectAndCatalogNumber = function(subject, catalog_number, callback) {};
+
+    exports.getClassesBySubjectAndCatalogNumber = function(subject, catalog_number, callback) {};
+
+
     // Data loading functions
 
     exports.processUploadedFile = function(filepath, callback) {

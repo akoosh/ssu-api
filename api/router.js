@@ -75,6 +75,29 @@ module.exports = function(express, db) {
     });
 
 
+    // Course routes
+
+    // router.get('/courses', function(req, res) {
+    //     db.getAllCourses(getRequestHandler(res));
+    // });
+
+    // router.get('/courses/subjects', function(req, res) {
+    //     db.getAllSubjects(getRequestHandler(res));
+    // });
+
+    // router.get('/courses/subjects/:subject', function(req, res) {
+    //     db.getCourseBySubject(req.params.subject, getRequestHandler(res));
+    // });
+
+    // router.get('/courses/subjects/:subject/:catalog_number', function(req, res) {
+    //     db.getCourseBySubjectAndCatalogNumber(req.params.subject, req.params.catalog_number, getRequestHandler(res));
+    // });
+
+    // router.get('/courses/subjects/:subject/:catalog_number/classes', function(req, res) {
+    //     db.getClassesBySubjectAndCatalogNumber(req.params.subject, req.params.catalog_number, getRequestHandler(res));
+    // });
+
+
     // Data loading routes
 
     router.put('/update/csv', function(req, res) {
