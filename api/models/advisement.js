@@ -1,7 +1,7 @@
 // advisement.js
 'use strict';
 
-module.exports = function(mongoose) {
+module.exports = function(mongoose, plugins) {
 
     var ObjectId = mongoose.Schema.Types.ObjectId;
     var schema = new mongoose.Schema({
@@ -15,12 +15,8 @@ module.exports = function(mongoose) {
     // A student cannot have the same advisor twice in the same term
     schema.index({student: 1, advisor: 1, term: 1}, {unique: true});
 
-    schema.set('toJSON', {
-        transform: function(doc, ret, options) {
-            delete ret._id;
-            delete ret.__v;
-            return ret;
-        }
+    plugins.forEach(function(plugin) {
+        schema.plugin(plugin);
     });
 
     return mongoose.model('Advisement', schema);

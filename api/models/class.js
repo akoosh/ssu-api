@@ -1,7 +1,7 @@
 // class.js
 'use strict';
 
-module.exports = function(mongoose) {
+module.exports = function(mongoose, plugins) {
 
     var ObjectId = mongoose.Schema.Types.ObjectId;
     var schema = new mongoose.Schema({
@@ -22,12 +22,8 @@ module.exports = function(mongoose) {
     // Cannot have the same class twice
     schema.index({class_nbr: 1, term: 1, section: 1, mtg_start: 1, mtg_end: 1, pat: 1}, {unique: true});
 
-    schema.set('toJSON', {
-        transform: function(doc, ret, options) {
-            delete ret._id;
-            delete ret.__v;
-            return ret;
-        }
+    plugins.forEach(function(plugin) {
+        schema.plugin(plugin);
     });
 
     return mongoose.model('Class', schema);

@@ -1,7 +1,7 @@
 // student.js
 'use strict';
 
-module.exports = function(mongoose) {
+module.exports = function(mongoose, plugins) {
 
     var schema = new mongoose.Schema({
         student_id: { type: String, required: true, index: {unique: true } },
@@ -15,12 +15,8 @@ module.exports = function(mongoose) {
         // term_units: { term: String, units: Number },
     });
 
-    schema.set('toJSON', {
-        transform: function(doc, ret, options) {
-            delete ret._id;
-            delete ret.__v;
-            return ret;
-        }
+    plugins.forEach(function(plugin) {
+        schema.plugin(plugin);
     });
 
     return mongoose.model('Student', schema);

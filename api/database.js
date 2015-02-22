@@ -1,6 +1,10 @@
 // database.js
 'use strict';
 
+// mongoose plugins
+var deepPopulate    = require('mongoose-deep-populate');
+var mongooseHidden  = require('mongoose-hidden')();
+
 // models
 var StudentModule     = require('./models/student');
 var FacultyModule     = require('./models/faculty');
@@ -22,13 +26,19 @@ module.exports = function(mongoose) {
     // mongoose.set('debug', true);
 
     var exports = {};
+
+    var plugins = [
+        deepPopulate,
+        mongooseHidden
+    ];
+
     var models = {
-        Student     : new StudentModule(mongoose),
-        Faculty     : new FacultyModule(mongoose),
-        Course      : new CourseModule(mongoose),
-        Class       : new ClassModule(mongoose),
-        Enrollment  : new EnrollmentModule(mongoose),
-        Advisement  : new AdvisementModule(mongoose)
+        Student     : new StudentModule(mongoose, plugins),
+        Faculty     : new FacultyModule(mongoose, plugins),
+        Course      : new CourseModule(mongoose, plugins),
+        Class       : new ClassModule(mongoose, plugins),
+        Enrollment  : new EnrollmentModule(mongoose, plugins),
+        Advisement  : new AdvisementModule(mongoose, plugins)
     };
 
     exports.processUploadedFile = function(filepath, callback) {
