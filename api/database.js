@@ -106,6 +106,64 @@ module.exports = function(mongoose) {
     };
 
 
+    // Advisor functions
+
+    exports.getAllAdvisors = function(callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        models.Advisement.distinct('advisor', function(err, advisor_ids) {
+            if (err) {
+                callback(err);
+            } else {
+                models.Faculty.find({_id: {$in: advisor_ids}}, function(err, advisors) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        callback(null, advisors);
+                    }
+                });
+            }
+        });
+    };
+
+    exports.getAdvisorById = function(advisor_id, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        models.Advisement.distinct('advisor', function(err, advisor_ids) {
+            if (err) {
+                callback(err);
+            } else {
+                models.Faculty.findOne({_id: {$in: advisor_ids}, faculty_id: advisor_id}, function(err, advisor) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        callback(null, advisor);
+                    }
+                });
+            }
+        });
+    };
+
+    exports.getStudentsByAdvisorId = function(advisor_id, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        models.Faculty.findOne({faculty_id: advisor_id}, function(err, advisor) {
+            if (err) {
+                callback(err);
+            } else {
+                models.Advisement.find({advisor: advisor._id}).populate('student').exec(function(err, advisements) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        advisements.forEach(function(advisement) { advisement.advisor = undefined; });
+                        callback(null, advisements);
+                    }
+                });
+            }
+        });
+    };
+
+
     // Data loading functions
 
     exports.processUploadedFile = function(filepath, callback) {

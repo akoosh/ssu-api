@@ -47,17 +47,17 @@ module.exports = function(express, db) {
 
     // Advisor routes
 
-    // router.get('/advisors', function(req, res) {
-    //     db.getAllAdvisors(getRequestHandler(res));
-    // });
+    router.get('/advisors', function(req, res) {
+        db.getAllAdvisors(getRequestHandler(res));
+    });
 
-    // router.get('/advisors/:faculty_id', function(req, res) {
-    //     db.getAdvisorById(req.params.faculty_id, getRequestHandler(res));
-    // });
+    router.get('/advisors/:advisor_id', function(req, res) {
+        db.getAdvisorById(req.params.advisor_id, getRequestHandler(res));
+    });
 
-    // router.get('/advisors/:faculty_id/students', function(req, res) {
-    //     db.getStudentByAvisorId(req.params.faculty_id, getRequestHandler(res));
-    // });
+    router.get('/advisors/:advisor_id/students', function(req, res) {
+        db.getStudentsByAdvisorId(req.params.advisor_id, getRequestHandler(res));
+    });
 
 
     // Data loading routes
