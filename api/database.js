@@ -212,15 +212,71 @@ module.exports = function(mongoose) {
 
     // Course routes
 
-    exports.getAllCourses = function(callback) {};
+    exports.getAllCourses = function(callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
 
-    exports.getAllSubjects = function(callback) {};
+        models.Course.find(function(err, courses) {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, courses);
+            }
+        });
+    };
 
-    exports.getCourseBySubject = function(subject, callback) {};
+    exports.getAllSubjects = function(callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
 
-    exports.getCourseBySubjectAndCatalogNumber = function(subject, catalog_number, callback) {};
+        models.Course.distinct('subject', function(err, subjects) {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, subjects);
+            }
+        });
+    };
 
-    exports.getClassesBySubjectAndCatalogNumber = function(subject, catalog_number, callback) {};
+    exports.getCoursesBySubject = function(subject, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        models.Course.find({subject: subject.toUpperCase()}, function(err, courses) {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, courses);
+            }
+        });
+    };
+
+    exports.getCourseBySubjectAndCatalogNumber = function(subject, catalog_number, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        models.Course.findOne({subject: subject.toUpperCase(), catalog: catalog_number}, function(err, course) {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, course);
+            }
+        });
+    };
+
+    exports.getClassesBySubjectAndCatalogNumber = function(subject, catalog_number, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        models.Course.findOne({subject: subject.toUpperCase(), catalog: catalog_number}, function(err, course) {
+            if (err) {
+                callback(err);
+            } else {
+                models.Class.find({course: course._id}).populate('course instructor').exec(function(err, classes) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        callback(null, classes);
+                    }
+                });
+            }
+        });
+    };
 
 
     // Data loading functions
