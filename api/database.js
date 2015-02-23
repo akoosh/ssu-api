@@ -279,6 +279,29 @@ module.exports = function(mongoose) {
     };
 
 
+    // Class functions
+
+    exports.getAllClasses = function(callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+    };
+
+    exports.getAllTerms = function(callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+    };
+
+    exports.getAllClassesByTerm = function(term, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+    };
+
+    exports.getClassByTermAndClassNumber = function(term, class_number, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+    };
+
+    exports.getAllStudentsInClassByTermAndClassNumber = function(term, class_number, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+    };
+
+
     // Data loading functions
 
     exports.processUploadedFile = function(filepath, callback) {
