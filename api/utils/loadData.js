@@ -18,6 +18,27 @@ function allWithObj(promises) {
     return ready.then(function () { return accumulator; });
 }
 
+function arrayContainsObject(arr, obj) {
+    for (var i = 0; i < arr.length; i++) {
+
+        var equal = true;
+
+        for (var key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                if (obj[key] !== arr[i][key]) {
+                    equal = false;
+                }
+            }
+        }
+
+        if (equal) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function newFieldName(old) {
     return old.toLowerCase().replace(/ /g, '_');
 }
@@ -165,7 +186,7 @@ function buildCourse(data, models) {
 function buildClass(data, models, courseId, instructorId) {
     return new Promise(function(fullfill, reject) {
         // all required keys in Class should also be in data
-        // except for course and instructor
+        // except for course, instructor, and meetings
         var classDoc = new models.Class();
         for (var key in models.Class.schema.paths) {
             if (key in data) {
@@ -176,23 +197,39 @@ function buildClass(data, models, courseId, instructorId) {
         classDoc.course = courseId;
         classDoc.instructor = instructorId;
 
+        var meeting = {
+            facil_id: data.facil_id,
+            mtg_start: data.mtg_start,
+            mtg_end: data.mtg_end,
+            pat: data.pat
+        };
+
+        classDoc.meetings = [meeting];
+
         classDoc.save(function(err, product) {
             if (err && err.code === 11000) {
                 // duplicate key
                 var params = {
                     class_nbr:  classDoc.class_nbr,
-                    term:       classDoc.term,
-                    section:    classDoc.section,
-                    mtg_start:  classDoc.mtg_start,
-                    mtg_end:    classDoc.mtg_end,
-                    pat:        classDoc.pat
+                    term:       classDoc.term
                 };
 
                 models.Class.findOne(params, function(err, product) {
                     if (err) {
                         reject(err);
                     } else {
-                        fullfill(product._id);
+                        if (!arrayContainsObject(product.meetings, meeting)) {
+                            product.meetings.push(meeting);
+                            product.save(function(err, product) {
+                                if (err) {
+                                    reject(err);
+                                } else {
+                                    fullfill(product._id);
+                                }
+                            });
+                        } else {
+                            fullfill(product._id);
+                        }
                     }
                 });
             } else if (err) {

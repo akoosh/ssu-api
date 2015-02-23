@@ -1,7 +1,7 @@
 // enrollment.js
 'use strict';
 
-module.exports = function(mongoose) {
+module.exports = function(mongoose, plugins) {
 
     var ObjectId = mongoose.Schema.Types.ObjectId;
     var schema = new mongoose.Schema({
@@ -15,12 +15,8 @@ module.exports = function(mongoose) {
     // A student cannot be enrolled in the same class twice
     schema.index({student: 1, class: 1}, {unique: true});
 
-    schema.set('toJSON', {
-        transform: function(doc, ret, options) {
-            delete ret._id;
-            delete ret.__v;
-            return ret;
-        }
+    plugins.forEach(function(plugin) {
+        schema.plugin(plugin);
     });
 
     return mongoose.model('Enrollment', schema);
