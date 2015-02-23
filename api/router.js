@@ -100,25 +100,25 @@ module.exports = function(express, db) {
 
     // Class routes
 
-    // router.get('/classes', function(req, res) {
-    //     db.getAllClasses(getRequestHandler(res));
-    // });
+    router.get('/classes', function(req, res) {
+        db.getAllClasses(getRequestHandler(res));
+    });
 
-    // router.get('/classes/terms', function(req, res) {
-    //     db.getAllTerms(getRequestHandler(res));
-    // });
+    router.get('/classes/terms', function(req, res) {
+        db.getAllTerms(getRequestHandler(res));
+    });
 
-    // router.get('/classes/terms/:term', function(req, res) {
-    //     db.getAllClassesByTerm(req.params.term, getRequestHandler(res));
-    // });
+    router.get('/classes/terms/:term', function(req, res) {
+        db.getAllClassesByTerm(req.params.term, getRequestHandler(res));
+    });
 
-    // router.get('/classes/terms/:term/:class_number', function(req, res) {
-    //     db.getClassByTermAndClassNumber(req.params.term, req.params.class_number, getRequestHandler(res));
-    // });
+    router.get('/classes/terms/:term/:class_number', function(req, res) {
+        db.getClassByTermAndClassNumber(req.params.term, req.params.class_number, getRequestHandler(res));
+    });
 
-    // router.get('/classes/terms/:term/:class_number/students', function(req, res) {
-    //     db.getAllStudentsInClassByTermAndClassNumber(req.params.term, req.params.class_number, getRequestHandler(res));
-    // });
+    router.get('/classes/terms/:term/:class_number/students', function(req, res) {
+        db.getAllStudentsInClassByTermAndClassNumber(req.params.term, req.params.class_number, getRequestHandler(res));
+    });
 
 
     // Data loading routes

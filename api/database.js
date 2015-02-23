@@ -283,22 +283,69 @@ module.exports = function(mongoose) {
 
     exports.getAllClasses = function(callback) {
         callback = (typeof callback === 'function') ? callback : function() {};
+
+        models.Class.find(function(err, classes) {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, classes);
+            }
+        });
     };
 
     exports.getAllTerms = function(callback) {
         callback = (typeof callback === 'function') ? callback : function() {};
+
+        models.Class.distinct('term', function(err, terms) {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, terms);
+            }
+        });
     };
 
     exports.getAllClassesByTerm = function(term, callback) {
         callback = (typeof callback === 'function') ? callback : function() {};
+
+        models.Class.find({term: term}).populate('course instructor').exec(function(err, classes) {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, classes);
+            }
+        });
     };
 
     exports.getClassByTermAndClassNumber = function(term, class_number, callback) {
         callback = (typeof callback === 'function') ? callback : function() {};
+
+        models.Class.findOne({term: term, class_nbr: class_number}).populate('course instructor').exec(function(err, classDoc) {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, classDoc);
+            }
+        });
     };
 
     exports.getAllStudentsInClassByTermAndClassNumber = function(term, class_number, callback) {
         callback = (typeof callback === 'function') ? callback : function() {};
+
+        models.Class.findOne({term: term, class_nbr: class_number}).populate('course instructor').exec(function(err, classDoc) {
+            if (err) {
+                callback(err);
+            } else {
+                models.Enrollment.find({class: classDoc._id}).populate('student').exec(function(err, enrollments) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        enrollments.forEach(function(enrollment) { enrollment.class = undefined; });
+                        callback(null, enrollments);
+                    }
+                });
+            }
+        });
     };
 
 
