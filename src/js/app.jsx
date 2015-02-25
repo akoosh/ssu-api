@@ -1,8 +1,9 @@
 /** @jsx React.DOM */
 
 var React = require('react');
+var StudentTable = require('./components/StudentTable');
 
 React.render(
-    <div>Hello, world.</div>,
+    <StudentTable />,
     document.getElementById('content')
 );
