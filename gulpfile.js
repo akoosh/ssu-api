@@ -43,7 +43,7 @@ gulp.task('html', ['clean'], function() {
  
 // Rerun tasks whenever a file changes.
 gulp.task('watch', function() {
-  gulp.watch(paths.src.js, ['js']);
+  gulp.watch(paths.src.js, ['js', 'html']);
   gulp.watch(paths.src.index, ['html']);
 });
  
