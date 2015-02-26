@@ -1,16 +1,17 @@
 /** @jsx React.DOM */
 
-var React = require('react');
+var React      = require('react');
+var AppActions = require('../actions/AppActions');
 
 var Selector = React.createClass({
 
     handleChange: function(event) {
-        this.props.listChanged(event.target.value);
+        AppActions.getData(event.target.value);
     },
 
     render: function() {
         return (
-            <select onChange={this.handleChange}>
+            <select value={this.props.dataType} onChange={this.handleChange}>
                 <option value='students'>Students</option>
                 <option value='instructors'>Instructors</option>
             </select>

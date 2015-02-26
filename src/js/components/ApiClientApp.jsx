@@ -1,40 +1,43 @@
 /** @jsx React.DOM */
 
-var React = require('react');
+var React      = require('react');
 
-var Selector = require('./Selector');
-var StudentTable = require('./StudentTable');
-var InstructorTable = require('./InstructorTable');
+var DataStore  = require('../stores/DataStore');
+var AppActions = require('../actions/AppActions');
+var ApiClient  = require('./ApiClient');
+
+function getAppState() {
+    return {
+        data: DataStore.getData(),
+        dataType: DataStore.getDataType()
+    };
+}
 
 var ApiClientApp = React.createClass({
 
-    onListChange: function(list) {
-        this.setState({currentList: list});
+    getInitialState: function() {
+        return getAppState();
     },
 
-    getInitialState: function() {
-        return {currentList: 'students'};
+    componentDidMount: function() {
+        DataStore.addChangeListener(this.onChange);
+
+        // Not sure if this goes here. It seems like there is a better
+        // way to trigger the initial data fetch.
+        AppActions.getData('students');
+    },
+
+    componentWillUnmount: function() {
+        DataStore.removeChangeListener(this.onChange);
+    },
+
+    onChange: function() {
+        this.setState(getAppState());
     },
 
     render: function() {
-
-        var table;
-        switch(this.state.currentList) {
-            case 'students':
-                table = <StudentTable />;
-                break;
-            case 'instructors':
-                table = <InstructorTable />;
-                break;
-            default:
-                break;
-        }
-
         return (
-            <div>
-                <Selector listChanged={this.onListChange}/>
-                {table}
-            </div>
+            <ApiClient data={this.state.data} dataType={this.state.dataType} />
         );
     }
 });
