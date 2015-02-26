@@ -1,9 +1,9 @@
 /** @jsx React.DOM */
 
 var React = require('react');
-var StudentTable = require('./components/StudentTable');
+var ApiClientApp = require('./components/ApiClientApp');
 
 React.render(
-    <StudentTable />,
+    <ApiClientApp />,
     document.getElementById('content')
 );

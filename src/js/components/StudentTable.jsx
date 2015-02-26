@@ -5,10 +5,6 @@ var $     = require('jquery');
 
 var StudentTable = React.createClass({
     loadStudents: function() {
-        // $.getJSON('api/v0/students', function(students) {
-        //     this.setState({students: students});
-        // });
-
         $.ajax({
             url: 'api/v0/students',
             dataType: 'json',
