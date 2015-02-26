@@ -12,23 +12,23 @@ var DataTable = React.createClass({
         if (this.props.data.length > 0) {
             keys = Object.keys(this.props.data[0]);
             var tableHeadings = keys.map(function(key) {
-                return <th>{key}</th>;
+                return <th key={key}>{key}</th>;
             });
 
             rows.push(
-                <tr>
+                <tr key='headings'>
                     {tableHeadings}
                 </tr>
             );
         }
 
-        this.props.data.forEach(function(datum) {
+        this.props.data.forEach(function(datum, i) {
             var dataCells = keys.map(function(key) {
-                return <td>{datum[key]}</td>;
+                return <td key={key}>{datum[key]}</td>;
             });
 
             rows.push(
-                <tr>
+                <tr key={'row_' + i}>
                     {dataCells}
                 </tr>
             );
