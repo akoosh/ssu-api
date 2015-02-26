@@ -1,7 +1,7 @@
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var AppConstants  = require('../constants/AppConstants');
 var EventEmitter  = require('events').EventEmitter;
-var merge         = require('react/lib/merge');
+var _             = require('lodash');
 
 // Internal variable for data. Named with an underscore by convention
 var _data = [], _type = '';
@@ -12,7 +12,7 @@ function loadData(data, type) {
 }
 
 // Merge our store with Node's Event Emitter
-var DataStore = merge(EventEmitter.prototype, {
+var DataStore = _.extend({}, EventEmitter.prototype, {
     
     getData: function() {
         return _data;
