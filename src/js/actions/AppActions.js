@@ -10,6 +10,12 @@ AppActions.getData = function(type) {
         case 'instructors':
             AppApi.getInstructors();
             break;
+        case 'advisors':
+            AppApi.getAdvisors();
+            break;
+        case 'courses':
+            AppApi.getCourses();
+            break;
         default:
             break;
     }

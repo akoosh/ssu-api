@@ -33,4 +33,20 @@ AppApi.getInstructors = function() {
     });
 };
 
+AppApi.getAdvisors = function() {
+    makeApiRequest('api/v0/advisors', function(err, advisors) {
+        if (!err) {
+            ServerActions.receiveData(advisors, 'advisors');
+        }
+    });
+};
+
+AppApi.getCourses = function() {
+    makeApiRequest('api/v0/courses', function(err, courses) {
+        if (!err) {
+            ServerActions.receiveData(courses, 'courses');
+        }
+    });
+};
+
 module.exports = AppApi;
