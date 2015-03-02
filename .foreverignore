@@ -1,2 +1,6 @@
+.git/**/*
 *.log
 api/uploads/*
+public/**/*
+src/**/*
+gulpfile.js

@@ -17,6 +17,7 @@ app.use(bodyParser.json());
 app.use(multer(multerOpts));
 app.use(morgan('combined'));
 app.use('/api/v0', apiRouter);
+app.use(express.static(__dirname + '/public'));
 
 app.listen(port);
 console.log('Server listening on port ' + port);
