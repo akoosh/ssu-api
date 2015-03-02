@@ -1,19 +1,40 @@
-html, body, #content, .ApiClientApp {
-    margin:         0;
-    padding:        0;
-    height:         100%;
+html,
+body,
+#content,
+.ApiClientApp {
+    margin:             0;
+    padding:            0;
+    height:             100%;
 }
 
 .Selector {
-    position:       fixed;
-    top:            0;
-    width:          160px;
-    height:         100%;
-    background:     #999;
-    padding:        40px 20px;
+    position:           fixed;
+    top:                0;
+    left:               0;
+    bottom:             0;
+    width:              160px;
+    height:             100%;
+    background:         #999;
+    padding:            40px 20px;
+    overflow:           scroll;
 }
 
 .DataTable {
-    margin-left:    200px;
-    padding:        20px;
+    margin-left:        200px;
+    padding:            20px;
+}
+
+.DataTable table,
+.DataTable th,
+.DataTable td {
+    border:             1px solid black;
+    padding:            10px;
+}
+
+.DataTable table {
+    border-collapse:    collapse;
+}
+
+.DataTable tr:nth-child(even) {
+    background:         #ddd;
 }
