@@ -11,12 +11,14 @@ var Selector = React.createClass({
 
     render: function() {
         return (
-            <select value={this.props.dataType} onChange={this.handleChange}>
-                <option value='students'>Students</option>
-                <option value='instructors'>Instructors</option>
-                <option value='advisors'>Advisors</option>
-                <option value='courses'>Courses</option>
-            </select>
+            <div className='Selector'>
+                <select value={this.props.dataType} onChange={this.handleChange}>
+                    <option value='students'>Students</option>
+                    <option value='instructors'>Instructors</option>
+                    <option value='advisors'>Advisors</option>
+                    <option value='courses'>Courses</option>
+                </select>
+            </div>
         );
     }
 });

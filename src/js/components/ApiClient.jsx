@@ -9,7 +9,7 @@ var ApiClientApp = React.createClass({
 
     render: function() {
         return (
-            <div>
+            <div className='ApiClientApp'>
                 <Selector dataType={this.props.dataType} />
                 <DataTable data={this.props.data} dataType={this.props.dataType} />
             </div>

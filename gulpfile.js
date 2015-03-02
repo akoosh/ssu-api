@@ -7,27 +7,34 @@ var browserify  = require('browserify');
 var del         = require('del');
 var reactify    = require('reactify');
 var source      = require('vinyl-source-stream');
+var stylus      = require('gulp-stylus');
  
 // Define some paths.
 var paths = {
   src: {
-    index: ['./src/index.html'],
+    index:  ['./src/index.html'],
+    css:    ['./src/css/**/*.styl'],
     app_js: ['./src/js/app.jsx'],
-    js: ['./src/js/**/*.js', './src/js/**/*.jsx'],
+    js:     ['./src/js/**/*.js', './src/js/**/*.jsx']
   },
   dest: {
-    index: 'public',
-    js: 'public/js'
+    index:  'public',
+    js:     'public/js',
+    css:    'public/css'
   }
 };
 
 gulp.task('clean', function(done) {
   del(['public'], done);
 });
+
+gulp.task('css', ['clean'], function() {
+  return gulp.src(paths.src.css)
+    .pipe(stylus())
+    .pipe(gulp.dest(paths.dest.css));
+});
  
-// Our JS task. It will Browserify our code and compile React JSX files.
 gulp.task('js', ['clean'], function() {
-  // Browserify/bundle the JS.
   browserify(paths.src.app_js, {extensions: ['.jsx']})
     .transform(reactify)
     .bundle()
@@ -35,17 +42,18 @@ gulp.task('js', ['clean'], function() {
     .pipe(gulp.dest(paths.dest.js));
 });
  
-// Our html  task. It will Browserify our code and compile React JSX files.
 gulp.task('html', ['clean'], function() {
-    gulp.src(paths.src.index)
-      .pipe(gulp.dest(paths.dest.index));
+  gulp.src(paths.src.index)
+    .pipe(gulp.dest(paths.dest.index));
 });
  
 // Rerun tasks whenever a file changes.
 gulp.task('watch', function() {
-  gulp.watch(paths.src.js, ['js', 'html']);
-  gulp.watch(paths.src.index, ['html']);
+  gulp.watch(paths.src.index, ['build']);
+  gulp.watch(paths.src.js, ['build']);
+  gulp.watch(paths.src.css, ['build']);
 });
+
+gulp.task('build', ['html', 'js', 'css']);
  
-// The default task (called when we run `gulp` from cli)
-gulp.task('default', ['watch', 'html', 'js']);
+gulp.task('default', ['watch', 'build']);
