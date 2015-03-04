@@ -1,3 +1,10 @@
+
+// Colors shamelessly stolen from SSU website
+$color-main-theme = #1C4281
+$color-light-accent = #C4D6F0
+$color-medium-accent = #445B85
+$color-dark-accent = #344356
+
 html,
 body,
 #content,
@@ -7,34 +14,32 @@ body,
     height:             100%;
 }
 
-.Selector {
+.Sidebar {
     position:           fixed;
     top:                0;
     left:               0;
     bottom:             0;
     width:              160px;
     height:             100%;
-    background:         #999;
+    background:         $color-medium-accent;
     padding:            40px 20px;
-    overflow:           scroll;
+    overflow:           auto;
 }
 
 .DataTable {
     margin-left:        200px;
     padding:            20px;
-}
 
-.DataTable table,
-.DataTable th,
-.DataTable td {
-    border:             1px solid black;
-    padding:            10px;
-}
+    table, th, td {
+        border:             1px solid black;
+        padding:            10px;
+    }
 
-.DataTable table {
-    border-collapse:    collapse;
-}
+    table {
+        border-collapse:    collapse;
+    }
 
-.DataTable tr:nth-child(even) {
-    background:         #ddd;
+    tr:nth-child(even) {
+        background:         $color-light-accent;
+    }
 }
