@@ -8,6 +8,8 @@ var del         = require('del');
 var reactify    = require('reactify');
 var source      = require('vinyl-source-stream');
 var stylus      = require('gulp-stylus');
+var streamify   = require('gulp-streamify');
+var uglify      = require('gulp-uglify');
  
 // Define some paths.
 var paths = {
@@ -39,6 +41,7 @@ gulp.task('js', ['clean'], function() {
     .transform(reactify)
     .bundle()
     .pipe(source('app.js'))
+    .pipe(streamify(uglify()))
     .pipe(gulp.dest(paths.dest.js));
 });
  
