@@ -3,6 +3,7 @@
 
 var express     = require('express');
 var bodyParser  = require('body-parser');
+var compression = require('compression');
 var multer      = require('multer');
 var mongoose    = require('mongoose');
 var morgan      = require('morgan');
@@ -14,6 +15,7 @@ var app         = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(compression());
 app.use(multer(multerOpts));
 app.use(morgan('combined'));
 app.use('/api/v0', apiRouter);
