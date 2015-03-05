@@ -2,16 +2,16 @@
 
 var React = require('react');
 
-var Selector  = require('./Selector');
-var DataTable = require('./DataTable');
+var Sidebar  = require('./Sidebar');
+var Content = require('./Content');
 
 var ApiClientApp = React.createClass({
 
     render: function() {
         return (
             <div className='ApiClientApp'>
-                <Selector dataType={this.props.dataType} />
-                <DataTable data={this.props.data} dataType={this.props.dataType} />
+                <Sidebar dataType={this.props.dataType} />
+                <Content data={this.props.data} dataType={this.props.dataType} />
             </div>
         );
     }

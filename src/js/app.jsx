@@ -5,5 +5,5 @@ var ApiClientApp = require('./components/ApiClientApp');
 
 React.render(
     <ApiClientApp />,
-    document.getElementById('content')
+    document.getElementById('mount-point')
 );

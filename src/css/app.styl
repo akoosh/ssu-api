@@ -4,6 +4,7 @@ $color-main-theme = #1C4281
 $color-light-accent = #C4D6F0
 $color-medium-accent = #445B85
 $color-dark-accent = #344356
+$color-text-accent = #DDD
 
 html,
 body,
@@ -19,17 +20,20 @@ body,
     top:                0;
     left:               0;
     bottom:             0;
-    width:              160px;
+    width:              260px;
     height:             100%;
     background:         $color-medium-accent;
-    padding:            40px 20px;
+    color:              $color-text-accent;
+    padding:            20px;
     overflow:           auto;
 }
 
-.DataTable {
-    margin-left:        200px;
+.Content {
+    margin-left:        300px;
     padding:            20px;
+}
 
+.DataTable {
     table, th, td {
         border:             1px solid black;
         padding:            10px;

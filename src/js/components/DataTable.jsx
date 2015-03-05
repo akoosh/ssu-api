@@ -36,7 +36,6 @@ var DataTable = React.createClass({
 
         return (
             <div className='DataTable'>
-                <h2>{this.props.dataType.toUpperCase()}</h2>
                 <table>
                     {rows}
                 </table>
