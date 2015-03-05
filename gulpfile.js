@@ -10,6 +10,10 @@ var source      = require('vinyl-source-stream');
 var stylus      = require('gulp-stylus');
 var streamify   = require('gulp-streamify');
 var uglify      = require('gulp-uglify');
+var minifyCSS   = require('gulp-minify-css');
+var gulpif      = require('gulp-if');
+
+var production = false;
  
 // Define some paths.
 var paths = {
@@ -33,6 +37,7 @@ gulp.task('clean', function(done) {
 gulp.task('css', ['clean'], function() {
   return gulp.src(paths.src.css)
     .pipe(stylus())
+    .pipe(gulpif(production, minifyCSS()))
     .pipe(gulp.dest(paths.dest.css));
 });
  
@@ -41,7 +46,7 @@ gulp.task('js', ['clean'], function() {
     .transform(reactify)
     .bundle()
     .pipe(source('app.js'))
-    .pipe(streamify(uglify()))
+    .pipe(gulpif(production, streamify(uglify())))
     .pipe(gulp.dest(paths.dest.js));
 });
  
