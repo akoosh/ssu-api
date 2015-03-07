@@ -5,6 +5,9 @@ $color-light-accent = #C4D6F0
 $color-medium-accent = #445B85
 $color-dark-accent = #344356
 $color-text-accent = #DDD
+$color-light-neutral-accent = #DDD
+$color-medium-neutral-accent = #AAA
+$color-dark-neutral-accent = #888
 
 html,
 body,
@@ -35,20 +38,48 @@ body,
 
 .DataTable {
 
-    .SearchBar {
+    .table-controls {
         padding:            10px;
     }
 
     table, th, td {
         border:             1px solid black;
-        padding:            10px;
+        padding:            10px 20px;
     }
 
     table {
         border-collapse:    collapse;
     }
 
+    .sort-desc:after {
+        content:            "▲";
+    }
+
+    .sort-asc:after {
+        content:            "▼";
+    }
+
     tr:nth-child(even) {
+        background:         $color-light-neutral-accent;
+    }
+
+    tr:hover {
         background:         $color-light-accent;
+    }
+
+    .pagination {
+        list-style:         none;
+        margin:             10px;
+        padding:            0px;
+        display:            inline-block;
+
+        li {
+            padding:         5px 10px;
+            display:        inline-block;
+        }
+
+        .selected {
+            background:     $color-light-accent;
+        }
     }
 }
