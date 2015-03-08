@@ -2,14 +2,13 @@
 
 var React      = require('react');
 
-var DataStore  = require('../stores/DataStore');
+var DataTableDataStore = require('../stores/DataTableDataStore');
 var AppActions = require('../actions/AppActions');
 var ApiClient  = require('./ApiClient');
 
 function getAppState() {
     return {
-        data: DataStore.getData(),
-        dataType: DataStore.getDataType()
+        tableState: DataTableDataStore.getState(),
     };
 }
 
@@ -19,8 +18,12 @@ var ApiClientApp = React.createClass({
         return getAppState();
     },
 
+    onChange: function() {
+        this.setState(getAppState());
+    },
+
     componentDidMount: function() {
-        DataStore.addChangeListener(this.onChange);
+        DataTableDataStore.addChangeListener(this.onChange);
 
         // Not sure if this goes here. It seems like there is a better
         // way to trigger the initial data fetch.
@@ -28,16 +31,12 @@ var ApiClientApp = React.createClass({
     },
 
     componentWillUnmount: function() {
-        DataStore.removeChangeListener(this.onChange);
-    },
-
-    onChange: function() {
-        this.setState(getAppState());
+        DataTableDataStore.removeChangeListener(this.onChange);
     },
 
     render: function() {
         return (
-            <ApiClient data={this.state.data} dataType={this.state.dataType} />
+            <ApiClient {...this.state} />
         );
     }
 });
