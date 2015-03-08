@@ -4,7 +4,7 @@ $color-main-theme = #1C4281
 $color-light-accent = #C4D6F0
 $color-medium-accent = #445B85
 $color-dark-accent = #344356
-$color-text-accent = #DDD
+$color-text-accent = #EEE
 $color-text-dark = #000
 $color-light-neutral-accent = #DDD
 $color-medium-neutral-accent = #AAA
@@ -43,7 +43,7 @@ body,
         padding:            10px;
     }
 
-    table, th, td {
+    th, td {
         border:             1px solid black;
         padding:            10px 20px;
     }
@@ -60,28 +60,30 @@ body,
         content:            "▼";
     }
 
-    .reactable-filterer td:before {
-        content:            "Search: ";
+    .reactable-filter-input {
+        width:              100%;
     }
 
     tr:nth-child(even) {
         background:         $color-light-neutral-accent;
     }
 
-    .reactable-pagination {
-        .reactable-page-button {
-            padding:            5px 10px;
-            cursor:             pointer;
-        }
+    .per-page-control {
+        margin:             10px;
+    }
 
-        .reactable-page-button:hover {
-            background:         $color-light-accent;
-            color:              $color-text-dark;
-        }
+    .per-page-button, .reactable-page-button {
+        padding:            5px 10px;
+        cursor:             pointer;
+    }
 
-        .reactable-current-page {
-            background:         $color-medium-accent;
-            color:              $color-text-accent;
-        }
+    .per-page-button:hover, .reactable-page-button:hover {
+        background:         $color-light-accent;
+        color:              $color-text-dark;
+    }
+
+    .per-page-selected, .reactable-current-page {
+        background:         $color-medium-accent;
+        color:              $color-text-accent;
     }
 }

@@ -11,33 +11,20 @@ var Td          = Reactable.Td;
 
 var DataTable = React.createClass({
 
-    onSelect: function(page) {
-        var pagination = this.props.pagination || {};
-        pagination.page = page;
-
-        AppActions.updateTableData({
-            pagination: pagination
-        });
+    componentWillUpdate: function() {
+        // Reset the filter when props change.
+        if (this.refs.reactable) {
+            this.refs.reactable.filterBy('');
+        }
     },
 
     onPerPage: function(event) {
         var pagination = this.props.pagination || {};
-        pagination.perPage = parseInt(event.target.value, 10);
+        pagination.perPage = parseInt(event.target.innerHTML, 10);
 
         AppActions.updateTableData({
             pagination: pagination
         });
-    },
-
-    onSortFinished: function(sorted) {
-        AppActions.updateTableData({
-            sortData: sorted.data,
-            columns: sorted.columns
-        });
-    },
-
-    onHeaderClick: function(column) {
-        sortColumn(this.props.columns, column, this.props.searchData, this.onSortFinished);
     },
 
     clickHandlerForData: function(data) {
@@ -48,13 +35,26 @@ var DataTable = React.createClass({
 
     render: function() {
 
+        var perPageButtons = [5,10,15,20,25,30,35,40,45,50].map(function(num) {
+            var classNames = 'per-page-button';
+
+            if (this.props.pagination.perPage === num) {
+                classNames += ' per-page-selected';
+            }
+
+            return <a className={classNames} onClick={this.onPerPage} key={num}>{num}</a>;
+        }.bind(this));
+
         var rows = this.props.searchData.map(function(item, i) {
             return <Tr onClick={this.clickHandlerForData(item)} key={i} data={item}></Tr>;
         }.bind(this));
 
         return (
             <div className='DataTable'>
-                <Table columns={this.props.columns} itemsPerPage={15} sortable={true} filterable={_.pluck(this.props.columns, 'key')}>
+                <div className='per-page-control'>
+                    <span>Items per page: {perPageButtons}</span>
+                </div>
+                <Table ref='reactable' columns={this.props.columns} itemsPerPage={this.props.pagination.perPage} sortable={true} filterable={_.pluck(this.props.columns, 'key')}>
                     {rows}
                 </Table>
             </div>

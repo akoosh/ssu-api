@@ -10,7 +10,7 @@ var state = {
     searchData: [],
     pagination: {
         page: 0,
-        perPage: 10
+        perPage: 15
     }
 };
 
