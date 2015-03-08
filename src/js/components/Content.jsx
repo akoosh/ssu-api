@@ -6,6 +6,7 @@ var DataTable = require('./DataTable');
 
 var Content = React.createClass({
     render: function() {
+
         return (
             <div className='Content'>
                 <h1>{this.props.tableState.dataType.toUpperCase()}</h1>

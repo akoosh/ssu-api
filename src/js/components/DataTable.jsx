@@ -1,13 +1,13 @@
 /** @jsx React.DOM */
 
 var React = require('react');
+var _     = require('lodash');
 
 var AppActions  = require('../actions/AppActions');
-var Reactabular = require('reactabular');
-var Paginator   = require('react-pagify');
-var Table       = Reactabular.Table;
-var Search      = Reactabular.Search;
-var sortColumn  = Reactabular.sortColumn;
+var Reactable   = require('reactable');
+var Table       = Reactable.Table;
+var Tr          = Reactable.Tr;
+var Td          = Reactable.Td;
 
 var DataTable = React.createClass({
 
@@ -40,32 +40,23 @@ var DataTable = React.createClass({
         sortColumn(this.props.columns, column, this.props.searchData, this.onSortFinished);
     },
 
+    clickHandlerForData: function(data) {
+        return function(e) {
+            console.log(data);
+        }.bind(this);
+    },
+
     render: function() {
 
-        var header = { onClick: this.onHeaderClick };
-        var paginated = Paginator.paginate(this.props.searchData, this.props.pagination);
+        var rows = this.props.searchData.map(function(item, i) {
+            return <Tr onClick={this.clickHandlerForData(item)} key={i} data={item}></Tr>;
+        }.bind(this));
 
         return (
             <div className='DataTable'>
-                <div className='table-controls'>
-                    <span> Per page: </span>
-                    <input type='text' defaultValue={this.props.pagination.perPage} onChange={this.onPerPage}></input>
-                    <span> Search: </span>
-                    <Search columns={this.props.columns} data={this.props.data} onResult={AppActions.updateTableData} />
-                </div>
-
-                <Table columns={this.props.columns} data={paginated.data} header={header} />
-
-                <div className='pagination'>
-                    <span>Page: </span>
-                    <Paginator
-                        page={paginated.page}
-                        pages={paginated.amount}
-                        beginPages='3'
-                        endPages='3'
-                        onSelect={this.onSelect}
-                    />
-                </div>
+                <Table columns={this.props.columns} itemsPerPage={15} sortable={true} filterable={_.pluck(this.props.columns, 'key')}>
+                    {rows}
+                </Table>
             </div>
         );
     }

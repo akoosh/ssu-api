@@ -27,8 +27,8 @@ function updateDerivedState() {
         var keys = Object.keys(state.data[0]);
         columns = keys.map(function(key) {
             return {
-                property: key,
-                header: nameFromKey(key)
+                key: key,
+                label: nameFromKey(key)
             };
         });
     }
