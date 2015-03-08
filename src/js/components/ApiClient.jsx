@@ -10,8 +10,8 @@ var ApiClientApp = React.createClass({
     render: function() {
         return (
             <div className='ApiClientApp'>
-                <Sidebar dataType={this.props.dataType} />
-                <Content data={this.props.data} dataType={this.props.dataType} />
+                <Sidebar dataType={this.props.tableState.dataType} />
+                <Content {...this.props} />
             </div>
         );
     }

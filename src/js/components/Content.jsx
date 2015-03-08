@@ -8,8 +8,8 @@ var Content = React.createClass({
     render: function() {
         return (
             <div className='Content'>
-                <h1>{this.props.dataType.toUpperCase()}</h1>
-                <DataTable data={this.props.data} dataType={this.props.dataType} />
+                <h1>{this.props.tableState.dataType.toUpperCase()}</h1>
+                <DataTable {...this.props.tableState} />
             </div>
         );
     }
