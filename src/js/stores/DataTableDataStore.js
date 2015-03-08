@@ -7,11 +7,7 @@ var state = {
     dataType: '',
     data: [],
     columns: [],
-    searchData: [],
-    pagination: {
-        page: 0,
-        perPage: 15
-    }
+    perPage: 15
 };
 
 function updateState(tableData) {
@@ -34,7 +30,6 @@ function updateDerivedState() {
     }
 
     state.columns = columns;
-    state.searchData = state.data;
 }
 
 function nameFromKey(key) {
