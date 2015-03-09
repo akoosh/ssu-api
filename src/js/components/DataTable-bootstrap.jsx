@@ -42,10 +42,6 @@ var DataTable = React.createClass({
             );
         }.bind(this));
 
-        // <OverlayTrigger trigger="hover" placement="left" overlay={<Popover title="Popover left"><strong>Holy guacamole!</strong> Check this info.</Popover>}>
-        //     <Button bsStyle='primary' onClick={click}>Hello</Button>
-        // </OverlayTrigger>
-
         return (
             <div className='DataTable'>
                 <Table striped bordered condensed hover>
@@ -60,16 +56,16 @@ var DataTable = React.createClass({
                         {this.props.data.map(function(item, i) {
                             var clickHandler = this.clickHandlerForData(item);
                             return (
-                                <tr key={i} onClick={clickHandler}>
-                                    {this.props.columns.map(function(column, i) {
-                                        // return <td key={i}>{item[column.key]}</td>;
-                                        return (
-                                            <OverlayTrigger trigger="hover" placement="bottom" overlay={<Popover title={item.first_name}><strong>Holy guacamole!</strong> Check this info.</Popover>}>
-                                                <td key={i}>{item[column.key]}</td>
-                                            </OverlayTrigger>
-                                        );
-                                    }.bind(this))}
-                                </tr>
+                                <OverlayTrigger trigger="hover" placement="bottom" overlay={<Popover title={item.first_name}><strong>Holy guacamole!</strong> Check this info.</Popover>}>
+                                    <tr key={i} onClick={clickHandler}>
+                                        {this.props.columns.map(function(column, i) {
+                                            // return <td key={i}>{item[column.key]}</td>;
+                                            return (
+                                                    <td key={i}>{item[column.key]}</td>
+                                            );
+                                        }.bind(this))}
+                                    </tr>
+                                </OverlayTrigger>
                             );
                         }.bind(this))}
                     </tbody>
