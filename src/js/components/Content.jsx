@@ -2,10 +2,14 @@
 
 var React = require('react');
 
-var DataTable = require('./DataTable');
+var DataTable = require('./DataTable-bootstrap');
 
 var Content = React.createClass({
     render: function() {
+
+        function click(e) {
+            console.log(e);
+        }
 
         return (
             <div className='Content'>
