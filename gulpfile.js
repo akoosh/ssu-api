@@ -12,6 +12,7 @@ var streamify   = require('gulp-streamify');
 var uglify      = require('gulp-uglify');
 var minifyCSS   = require('gulp-minify-css');
 var gulpif      = require('gulp-if');
+var concat      = require('gulp-concat');
 
 var production = false;
  
@@ -19,7 +20,7 @@ var production = false;
 var paths = {
   src: {
     index:  ['./src/index.html'],
-    css:    ['./src/css/**/*.styl'],
+    css:    ['./src/css/**/*.css', './src/css/**/*.styl'],
     app_js: ['./src/js/app.jsx'],
     js:     ['./src/js/**/*.js', './src/js/**/*.jsx']
   },
@@ -37,6 +38,7 @@ gulp.task('clean', function(done) {
 gulp.task('css', ['clean'], function() {
   return gulp.src(paths.src.css)
     .pipe(stylus())
+    .pipe(concat('app.css'))
     .pipe(gulpif(production, minifyCSS()))
     .pipe(gulp.dest(paths.dest.css));
 });
