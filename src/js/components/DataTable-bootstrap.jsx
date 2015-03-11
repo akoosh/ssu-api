@@ -5,22 +5,18 @@ var _     = require('lodash');
 
 var AppActions  = require('../actions/AppActions');
 var Bootstrap   = require('react-bootstrap');
-var OverlayTrigger = Bootstrap.OverlayTrigger;
-var Popover     = Bootstrap.Popover;
-var Table       = Bootstrap.Table;
 
 var DataTable = React.createClass({
-
-    componentWillUpdate: function() {
-        // Reset the filter when props change.
-        if (this.refs.reactable) {
-            this.refs.reactable.filterBy('');
-        }
-    },
 
     onPerPage: function(event) {
         AppActions.updateTableData({
             perPage: parseInt(event.target.innerHTML, 10)
+        });
+    },
+
+    onPage: function(event) {
+        AppActions.updateTableData({
+            pageNum: parseInt(event.target.dataset.pagenum, 10)
         });
     },
 
@@ -32,19 +28,16 @@ var DataTable = React.createClass({
 
     render: function() {
 
-        var rows = this.props.data.map(function(item, i) {
-            return (
-                <tr key={i}>
-                    {this.props.columns.map(function(column, i) {
-                        return <td key={i}>{item[column.key]}</td>;
-                    }.bind(this))}
-                </tr>
-            );
-        }.bind(this));
+        var begin = this.props.perPage * this.props.pageNum;
+        var end = begin + this.props.perPage;
+
+        end = end < this.props.data.length ? end : this.props.data.length - 1;
+        var data = this.props.data.slice(begin, end);
+        var numPages = this.props.data.length / this.props.perPage;
 
         return (
             <div className='DataTable'>
-                <Table striped bordered condensed hover>
+                <Bootstrap.Table striped bordered condensed hover>
                     <thead>
                         <tr>
                             {this.props.columns.map(function(column) {
@@ -53,11 +46,11 @@ var DataTable = React.createClass({
                         </tr>
                     </thead>
                     <tbody>
-                        {this.props.data.map(function(item, i) {
+                        {data.map(function(item, i) {
                             var clickHandler = this.clickHandlerForData(item);
                             return (
-                                <OverlayTrigger trigger="hover" placement="bottom" overlay={<Popover title={item.first_name}><strong>Holy guacamole!</strong> Check this info.</Popover>}>
-                                    <tr key={i} onClick={clickHandler}>
+                                <Bootstrap.OverlayTrigger key={i} trigger="hover" placement="bottom" overlay={<Bootstrap.Popover title={item.first_name}><strong>Holy guacamole!</strong> Check this info.</Bootstrap.Popover>}>
+                                    <tr onClick={clickHandler}>
                                         {this.props.columns.map(function(column, i) {
                                             // return <td key={i}>{item[column.key]}</td>;
                                             return (
@@ -65,11 +58,19 @@ var DataTable = React.createClass({
                                             );
                                         }.bind(this))}
                                     </tr>
-                                </OverlayTrigger>
+                                </Bootstrap.OverlayTrigger>
                             );
                         }.bind(this))}
                     </tbody>
-                </Table>
+                </Bootstrap.Table>
+                <Bootstrap.ButtonGroup>
+                    {_.range(numPages).map(function(i) {
+                        var bsStyle = this.props.pageNum === i ? 'primary' : 'default';
+                        return <Bootstrap.Button key={i} data-pagenum={i} bsStyle={bsStyle} onClick={this.onPage}>
+                            {i + 1}
+                        </Bootstrap.Button>;
+                    }.bind(this))}
+                </Bootstrap.ButtonGroup>
             </div>
         );
     }

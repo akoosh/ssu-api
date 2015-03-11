@@ -4,9 +4,10 @@ var EventEmitter  = require('events').EventEmitter;
 var _             = require('lodash');
 
 var state = {
-    dataType: '',
     data: [],
+    dataType: '',
     columns: [],
+    pageNum: 0,
     perPage: 15
 };
 
@@ -33,6 +34,7 @@ function updateDerivedState() {
 }
 
 function nameFromKey(key) {
+    // This function turns something like 'first_name' into something like 'First Name'
     return key.replace(/_/g, ' ').replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
 }
 
