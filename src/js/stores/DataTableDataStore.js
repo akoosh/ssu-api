@@ -48,10 +48,17 @@ function updatePagificationState() {
 }
 
 function searchTableData() {
-    var pattern = new RegExp(state.searchQuery, 'i');
+    // Create a regex for each word in the query
+    var patterns = state.searchQuery.trim().split(' ').map(function(param) {
+        return new RegExp(param, 'i');
+    });
+
+    // Keep items that have at least one match for each regex
     state.searchData = state.data.filter(function(datum) {
-        return _.some(datum, function(prop) {
-            return prop.match(pattern);
+        return _.every(patterns, function(pattern) {
+            return _.some(datum, function(prop) {
+                return prop.match(pattern);
+            });
         });
     });
 }
