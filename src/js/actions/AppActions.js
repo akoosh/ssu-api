@@ -30,4 +30,10 @@ AppActions.updateTableData = function(tableData) {
     }));
 };
 
+AppActions.sortTableData = function(sortParams) {
+    AppDispatcher.handleAction(_.assign(sortParams, {
+        actionType: AppConstants.SORT_TABLE_DATA
+    }));
+};
+
 module.exports = AppActions;

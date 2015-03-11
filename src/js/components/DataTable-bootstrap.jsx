@@ -8,6 +8,33 @@ var Bootstrap   = require('react-bootstrap');
 
 var DataTable = React.createClass({
 
+    onHeaderClick: function(event) {
+        var sortKey = event.target.dataset.key;
+        var sortOrder = 0;
+        if (sortKey === this.props.sortKey) {
+            switch (this.props.sortOrder) {
+                case -1:
+                    sortOrder = 1;
+                    break;
+                case 0:
+                    sortOrder = 1;
+                    break;
+                case 1:
+                    sortOrder = -1;
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            sortOrder = 1;
+        }
+
+        AppActions.sortTableData({
+            sortKey: sortKey,
+            sortOrder: sortOrder
+        });
+    },
+
     onPerPage: function(event) {
         AppActions.updateTableData({
             perPage: parseInt(event.target.innerHTML, 10)
@@ -40,25 +67,42 @@ var DataTable = React.createClass({
                 <Bootstrap.Table striped bordered condensed hover>
                     <thead>
                         <tr>
-                            {this.props.columns.map(function(column) {
-                                return <th key={column.key}>{column.label}</th>;
-                            })}
+                            {this.props.columns.map(function(column, i) {
+                                var bsStyle = '';
+
+                                if (column.key === this.props.sortKey) {
+                                    bsStyle += ' active';
+
+                                    switch (this.props.sortOrder) {
+                                        case -1:
+                                            bsStyle += ' header-sort-desc';
+                                            break;
+                                        case 1:
+                                            bsStyle += ' header-sort-asc';
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+
+                                return (
+                                    <th key={i} className={bsStyle} data-key={column.key} onClick={this.onHeaderClick}>
+                                        {column.label}
+                                    </th>
+                                );
+                            }.bind(this))}
                         </tr>
                     </thead>
                     <tbody>
                         {data.map(function(item, i) {
                             var clickHandler = this.clickHandlerForData(item);
                             return (
-                                <Bootstrap.OverlayTrigger key={i} trigger="hover" placement="bottom" overlay={<Bootstrap.Popover title={item.first_name}><strong>Holy guacamole!</strong> Check this info.</Bootstrap.Popover>}>
-                                    <tr onClick={clickHandler}>
-                                        {this.props.columns.map(function(column, i) {
-                                            // return <td key={i}>{item[column.key]}</td>;
-                                            return (
-                                                    <td key={i}>{item[column.key]}</td>
-                                            );
-                                        }.bind(this))}
-                                    </tr>
-                                </Bootstrap.OverlayTrigger>
+                                <tr key={i} onClick={clickHandler}>
+                                    {this.props.columns.map(function(column, i) {
+                                        var bsStyle = column.key === this.props.sortKey ? 'active' : '';
+                                        return <td key={i} className={bsStyle}>{item[column.key]}</td>;
+                                    }.bind(this))}
+                                </tr>
                             );
                         }.bind(this))}
                     </tbody>

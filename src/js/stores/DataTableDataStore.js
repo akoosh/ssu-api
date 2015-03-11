@@ -8,7 +8,9 @@ var state = {
     dataType: '',
     columns: [],
     pageNum: 0,
-    perPage: 15
+    perPage: 15,
+    sortKey: null, 
+    sortOrder: 0
 };
 
 function updateState(tableData) {
@@ -31,6 +33,17 @@ function updateDerivedState() {
     }
 
     state.columns = columns;
+    
+    // reset the sorting info
+    state.sortKey = null;
+    state.sortOrder = 0;
+}
+
+function sortTableData() {
+    var key = state.sortKey;
+    state.data.sort(function(a,b) {
+        return a[key].localeCompare(b[key]) * state.sortOrder;
+    });
 }
 
 function nameFromKey(key) {
@@ -70,6 +83,11 @@ DataStore.dispatcherId = AppDispatcher.register(function(payload) {
             break;
         case AppConstants.UPDATE_TABLE_DATA:
             updateState(_.omit(action, 'actionType'));
+            DataStore.emitChange();
+            break;
+        case AppConstants.SORT_TABLE_DATA:
+            updateState(_.omit(action, 'actionType'));
+            sortTableData();
             DataStore.emitChange();
             break;
         default:
