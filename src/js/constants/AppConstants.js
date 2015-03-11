@@ -5,6 +5,5 @@ module.exports = keyMirror({
     RECEIVE_DATA: null,
     UPDATE_TABLE_DATA: null,
     SORT_TABLE_DATA: null,
-    RECEIVE_STUDENTS: null,
-    RECEIVE_INSTRUCTORS: null
+    SEARCH_TABLE_DATA: null
 });

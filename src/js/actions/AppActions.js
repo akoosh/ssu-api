@@ -30,6 +30,12 @@ AppActions.updateTableData = function(tableData) {
     }));
 };
 
+AppActions.searchTableData = function(searchParams) {
+    AppDispatcher.handleAction(_.assign(searchParams, {
+        actionType: AppConstants.SEARCH_TABLE_DATA
+    }));
+};
+
 AppActions.sortTableData = function(sortParams) {
     AppDispatcher.handleAction(_.assign(sortParams, {
         actionType: AppConstants.SORT_TABLE_DATA

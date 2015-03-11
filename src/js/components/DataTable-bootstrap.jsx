@@ -35,15 +35,15 @@ var DataTable = React.createClass({
         });
     },
 
-    onPerPage: function(event) {
-        AppActions.updateTableData({
-            perPage: parseInt(event.target.innerHTML, 10)
-        });
-    },
-
     onPage: function(event) {
         AppActions.updateTableData({
             pageNum: parseInt(event.target.dataset.pagenum, 10)
+        });
+    },
+
+    onSearchQueryChange: function(event) {
+        AppActions.searchTableData({
+            searchQuery: event.target.value
         });
     },
 
@@ -58,12 +58,17 @@ var DataTable = React.createClass({
         var begin = this.props.perPage * this.props.pageNum;
         var end = begin + this.props.perPage;
 
-        end = end < this.props.data.length ? end : this.props.data.length - 1;
-        var data = this.props.data.slice(begin, end);
-        var numPages = this.props.data.length / this.props.perPage;
+        end = end < this.props.searchData.length ? end : this.props.searchData.length;
+        var data = this.props.searchData.slice(begin, end);
+        var numPages = this.props.searchData.length / this.props.perPage;
 
         return (
             <div className='DataTable'>
+                <Bootstrap.Input
+                    type='text'
+                    value={this.props.searchQuery}
+                    placeholder='Search'
+                    onChange={this.onSearchQueryChange} />
                 <Bootstrap.Table striped bordered condensed hover>
                     <thead>
                         <tr>

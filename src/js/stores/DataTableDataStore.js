@@ -9,6 +9,8 @@ var state = {
     columns: [],
     pageNum: 0,
     perPage: 15,
+    searchData: [],
+    searchQuery: '',
     sortKey: null, 
     sortOrder: 0
 };
@@ -34,9 +36,24 @@ function updateDerivedState() {
 
     state.columns = columns;
     
-    // reset the sorting info
+    // reset the searching and sorting info
+    state.searchData = state.data;
+    state.searchQuery = '';
     state.sortKey = null;
     state.sortOrder = 0;
+}
+
+function updatePagificationState() {
+    state.pageNum = 0;
+}
+
+function searchTableData() {
+    var pattern = new RegExp(state.searchQuery, 'i');
+    state.searchData = state.data.filter(function(datum) {
+        return _.some(datum, function(prop) {
+            return prop.match(pattern);
+        });
+    });
 }
 
 function sortTableData() {
@@ -88,6 +105,12 @@ DataStore.dispatcherId = AppDispatcher.register(function(payload) {
         case AppConstants.SORT_TABLE_DATA:
             updateState(_.omit(action, 'actionType'));
             sortTableData();
+            DataStore.emitChange();
+            break;
+        case AppConstants.SEARCH_TABLE_DATA:
+            updateState(_.omit(action, 'actionType'));
+            searchTableData();
+            updatePagificationState();
             DataStore.emitChange();
             break;
         default:
