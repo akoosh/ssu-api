@@ -8,7 +8,7 @@ module.exports = function(mongoose, plugins) {
         catalog: { type: String, required: true },
         class_description: { type: String, required: true },
         class_type: { type: String, required: true },
-        class_units: { type: Number, required: true },
+        class_units: { type: String, required: true },
         career: { type: String, required: true }
     });
 
