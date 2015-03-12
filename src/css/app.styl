@@ -11,33 +11,64 @@ $color-dark-neutral-accent = #888
 
 html,
 body,
-#content,
+#mount-point,
 .ApiClientApp {
     margin:             0;
     padding:            0;
     height:             100%;
 }
 
-.Sidebar {
-    position:           fixed;
-    top:                0;
-    left:               0;
-    bottom:             0;
-    width:              260px;
-    height:             100%;
-    background:         $color-medium-accent;
-    color:              $color-text-accent;
-    padding:            20px;
-    overflow:           auto;
+.ApiClientApp {
+    padding-left: 250px;
+    transition: all 0.4s ease 0s;
+}
 
-    select {
-        color:          black;
-    }
+.Sidebar {
+    margin-left: -250px;
+    left: 250px;
+    width: 250px;
+    background: $color-medium-accent;
+    color: $color-text-accent;
+    position: fixed;
+    height: 100%;
+    overflow-y: auto;
+    z-index: 1000;
+    transition: all 0.4s ease 0s;
 }
 
 .Content {
-    margin-left:        300px;
-    overflow:           auto;
+    width: 100%;
+}
+
+.sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: 250px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+@media (max-width:767px) {
+
+    .ApiClientApp {
+        padding-left: 0;
+    }
+
+    .Sidebar {
+        left: 0;
+    }
+
+    .ApiClientApp.active {
+        position: relative;
+        left: 250px;
+    }
+
+    .ApiClientApp.active .Sidebar {
+        left: 250px;
+        width: 250px;
+        transition: all 0.4s ease 0s;
+    }
 }
 
 .DataTable {
@@ -51,3 +82,4 @@ body,
     }
 
 }
+

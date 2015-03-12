@@ -7,7 +7,7 @@ var Selector  = require('./Selector');
 var Sidebar = React.createClass({
     render: function() {
         return (
-            <div className='Sidebar'>
+            <div className='Sidebar container'>
                 <h1>Full Moon</h1>
                 <Selector dataType={this.props.dataType} />
             </div>
