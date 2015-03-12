@@ -12,7 +12,7 @@ var Content = React.createClass({
         }
 
         return (
-            <div className='Content'>
+            <div className='Content container'>
                 <h1>{this.props.tableState.dataType.toUpperCase()}</h1>
                 <DataTable {...this.props.tableState} />
             </div>

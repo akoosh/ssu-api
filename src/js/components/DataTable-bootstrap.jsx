@@ -35,6 +35,12 @@ var DataTable = React.createClass({
         });
     },
 
+    onPerPage: function(event) {
+        AppActions.updateTableData({
+            perPage: parseInt(event.target.value, 10)
+        });
+    },
+
     onPage: function(event) {
         AppActions.updateTableData({
             pageNum: parseInt(event.target.dataset.pagenum, 10)
@@ -64,62 +70,81 @@ var DataTable = React.createClass({
 
         return (
             <div className='DataTable'>
-                <Bootstrap.Input
-                    type='text'
-                    value={this.props.searchQuery}
-                    placeholder='Search'
-                    onChange={this.onSearchQueryChange} />
-                <Bootstrap.Table striped bordered condensed hover>
-                    <thead>
-                        <tr>
-                            {this.props.columns.map(function(column, i) {
-                                var bsStyle = '';
-
-                                if (column.key === this.props.sortKey) {
-                                    bsStyle += ' active';
-
-                                    switch (this.props.sortOrder) {
-                                        case -1:
-                                            bsStyle += ' header-sort-desc';
-                                            break;
-                                        case 1:
-                                            bsStyle += ' header-sort-asc';
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                }
-
-                                return (
-                                    <th key={i} className={bsStyle} data-key={column.key} onClick={this.onHeaderClick}>
-                                        {column.label}
-                                    </th>
-                                );
+                <Bootstrap.Row>
+                    <Bootstrap.Col xs={9}>
+                        <Bootstrap.Input
+                            type='text'
+                            value={this.props.searchQuery}
+                            placeholder='Search'
+                            onChange={this.onSearchQueryChange} />
+                    </Bootstrap.Col>
+                    <Bootstrap.Col xs={3}>
+                        <Bootstrap.Input type='select' value={this.props.perPage} addonBefore={<span>Items per page: </span>} onChange={this.onPerPage}>
+                            {_.range(5, 51, 5).map(function(i) {
+                                return <option key={i} value={i}>{i}</option>;
                             }.bind(this))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data.map(function(item, i) {
-                            var clickHandler = this.clickHandlerForData(item);
-                            return (
-                                <tr key={i} onClick={clickHandler}>
+                        </Bootstrap.Input>
+                    </Bootstrap.Col>
+                </Bootstrap.Row>
+                <Bootstrap.Row>
+                    <Bootstrap.Col xs={12}>
+                        <Bootstrap.Table striped bordered condensed hover>
+                            <thead>
+                                <tr>
                                     {this.props.columns.map(function(column, i) {
-                                        var bsStyle = column.key === this.props.sortKey ? 'active' : '';
-                                        return <td key={i} className={bsStyle}>{item[column.key]}</td>;
+                                        var bsStyle = '';
+
+                                        if (column.key === this.props.sortKey) {
+                                            bsStyle += ' active';
+
+                                            switch (this.props.sortOrder) {
+                                                case -1:
+                                                    bsStyle += ' header-sort-desc';
+                                                    break;
+                                                case 1:
+                                                    bsStyle += ' header-sort-asc';
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                        }
+
+                                        return (
+                                            <th key={i} className={bsStyle} data-key={column.key} onClick={this.onHeaderClick}>
+                                                {column.label}
+                                            </th>
+                                        );
                                     }.bind(this))}
                                 </tr>
-                            );
-                        }.bind(this))}
-                    </tbody>
-                </Bootstrap.Table>
-                <Bootstrap.ButtonGroup>
-                    {_.range(numPages).map(function(i) {
-                        var bsStyle = this.props.pageNum === i ? 'primary' : 'default';
-                        return <Bootstrap.Button key={i} data-pagenum={i} bsStyle={bsStyle} onClick={this.onPage}>
-                            {i + 1}
-                        </Bootstrap.Button>;
-                    }.bind(this))}
-                </Bootstrap.ButtonGroup>
+                            </thead>
+                            <tbody>
+                                {data.map(function(item, i) {
+                                    var clickHandler = this.clickHandlerForData(item);
+                                    return (
+                                        <tr key={i} onClick={clickHandler}>
+                                            {this.props.columns.map(function(column, i) {
+                                                var bsStyle = column.key === this.props.sortKey ? 'active' : '';
+                                                return <td key={i} className={bsStyle}>{item[column.key]}</td>;
+                                            }.bind(this))}
+                                        </tr>
+                                    );
+                                }.bind(this))}
+                            </tbody>
+                        </Bootstrap.Table>
+                    </Bootstrap.Col>
+                </Bootstrap.Row>
+                <Bootstrap.Row>
+                    <Bootstrap.Col xs={12} className='text-center'>
+                        <Bootstrap.ButtonGroup>
+                            {_.range(numPages).map(function(i) {
+                                var bsStyle = this.props.pageNum === i ? 'primary' : 'default';
+                                return <Bootstrap.Button key={i} data-pagenum={i} bsStyle={bsStyle} onClick={this.onPage}>
+                                    {i + 1}
+                                </Bootstrap.Button>;
+                            }.bind(this))}
+                        </Bootstrap.ButtonGroup>
+                    </Bootstrap.Col>
+                </Bootstrap.Row>
             </div>
         );
     }
