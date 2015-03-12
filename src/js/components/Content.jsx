@@ -2,7 +2,7 @@
 
 var React = require('react');
 
-var DataTable = require('./DataTable-bootstrap');
+var DataTable = require('./DataTable');
 
 var Content = React.createClass({
     render: function() {
