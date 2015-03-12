@@ -72,11 +72,7 @@ var DataTable = React.createClass({
             <div className='DataTable'>
                 <Bootstrap.Row>
                     <Bootstrap.Col xs={9}>
-                        <Bootstrap.Input
-                            type='text'
-                            value={this.props.searchQuery}
-                            placeholder='Search'
-                            onChange={this.onSearchQueryChange} />
+                        <Bootstrap.Input type='text' value={this.props.searchQuery} addonBefore={<span>Search: </span>} onChange={this.onSearchQueryChange} />
                     </Bootstrap.Col>
                     <Bootstrap.Col xs={3}>
                         <Bootstrap.Input type='select' value={this.props.perPage} addonBefore={<span>Items per page: </span>} onChange={this.onPerPage}>

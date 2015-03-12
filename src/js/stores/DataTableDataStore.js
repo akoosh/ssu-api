@@ -65,9 +65,14 @@ function searchTableData() {
 
 function sortTableData() {
     var key = state.sortKey;
-    state.data.sort(function(a,b) {
-        return a[key].localeCompare(b[key]) * state.sortOrder;
-    });
+
+    if (key) {
+        state.data.sort(function(a,b) {
+            return a[key].localeCompare(b[key]) * state.sortOrder;
+        });
+
+        searchTableData();
+    }
 }
 
 function nameFromKey(key) {
