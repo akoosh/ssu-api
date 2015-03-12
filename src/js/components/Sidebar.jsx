@@ -9,7 +9,7 @@ var Sidebar = React.createClass({
         return (
             <div className='Sidebar'>
                 <h1>Full Moon</h1>
-                <span>View Data: <Selector dataType={this.props.dataType} /></span>
+                <Selector dataType={this.props.dataType} />
             </div>
         );
     }
