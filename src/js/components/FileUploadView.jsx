@@ -5,23 +5,22 @@ var Bootstrap  = require('react-bootstrap');
 var AppActions = require('../actions/AppActions');
 var DataTable  = require('./DataTable');
 
-var Content = React.createClass({
+var FileUploadView = React.createClass({
 
     statics: {
         willTransitionTo: function(transition, params, query) {
-            // console.log('willTransitionTo Content');
-            AppActions.getData(params.dataType);
+            // console.log('willTransitionTo FileUploadView');
         }
     },
 
     render: function() {
         return (
-            <div className='Content'>
-                <Bootstrap.PageHeader>{this.props.tableState.dataType.toUpperCase()}</Bootstrap.PageHeader>
-                <DataTable {...this.props.tableState} />
+            <div className='FileUploadView'>
+                <Bootstrap.PageHeader>File Upload</Bootstrap.PageHeader>
+                <Bootstrap.Input type="file" label="File" />
             </div>
         );
     }
 });
 
-module.exports = Content;
+module.exports = FileUploadView;

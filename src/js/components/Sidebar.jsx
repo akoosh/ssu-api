@@ -1,15 +1,40 @@
 /** @jsx React.DOM */
 
-var React = require('react');
-
-var Selector  = require('./Selector');
+var React       = require('react');
+var Router      = require('react-router');
+var Bootstrap   = require('react-bootstrap');
 
 var Sidebar = React.createClass({
+
+    mixins: [Router.State, Router.Navigation],
+
     render: function() {
+
+        var fileUploadHref = this.makeHref('file-upload');
+        var fileUploadIsActive = this.isActive('file-upload');
+
+        var listGroupItems = [
+            {value: 'students', label: 'Students'},
+            {value: 'instructors', label: 'Instructors'},
+            {value: 'advisors', label: 'Advisors'},
+            {value: 'courses', label: 'Courses'}
+        ].map(function(item) {
+            var href = this.makeHref('content', {dataType: item.value});
+            var isActive = this.isActive('content', {dataType: item.value});
+            return <Bootstrap.ListGroupItem href={href} active={isActive}>{item.label}</Bootstrap.ListGroupItem>;
+        }.bind(this));
+
         return (
             <div className='Sidebar'>
-                <h1>Full Moon</h1>
-                <Selector dataType={this.props.dataType} />
+                <Bootstrap.PageHeader>Full Moon</Bootstrap.PageHeader>
+
+                <Bootstrap.ListGroup>
+                    <Bootstrap.ListGroupItem href={fileUploadHref} active={fileUploadIsActive}>File Upload</Bootstrap.ListGroupItem>
+                </Bootstrap.ListGroup>
+
+                <Bootstrap.ListGroup>
+                    {listGroupItems}
+                </Bootstrap.ListGroup>
             </div>
         );
     }
