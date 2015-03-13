@@ -3,11 +3,14 @@
 var React      = require('react');
 var AppActions = require('../actions/AppActions');
 var Bootstrap  = require('react-bootstrap');
+var Navigation = require('react-router').Navigation;
 
 var Selector = React.createClass({
 
+    mixins: [Navigation],
+
     handleChange: function(event) {
-        AppActions.getData(event.target.value);
+        this.transitionTo('content', {dataType: event.target.value});
     },
 
     render: function() {
