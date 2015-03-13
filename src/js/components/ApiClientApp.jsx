@@ -1,10 +1,9 @@
 /** @jsx React.DOM */
 
-var React      = require('react');
-
+var React              = require('react');
 var DataTableDataStore = require('../stores/DataTableDataStore');
-var AppActions = require('../actions/AppActions');
-var ApiClient  = require('./ApiClient');
+var ApiClient          = require('./ApiClient');
+var RouteHandler       = require('react-router').RouteHandler;
 
 function getAppState() {
     return {
@@ -13,6 +12,12 @@ function getAppState() {
 }
 
 var ApiClientApp = React.createClass({
+
+    statics: {
+        willTransitionTo: function(transition, params, query) {
+            // console.log('willTransitionTo ApiClientApp');
+        }
+    },
 
     getInitialState: function() {
         return getAppState();
@@ -24,10 +29,6 @@ var ApiClientApp = React.createClass({
 
     componentDidMount: function() {
         DataTableDataStore.addChangeListener(this.onChange);
-
-        // Not sure if this goes here. It seems like there is a better
-        // way to trigger the initial data fetch.
-        AppActions.getData('students');
     },
 
     componentWillUnmount: function() {
@@ -35,9 +36,7 @@ var ApiClientApp = React.createClass({
     },
 
     render: function() {
-        return (
-            <ApiClient {...this.state} />
-        );
+        return <RouteHandler {...this.state}/>;
     }
 });
 
