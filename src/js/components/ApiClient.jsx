@@ -17,8 +17,12 @@ var ApiClientApp = React.createClass({
     render: function() {
         return (
             <div className='ApiClientApp'>
-                <Sidebar dataType={this.props.tableState.dataType} />
-                <RouteHandler {...this.props}/>
+                <div className='sidebar container'>
+                    <Sidebar dataType={this.props.tableState.dataType} />
+                </div>
+                <div className='content container'>
+                    <RouteHandler {...this.props}/>
+                </div>
             </div>
         );
     }

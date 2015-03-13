@@ -1,9 +1,8 @@
 /** @jsx React.DOM */
 
-var React = require('react');
+var React      = require('react');
 var AppActions = require('../actions/AppActions');
-
-var DataTable = require('./DataTable');
+var DataTable  = require('./DataTable');
 
 var Content = React.createClass({
 
@@ -15,13 +14,8 @@ var Content = React.createClass({
     },
 
     render: function() {
-
-        function click(e) {
-            console.log(e);
-        }
-
         return (
-            <div className='Content container'>
+            <div className='Content'>
                 <h1>{this.props.tableState.dataType.toUpperCase()}</h1>
                 <DataTable {...this.props.tableState} />
             </div>

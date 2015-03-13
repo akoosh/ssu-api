@@ -1,10 +1,9 @@
 /** @jsx React.DOM */
 
-var React      = require('react');
-
+var React              = require('react');
 var DataTableDataStore = require('../stores/DataTableDataStore');
-var ApiClient  = require('./ApiClient');
-var RouteHandler = require('react-router').RouteHandler;
+var ApiClient          = require('./ApiClient');
+var RouteHandler       = require('react-router').RouteHandler;
 
 function getAppState() {
     return {
@@ -37,9 +36,7 @@ var ApiClientApp = React.createClass({
     },
 
     render: function() {
-        return (
-            <RouteHandler {...this.state}/>
-        );
+        return <RouteHandler {...this.state}/>;
     }
 });
 

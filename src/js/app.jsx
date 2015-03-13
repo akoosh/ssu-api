@@ -1,8 +1,6 @@
 /** @jsx React.DOM */
 
-var React = require('react');
-var ApiClientApp = require('./components/ApiClientApp');
-
+var React  = require('react');
 var Router = require('react-router');
 var routes = require('./routes');
 
