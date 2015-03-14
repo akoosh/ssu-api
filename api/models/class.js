@@ -17,7 +17,7 @@ module.exports = function(mongoose, plugins) {
             facil_id: { type: String, required: false },
             mtg_start: { type: String, required: true },
             mtg_end: { type: String, required: true },
-            pat: { type: String, required: true }
+            pat: { type: String, required: false }
         }]
     });
 
