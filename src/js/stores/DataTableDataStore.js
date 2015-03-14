@@ -84,7 +84,7 @@ function nameFromKey(key) {
 var DataStore = _.assign({}, EventEmitter.prototype, {
     
     getState: function() {
-        return state;
+        return _.omit(state, 'data');
     },
 
     emitChange: function() {
