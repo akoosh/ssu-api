@@ -1,10 +1,14 @@
 /** @jsx React.DOM */
 
-var React = require('react');
-var _     = require('lodash');
-
-var AppActions  = require('../actions/AppActions');
-var Bootstrap   = require('react-bootstrap');
+var React           = require('react');
+var _               = require('lodash');
+var AppActions      = require('../actions/AppActions');
+var Bootstrap       = require('react-bootstrap');
+var SearchBar       = require('./SearchBar');
+var PerPageDropdown = require('./PerPageDropdown');
+var TableHeader     = require('./TableHeader');
+var TableBody       = require('./TableBody');
+var PageNumberBar   = require('./PageNumberBar');
 
 var DataTable = React.createClass({
 
@@ -53,10 +57,8 @@ var DataTable = React.createClass({
         });
     },
 
-    clickHandlerForData: function(data) {
-        return function(e) {
-            console.log(data);
-        }.bind(this);
+    onRowClick: function(data) {
+        console.log(data);
     },
 
     render: function() {
@@ -64,75 +66,21 @@ var DataTable = React.createClass({
             <div className='DataTable'>
                 <Bootstrap.Row>
                     <Bootstrap.Col xs={9}>
-                        <Bootstrap.Input type='text' value={this.props.searchQuery} addonBefore={<span>Search: </span>} onChange={this.onSearchQueryChange} />
+                        <SearchBar value={this.props.searchQuery} onChange={this.onSearchQueryChange}/>
                     </Bootstrap.Col>
                     <Bootstrap.Col xs={3}>
-                        <Bootstrap.Input type='select' value={this.props.perPage} addonBefore={<span>Items per page: </span>} onChange={this.onPerPage}>
-                            {_.range(5, 51, 5).map(function(i) {
-                                return <option key={i} value={i}>{i}</option>;
-                            }.bind(this))}
-                        </Bootstrap.Input>
+                        <PerPageDropdown value={this.props.perPage} onChange={this.onPerPage}/>
                     </Bootstrap.Col>
                 </Bootstrap.Row>
                 <Bootstrap.Row>
                     <Bootstrap.Col xs={12}>
                         <Bootstrap.Table striped bordered condensed hover>
-                            <thead>
-                                <tr>
-                                    {this.props.columns.map(function(column, i) {
-                                        var bsStyle = '';
-
-                                        if (column.key === this.props.sortKey) {
-                                            bsStyle += ' active';
-
-                                            switch (this.props.sortOrder) {
-                                                case -1:
-                                                    bsStyle += ' header-sort-desc';
-                                                    break;
-                                                case 1:
-                                                    bsStyle += ' header-sort-asc';
-                                                    break;
-                                                default:
-                                                    break;
-                                            }
-                                        }
-
-                                        return (
-                                            <th key={i} className={bsStyle} data-key={column.key} onClick={this.onHeaderClick}>
-                                                {column.label}
-                                            </th>
-                                        );
-                                    }.bind(this))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.props.pageData.map(function(item, i) {
-                                    var clickHandler = this.clickHandlerForData(item);
-                                    return (
-                                        <tr key={i} onClick={clickHandler}>
-                                            {this.props.columns.map(function(column, i) {
-                                                var bsStyle = column.key === this.props.sortKey ? 'active' : '';
-                                                return <td key={i} className={bsStyle}>{item[column.key]}</td>;
-                                            }.bind(this))}
-                                        </tr>
-                                    );
-                                }.bind(this))}
-                            </tbody>
+                            <TableHeader columns={this.props.columns} sortKey={this.props.sortKey} sortOrder={this.props.sortOrder} onHeaderClick={this.onHeaderClick}/>
+                            <TableBody rows={this.props.pageData} columns={this.props.columns} sortKey={this.props.sortKey} onRowClick={this.onRowClick}/>
                         </Bootstrap.Table>
                     </Bootstrap.Col>
                 </Bootstrap.Row>
-                <Bootstrap.Row>
-                    <Bootstrap.Col xs={12} className='text-center'>
-                        <Bootstrap.ButtonGroup>
-                            {_.range(this.props.numPages).map(function(i) {
-                                var bsStyle = this.props.pageNum === i ? 'primary' : 'default';
-                                return <Bootstrap.Button key={i} data-pagenum={i} bsStyle={bsStyle} onClick={this.onPage}>
-                                    {i + 1}
-                                </Bootstrap.Button>;
-                            }.bind(this))}
-                        </Bootstrap.ButtonGroup>
-                    </Bootstrap.Col>
-                </Bootstrap.Row>
+                <PageNumberBar numPages={this.props.numPages} pageNum={this.props.pageNum} onPage={this.onPage}/>
             </div>
         );
     }
