@@ -2,8 +2,8 @@
 
 var React           = require('react');
 var _               = require('lodash');
-var AppActions      = require('../actions/AppActions');
 var Bootstrap       = require('react-bootstrap');
+var AppActions      = require('../../actions/AppActions');
 var SearchBar       = require('./SearchBar');
 var PerPageDropdown = require('./PerPageDropdown');
 var TableHeader     = require('./TableHeader');

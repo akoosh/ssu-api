@@ -3,7 +3,6 @@
 var React      = require('react');
 var Bootstrap  = require('react-bootstrap');
 var AppActions = require('../actions/AppActions');
-var DataTable  = require('./DataTable');
 
 var FileUploadView = React.createClass({
 
