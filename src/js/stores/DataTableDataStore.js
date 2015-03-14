@@ -4,13 +4,15 @@ var EventEmitter  = require('events').EventEmitter;
 var _             = require('lodash');
 
 var state = {
-    data: [],
-    dataType: '',
     columns: [],
-    pageNum: 0,
-    perPage: 15,
+    dataType: '',
+    data: [],
     searchData: [],
     searchQuery: '',
+    pageData: [],
+    pageNum: 0,
+    numPages: 0,
+    perPage: 15,
     sortKey: null, 
     sortOrder: 0
 };
@@ -43,10 +45,6 @@ function updateDerivedState() {
     state.sortOrder = 0;
 }
 
-function updatePagificationState() {
-    state.pageNum = 0;
-}
-
 function searchTableData() {
     // Create a regex for each word in the query
     var patterns = state.searchQuery.trim().split(' ').map(function(param) {
@@ -61,6 +59,20 @@ function searchTableData() {
             });
         });
     });
+}
+
+function updatePagificationState() {
+    state.pageNum = 0;
+}
+
+function pagifyData() {
+    var begin = state.perPage * state.pageNum;
+    var end = begin + state.perPage;
+
+    end = end < state.searchData.length ? end : state.searchData.length;
+
+    state.pageData = state.searchData.slice(begin, end);
+    state.numPages = state.searchData.length / state.perPage;
 }
 
 function sortTableData() {
@@ -84,7 +96,8 @@ function nameFromKey(key) {
 var DataStore = _.assign({}, EventEmitter.prototype, {
     
     getState: function() {
-        return _.omit(state, 'data');
+        pagifyData();
+        return _.omit(_.omit(state, 'data'), 'searchData');
     },
 
     emitChange: function() {
@@ -108,6 +121,7 @@ DataStore.dispatcherId = AppDispatcher.register(function(payload) {
         case AppConstants.RECEIVE_DATA:
             updateState(_.omit(action, 'actionType'));
             updateDerivedState();
+            updatePagificationState();
             DataStore.emitChange();
             break;
         case AppConstants.UPDATE_TABLE_DATA:

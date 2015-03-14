@@ -60,14 +60,6 @@ var DataTable = React.createClass({
     },
 
     render: function() {
-
-        var begin = this.props.perPage * this.props.pageNum;
-        var end = begin + this.props.perPage;
-
-        end = end < this.props.searchData.length ? end : this.props.searchData.length;
-        var data = this.props.searchData.slice(begin, end);
-        var numPages = this.props.searchData.length / this.props.perPage;
-
         return (
             <div className='DataTable'>
                 <Bootstrap.Row>
@@ -114,7 +106,7 @@ var DataTable = React.createClass({
                                 </tr>
                             </thead>
                             <tbody>
-                                {data.map(function(item, i) {
+                                {this.props.pageData.map(function(item, i) {
                                     var clickHandler = this.clickHandlerForData(item);
                                     return (
                                         <tr key={i} onClick={clickHandler}>
@@ -132,7 +124,7 @@ var DataTable = React.createClass({
                 <Bootstrap.Row>
                     <Bootstrap.Col xs={12} className='text-center'>
                         <Bootstrap.ButtonGroup>
-                            {_.range(numPages).map(function(i) {
+                            {_.range(this.props.numPages).map(function(i) {
                                 var bsStyle = this.props.pageNum === i ? 'primary' : 'default';
                                 return <Bootstrap.Button key={i} data-pagenum={i} bsStyle={bsStyle} onClick={this.onPage}>
                                     {i + 1}
