@@ -26,30 +26,34 @@ AppApi.getStudents = function(callback) {
     }.bind(this));
 };
 
-/*
-AppApi.getInstructors = function() {
+AppApi.getInstructors = function(callback) {
     makeApiRequest('api/v0/instructors', function(err, instructors) {
-        if (!err) {
-            AppActions.receiveData(instructors, 'instructors');
+        if (err) {
+            callback(err);
+        } else {
+            callback(null, instructors);
         }
-    });
+    }.bind(this));
 };
 
-AppApi.getAdvisors = function() {
+AppApi.getAdvisors = function(callback) {
     makeApiRequest('api/v0/advisors', function(err, advisors) {
-        if (!err) {
-            AppActions.receiveData(advisors, 'advisors');
+        if (err) {
+            callback(err);
+        } else {
+            callback(null, advisors);
         }
-    });
+    }.bind(this));
 };
 
-AppApi.getCourses = function() {
+AppApi.getCourses = function(callback) {
     makeApiRequest('api/v0/courses', function(err, courses) {
-        if (!err) {
-            AppActions.receiveData(courses, 'courses');
+        if (err) {
+            callback(err);
+        } else {
+            callback(null, courses);
         }
-    });
+    }.bind(this));
 };
-*/
 
 module.exports = AppApi;
