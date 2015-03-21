@@ -2,16 +2,9 @@
 
 var React      = require('react');
 var Bootstrap  = require('react-bootstrap');
-var AppActions = require('../actions/AppActions');
+var AppActions = require('../../actions/AppActions');
 
 var FileUploadView = React.createClass({
-
-    statics: {
-        willTransitionTo: function(transition, params, query) {
-            // console.log('willTransitionTo FileUploadView');
-        }
-    },
-
     render: function() {
         return (
             <div className='FileUploadView'>

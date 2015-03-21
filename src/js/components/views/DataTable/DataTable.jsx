@@ -3,7 +3,7 @@
 var React           = require('react');
 var _               = require('lodash');
 var Bootstrap       = require('react-bootstrap');
-var AppActions      = require('../../actions/AppActions');
+var AppActions      = require('../../../actions/AppActions');
 var SearchBar       = require('./SearchBar');
 var PerPageDropdown = require('./PerPageDropdown');
 var TableHeader     = require('./TableHeader');
@@ -33,26 +33,26 @@ var DataTable = React.createClass({
             sortOrder = 1;
         }
 
-        AppActions.sortTableData({
+        AppActions.sortTableData(this.props.tableKey, {
             sortKey: sortKey,
             sortOrder: sortOrder
         });
     },
 
     onPerPage: function(event) {
-        AppActions.updateTableData({
+        AppActions.updateTableData(this.props.tableKey, {
             perPage: parseInt(event.target.value, 10)
         });
     },
 
     onPage: function(event) {
-        AppActions.updateTableData({
+        AppActions.updateTableData(this.props.tableKey, {
             pageNum: parseInt(event.target.dataset.pagenum, 10)
         });
     },
 
     onSearchQueryChange: function(event) {
-        AppActions.searchTableData({
+        AppActions.searchTableData(this.props.tableKey, {
             searchQuery: event.target.value
         });
     },

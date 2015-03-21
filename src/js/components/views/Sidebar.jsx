@@ -15,12 +15,12 @@ var Sidebar = React.createClass({
 
         var listGroupItems = [
             {value: 'students', label: 'Students'},
-            {value: 'instructors', label: 'Instructors'},
-            {value: 'advisors', label: 'Advisors'},
-            {value: 'courses', label: 'Courses'}
+            // {value: 'instructors', label: 'Instructors'},
+            // {value: 'advisors', label: 'Advisors'},
+            // {value: 'courses', label: 'Courses'}
         ].map(function(item, i) {
-            var href = this.makeHref('content', {dataType: item.value});
-            var isActive = this.isActive('content', {dataType: item.value});
+            var href = this.makeHref(item.value);
+            var isActive = this.isActive(item.value);
             return <Bootstrap.ListGroupItem key={i} href={href} active={isActive}>{item.label}</Bootstrap.ListGroupItem>;
         }.bind(this));
 

@@ -1,12 +1,11 @@
-var ServerActions = require('../actions/ServerActions');
 var $             = require('jquery');
 
 function makeApiRequest(url, callback) {
     $.ajax({
         url: url,
         dataType: 'json',
-        success: function(students) {
-            callback(null, students);
+        success: function(data) {
+            callback(null, data);
         }.bind(this),
         error: function(xhr, status, err) {
             console.error(url, status, err.toString());
@@ -17,18 +16,21 @@ function makeApiRequest(url, callback) {
 
 var AppApi = {};
 
-AppApi.getStudents = function() {
+AppApi.getStudents = function(callback) {
     makeApiRequest('api/v0/students', function(err, students) {
-        if (!err) {
-            ServerActions.receiveData(students, 'students');
+        if (err) {
+            callback(err);
+        } else {
+            callback(null, students);
         }
-    });
+    }.bind(this));
 };
 
+/*
 AppApi.getInstructors = function() {
     makeApiRequest('api/v0/instructors', function(err, instructors) {
         if (!err) {
-            ServerActions.receiveData(instructors, 'instructors');
+            AppActions.receiveData(instructors, 'instructors');
         }
     });
 };
@@ -36,7 +38,7 @@ AppApi.getInstructors = function() {
 AppApi.getAdvisors = function() {
     makeApiRequest('api/v0/advisors', function(err, advisors) {
         if (!err) {
-            ServerActions.receiveData(advisors, 'advisors');
+            AppActions.receiveData(advisors, 'advisors');
         }
     });
 };
@@ -44,9 +46,10 @@ AppApi.getAdvisors = function() {
 AppApi.getCourses = function() {
     makeApiRequest('api/v0/courses', function(err, courses) {
         if (!err) {
-            ServerActions.receiveData(courses, 'courses');
+            AppActions.receiveData(courses, 'courses');
         }
     });
 };
+*/
 
 module.exports = AppApi;
