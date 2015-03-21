@@ -2,7 +2,7 @@
 
 var React           = require('react');
 var RouteHandler    = require('react-router').RouteHandler;
-var Sidebar         = require('./views/Sidebar');
+var Sidebar         = require('./subviews/Sidebar');
 
 var ApiClientApp = React.createClass({
     render: function() {

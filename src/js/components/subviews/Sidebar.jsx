@@ -10,6 +10,9 @@ var Sidebar = React.createClass({
 
     render: function() {
 
+        var homeHref = this.makeHref('home');
+        var homeIsActive = this.isActive('home');
+
         var fileUploadHref = this.makeHref('file-upload');
         var fileUploadIsActive = this.isActive('file-upload');
 
@@ -29,11 +32,15 @@ var Sidebar = React.createClass({
                 <Bootstrap.PageHeader>Full Moon</Bootstrap.PageHeader>
 
                 <Bootstrap.ListGroup>
-                    <Bootstrap.ListGroupItem href={fileUploadHref} active={fileUploadIsActive}>File Upload</Bootstrap.ListGroupItem>
+                    <Bootstrap.ListGroupItem href={homeHref} active={homeIsActive}>Home</Bootstrap.ListGroupItem>
                 </Bootstrap.ListGroup>
 
                 <Bootstrap.ListGroup>
                     {listGroupItems}
+                </Bootstrap.ListGroup>
+
+                <Bootstrap.ListGroup>
+                    <Bootstrap.ListGroupItem href={fileUploadHref} active={fileUploadIsActive}>File Upload</Bootstrap.ListGroupItem>
                 </Bootstrap.ListGroup>
             </div>
         );

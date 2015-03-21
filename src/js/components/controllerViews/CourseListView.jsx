@@ -4,7 +4,7 @@ var React                   = require('react');
 var Bootstrap               = require('react-bootstrap');
 var AppActions              = require('../../actions/AppActions');
 var DataTableDataStore      = require('../../stores/DataTableDataStore');
-var DataTable               = require('../views/DataTable/DataTable');
+var DataTable               = require('../subviews/DataTable/DataTable');
 
 function getViewState() {
     return {
