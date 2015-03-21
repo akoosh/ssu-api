@@ -6,19 +6,25 @@ var Route        = Router.Route;
 var DefaultRoute = Router.DefaultRoute;
 var Redirect     = Router.Redirect;
 
-// Components
-var ApiClientApp    = require('./components/ApiClientApp');
-var ApiClient       = require('./components/ApiClient');
-var Content         = require('./components/Content');
-var FileUploadView  = require('./components/FileUploadView');
+// Root view
+var ApiClientApp        = require('./components/ApiClientApp');
+
+// ControllerViews
+var FileUploadView      = require('./components/controllerViews/FileUploadView');
+var StudentListView     = require('./components/controllerViews/StudentListView');
+var InstructorListView  = require('./components/controllerViews/InstructorListView');
+var AdvisorListView     = require('./components/controllerViews/AdvisorListView');
+var CourseListView      = require('./components/controllerViews/CourseListView');
 
 var routes = (
     <Route path='/' handler={ApiClientApp}>
-        <Route handler={ApiClient}>
-            <Route name='file-upload' path='upload' handler={FileUploadView}/>
-            <Route name='content' path='/list/:dataType' handler={Content}/>
-        </Route>
-        <Redirect from='/' to='content' params={ {dataType: 'students'} }/>
+        <Route name='file-upload' path='upload' handler={FileUploadView}/>
+        <Route name='students' path='/students' handler={StudentListView}/>
+        <Route name='instructors' path='/instructors' handler={InstructorListView}/>
+        <Route name='advisors' path='/advisors' handler={AdvisorListView}/>
+        <Route name='courses' path='/courses' handler={CourseListView}/>
+
+        <Redirect from='/' to='students'/>
     </Route>
 );
 
