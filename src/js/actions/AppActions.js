@@ -112,21 +112,21 @@ AppActions.courseListViewWillUnmount = function() {
 AppActions.updateTableData = function(tableKey, tableData) {
     AppDispatcher.handleAction(_.assign(tableData, {
         actionType: AppConstants.UPDATE_TABLE_DATA,
-        tableKey: 'students'
+        tableKey: tableKey
     }));
 };
 
 AppActions.searchTableData = function(tableKey, searchParams) {
     AppDispatcher.handleAction(_.assign(searchParams, {
         actionType: AppConstants.SEARCH_TABLE_DATA,
-        tableKey: 'students'
+        tableKey: tableKey
     }));
 };
 
 AppActions.sortTableData = function(tableKey, sortParams) {
     AppDispatcher.handleAction(_.assign(sortParams, {
         actionType: AppConstants.SORT_TABLE_DATA,
-        tableKey: 'students'
+        tableKey: tableKey
     }));
 };
 
