@@ -15,7 +15,7 @@ module.exports = function(express, db) {
         };
     };
 
-    var putRequestHandler = function(res) {
+    var postRequestHandler = function(res) {
         return function(err, product) {
             if (err) {
                 res.send(err);
@@ -123,8 +123,8 @@ module.exports = function(express, db) {
 
     // Data loading routes
 
-    router.put('/update/csv', function(req, res) {
-        db.processUploadedFile(req.files.file.path, putRequestHandler(res));
+    router.post('/update/csv', function(req, res) {
+        db.processUploadedFile(req.files.file.path, postRequestHandler(res));
     });
 
     return router;
