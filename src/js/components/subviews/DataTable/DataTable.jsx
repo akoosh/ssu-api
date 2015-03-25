@@ -165,16 +165,24 @@ var DataTable = React.createClass({
     },
 
     render: function() {
+        var topBar = this.props.simple ? null : (
+            <Bootstrap.Row>
+                <Bootstrap.Col xs={9}>
+                    <SearchBar value={this.state.searchQuery} onChange={this.onSearchQueryChange}/>
+                </Bootstrap.Col>
+                <Bootstrap.Col xs={3}>
+                    <PerPageDropdown value={this.state.perPage} onChange={this.onPerPage}/>
+                </Bootstrap.Col>
+            </Bootstrap.Row>
+        );
+
+        var bottomBar = this.props.simple ? null : (
+            <PageNumberBar numPages={this.state.numPages} pageNum={this.state.pageNum} onPage={this.onPage}/>
+        );
+
         return (
             <div className='DataTable'>
-                <Bootstrap.Row>
-                    <Bootstrap.Col xs={9}>
-                        <SearchBar value={this.state.searchQuery} onChange={this.onSearchQueryChange}/>
-                    </Bootstrap.Col>
-                    <Bootstrap.Col xs={3}>
-                        <PerPageDropdown value={this.state.perPage} onChange={this.onPerPage}/>
-                    </Bootstrap.Col>
-                </Bootstrap.Row>
+                {topBar}
                 <Bootstrap.Row>
                     <Bootstrap.Col xs={12}>
                         <Bootstrap.Table striped bordered condensed hover>
@@ -183,7 +191,7 @@ var DataTable = React.createClass({
                         </Bootstrap.Table>
                     </Bootstrap.Col>
                 </Bootstrap.Row>
-                <PageNumberBar numPages={this.state.numPages} pageNum={this.state.pageNum} onPage={this.onPage}/>
+                {bottomBar}
             </div>
         );
     }

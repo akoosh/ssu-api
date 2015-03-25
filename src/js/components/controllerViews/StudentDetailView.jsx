@@ -36,8 +36,8 @@ var StudentDetailView = React.createClass({
         return (
             <div className='StudentDetailView'>
                 <Bootstrap.PageHeader>{this.state.student.first_name} {this.state.student.last_name}</Bootstrap.PageHeader>
-                <DataTable data={this.state.advisors}/>
-                <DataTable data={this.state.sections}/>
+                <DataTable simple data={this.state.advisors}/>
+                <DataTable simple data={this.state.sections}/>
             </div>
         );
     }
