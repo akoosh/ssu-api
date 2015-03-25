@@ -159,7 +159,9 @@ var DataTable = React.createClass({
     },
 
     onRowClick: function(data) {
-        console.log(data);
+        if (this.props.onRowClick) {
+            this.props.onRowClick(data);
+        }
     },
 
     render: function() {
