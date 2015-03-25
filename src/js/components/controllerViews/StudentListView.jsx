@@ -3,12 +3,12 @@
 var React                   = require('react');
 var Bootstrap               = require('react-bootstrap');
 var AppActions              = require('../../actions/AppActions');
-var DataTableDataStore      = require('../../stores/DataTableDataStore');
 var DataTable               = require('../subviews/DataTable/DataTable');
+var StudentListDataStore    = require('../../stores/StudentListDataStore');
 
 function getViewState() {
     return {
-        tableState: DataTableDataStore.getStateForKey('students')
+        students: StudentListDataStore.getStudents()
     };
 }
 
@@ -23,20 +23,19 @@ var StudentListView = React.createClass({
     },
 
     componentDidMount: function() {
-        DataTableDataStore.addChangeListener(this.onChange);
-        AppActions.studentListViewDidMount();
+        StudentListDataStore.addChangeListener(this.onChange);
+        AppActions.fetchStudents();
     },
 
     componentWillUnmount: function() {
-        DataTableDataStore.removeChangeListener(this.onChange);
-        AppActions.studentListViewWillUnmount();
+        StudentListDataStore.removeChangeListener(this.onChange);
     },
 
     render: function() {
         return (
             <div className='StudentListView'>
                 <Bootstrap.PageHeader>Students</Bootstrap.PageHeader>
-                <DataTable tableKey='students' {...this.state.tableState} />
+                <DataTable data={this.state.students}/>
             </div>
         );
     }
