@@ -26,6 +26,28 @@ AppApi.getStudents = function(callback) {
     }.bind(this));
 };
 
+AppApi.getAdvisorsByStudentId = function(student_id, callback) {
+    var path = 'api/v0/students/' + student_id + '/advisors';
+    makeApiRequest(path, function(err, advisors) {
+        if (err) {
+            callback(err);
+        } else {
+            callback(null, advisors);
+        }
+    }.bind(this));
+};
+
+AppApi.getSectionsByStudentId = function(student_id, callback) {
+    var path = 'api/v0/students/' + student_id + '/classes';
+    makeApiRequest(path, function(err, sections) {
+        if (err) {
+            callback(err);
+        } else {
+            callback(null, sections);
+        }
+    }.bind(this));
+};
+
 AppApi.getInstructors = function(callback) {
     makeApiRequest('api/v0/instructors', function(err, instructors) {
         if (err) {

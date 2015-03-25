@@ -18,6 +18,35 @@ AppActions.fetchStudents = function() {
     });
 };
 
+AppActions.fetchDataForStudent = function(student) {
+    AppDispatcher.handleAction({
+        actionType: AppConstants.RECEIVE_STUDENT,
+        student: student
+    });
+
+    AppApi.getAdvisorsByStudentId(student.student_id, function(err, advisors) {
+        if (err) {
+            console.log(err);
+        } else {
+            AppDispatcher.handleAction({
+                actionType: AppConstants.RECEIVE_STUDENT_ADVISORS,
+                advisors: advisors
+            });
+        }
+    });
+
+    AppApi.getSectionsByStudentId(student.student_id, function(err, sections) {
+        if (err) {
+            console.log(err);
+        } else {
+            AppDispatcher.handleAction({
+                actionType: AppConstants.RECEIVE_STUDENT_SECTIONS,
+                sections: sections
+            });
+        }
+    });
+};
+
 AppActions.fetchInstructors = function() {
     AppApi.getInstructors(function(err, instructors) {
         if (err) {
