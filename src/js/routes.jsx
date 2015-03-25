@@ -13,6 +13,7 @@ var ApiClientApp        = require('./components/ApiClientApp');
 var HomeView            = require('./components/controllerViews/HomeView');
 var FileUploadView      = require('./components/controllerViews/FileUploadView');
 var StudentListView     = require('./components/controllerViews/StudentListView');
+var StudentDetailView   = require('./components/controllerViews/StudentDetailView');
 var InstructorListView  = require('./components/controllerViews/InstructorListView');
 var AdvisorListView     = require('./components/controllerViews/AdvisorListView');
 var CourseListView      = require('./components/controllerViews/CourseListView');
@@ -24,6 +25,8 @@ var routes = (
         <Route name='file-upload' path='upload' handler={FileUploadView}/>
 
         <Route name='students' path='/students' handler={StudentListView}/>
+        <Route name='student-detail' path='/students/:student_id' handler={StudentDetailView}/>
+
         <Route name='instructors' path='/instructors' handler={InstructorListView}/>
         <Route name='advisors' path='/advisors' handler={AdvisorListView}/>
         <Route name='courses' path='/courses' handler={CourseListView}/>

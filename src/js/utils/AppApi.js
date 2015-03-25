@@ -26,6 +26,17 @@ AppApi.getStudents = function(callback) {
     }.bind(this));
 };
 
+AppApi.getStudentById = function(student_id, callback) {
+    var path = 'api/v0/students/' + student_id;
+    makeApiRequest(path, function(err, student) {
+        if (err) {
+            callback(err);
+        } else {
+            callback(null, student);
+        }
+    }.bind(this));
+};
+
 AppApi.getAdvisorsByStudentId = function(student_id, callback) {
     var path = 'api/v0/students/' + student_id + '/advisors';
     makeApiRequest(path, function(err, advisors) {

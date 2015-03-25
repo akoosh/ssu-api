@@ -18,13 +18,19 @@ AppActions.fetchStudents = function() {
     });
 };
 
-AppActions.fetchDataForStudent = function(student) {
-    AppDispatcher.handleAction({
-        actionType: AppConstants.RECEIVE_STUDENT,
-        student: student
+AppActions.fetchDataForStudent = function(student_id) {
+    AppApi.getStudentById(student_id, function(err, student) {
+        if (err) {
+            console.log(err);
+        } else {
+            AppDispatcher.handleAction({
+                actionType: AppConstants.RECEIVE_STUDENT,
+                student: student
+            });
+        }
     });
 
-    AppApi.getAdvisorsByStudentId(student.student_id, function(err, advisors) {
+    AppApi.getAdvisorsByStudentId(student_id, function(err, advisors) {
         if (err) {
             console.log(err);
         } else {
@@ -35,7 +41,7 @@ AppActions.fetchDataForStudent = function(student) {
         }
     });
 
-    AppApi.getSectionsByStudentId(student.student_id, function(err, sections) {
+    AppApi.getSectionsByStudentId(student_id, function(err, sections) {
         if (err) {
             console.log(err);
         } else {
