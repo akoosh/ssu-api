@@ -1,7 +1,8 @@
 // dataLoaders.js
 'use strict';
 
-var _ = require('lodash');
+var Async = require('async');
+var _     = require('lodash');
 
 var exports = {};
 
@@ -19,18 +20,45 @@ exports.loadCourses = function(courses, models, callback) {
         bulk.find({subject: doc.subject, catalog: doc.catalog}).upsert().updateOne(_.omit(doc.toObject(), '_id'));
     });
 
-    bulk.execute(function(err, result) {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null);
-        }
-    });
+    bulk.execute(callback);
 };
 
-exports.loadRequisites = function(courses, models, callback) {
-    console.log('loading requisites...');
-    callback(null);
+exports.loadRequisites = function(rows, models, callback) {
+
+    var numRows = rows.length;
+    var bulk = models.Requisite.collection.initializeUnorderedBulkOp();
+
+    rows.forEach(function(row, index) {
+        Async.parallel({
+            course: function(callback) {
+                models.Course.findOne({subject: row.subject, catalog: row.catalog}, callback);
+            },
+
+            requisite: function(callback) {
+                models.Course.findOne({subject: row.requisite_subject, catalog: row.requisite_catalog}, callback);
+            }
+
+        }, function(err, results) {
+            if (err) {
+                console.log('Err', err);
+            } else if (!results.course || !results.requisite) {
+                // At least one of the courses is not in the database
+            } else {
+                var doc = new models.Requisite({
+                    course:     results.course._id,
+                    requisite:   results.requisite._id,
+                    type:       row.type,
+                    grade:      row.grade
+                });
+
+                bulk.find({course: doc.course, requisite: doc.requisite}).upsert().updateOne(_.omit(doc.toObject(), '_id'));
+
+                if (index === numRows - 1) {
+                    bulk.execute(callback);
+                }
+            }
+        });
+    });
 };
 
 module.exports = exports;
