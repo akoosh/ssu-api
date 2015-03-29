@@ -12,6 +12,7 @@ var CourseModule      = require('./models/course');
 var ClassModule       = require('./models/class');
 var EnrollmentModule  = require('./models/enrollment');
 var AdvisementModule  = require('./models/advisement');
+var RequisiteModule   = require('./models/requisite');
 
 // utils
 var fs          = require('fs');
@@ -40,7 +41,8 @@ module.exports = function(mongoose) {
         Course      : new CourseModule(mongoose, plugins),
         Class       : new ClassModule(mongoose, plugins),
         Enrollment  : new EnrollmentModule(mongoose, plugins),
-        Advisement  : new AdvisementModule(mongoose, plugins)
+        Advisement  : new AdvisementModule(mongoose, plugins),
+        Requisite   : new RequisiteModule(mongoose, plugins)
     };
 
     // Student functions
