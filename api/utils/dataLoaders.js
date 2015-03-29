@@ -86,6 +86,28 @@ function studentFromData(data, models) {
     return student;
 }
 
+function instructorFromData(data, models) {
+    var instructorName = data.instructor_name.split(/,/);
+    var instructor = new models.Faculty({
+        faculty_id: data.instructor_id,
+        last_name: instructorName[0],
+        first_name: instructorName.length > 1 ? instructorName[1] : null
+    });
+
+    return instructor;
+}
+
+function advisorFromData(data, models) {
+    var advisorName = data.advisor_name.split(/,/);
+    var advisor = new models.Faculty({
+        faculty_id: data.advisor_id,
+        last_name: advisorName[0],
+        first_name: advisorName.length > 1 ? advisorName[1] : null
+    });
+
+    return advisor;
+}
+
 function loadStudentsIfNeeded(allStudents, models, callback) {
 
     var studentIds = Object.keys(allStudents);
@@ -127,7 +149,7 @@ function loadStudentsIfNeeded(allStudents, models, callback) {
     });
 }
 
-function loadFacultyIfNeeded(rows, models, callback) {
+function loadFacultyIfNeeded(allFaculty, models, callback) {
 }
 
 exports.loadEnrollments = function(rows, models, callback) {
@@ -137,10 +159,19 @@ exports.loadEnrollments = function(rows, models, callback) {
     // have previously not been encountered.
 
     var allStudents = {};
+    var allFaculty = {};
 
     rows.forEach(function(row) {
+        // Create student entity
         var student = studentFromData(row, models);
         allStudents[student.student_id] = student;
+
+        // Create faculty entities for instructor and advisor
+        var instructor = instructorFromData(row, models);
+        allFaculty[instructor.faculty_id] = instructor;
+
+        var advisor = advisorFromData(row, models);
+        allFaculty[advisor.faculty_id] = advisor;
     });
 
     loadStudentsIfNeeded(allStudents, models, function(err, studentObjectIds) {
