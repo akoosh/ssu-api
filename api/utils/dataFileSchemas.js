@@ -1,6 +1,8 @@
 // dataFileSchemas.js
 'use strict';
 
+var _ = require('lodash');
+
 // A lot of these fields are not actually necessary for processing the entities
 // being extracted from the data file. These are the complete list of field
 // names from the types of files we expect, however, so they will be set up like
@@ -100,6 +102,16 @@ var schemas = {
         'Auto Enr 2',
         'Comb Sect'
     ]
+};
+
+schemas.conformsToSchema = function(schemaName, fields) {
+
+    // If the size of the intersection of the list of schema field names and actual
+    // field names is the same as the number of fields in the schema, then all fields
+    // in the schema are also in the supplied list.
+
+    var schema = schemas[schemaName];
+    return schema.length === _.intersection(schema, fields).length;
 };
 
 module.exports = schemas;
