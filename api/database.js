@@ -353,6 +353,21 @@ module.exports = function(mongoose) {
     };
 
 
+    // Requisite functions
+
+    exports.getAllRequisites = function(callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        models.Requisite.find().populate('course requisite').exec(function(err, requisites) {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, requisites);
+            }
+        });
+    };
+
+
     // Data loading functions
 
     exports.processUploadedFile = function(filepath, callback) {

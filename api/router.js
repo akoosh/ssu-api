@@ -121,6 +121,13 @@ module.exports = function(express, db) {
     });
 
 
+    // Requiste routes
+
+    router.get('/requisites', function(req, res) {
+        db.getAllRequisites(getRequestHandler(res));
+    });
+
+
     // Data loading routes
 
     router.post('/update/csv', function(req, res) {
