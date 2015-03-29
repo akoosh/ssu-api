@@ -75,18 +75,18 @@ exports.loadRequisites = function(rows, models, callback) {
     });
 };
 
-function loadStudentsIfNeeded(rows, models, callback) {
-    var allStudents = {};
-
-    rows.forEach(function(row) {
-        var student = new models.Student();
-        for (var key in models.Student.schema.paths) {
-            if (key in row) {
-                student[key] = row[key];
-            }
+function studentFromData(data, models) {
+    var student = new models.Student();
+    for (var key in models.Student.schema.paths) {
+        if (key in data) {
+            student[key] = data[key];
         }
-        allStudents[student.student_id] = student;
-    });
+    }
+
+    return student;
+}
+
+function loadStudentsIfNeeded(allStudents, models, callback) {
 
     var studentIds = Object.keys(allStudents);
     var studentObjectIds = {};
@@ -136,7 +136,14 @@ exports.loadEnrollments = function(rows, models, callback) {
     // likely that this data will contian Students, Classes, and Faculty that
     // have previously not been encountered.
 
-    loadStudentsIfNeeded(rows, models, function(err, studentObjectIds) {
+    var allStudents = {};
+
+    rows.forEach(function(row) {
+        var student = studentFromData(row, models);
+        allStudents[student.student_id] = student;
+    });
+
+    loadStudentsIfNeeded(allStudents, models, function(err, studentObjectIds) {
         if (err) {
             callback(err);
         } else {
