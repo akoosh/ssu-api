@@ -415,7 +415,7 @@ module.exports = function(mongoose) {
                     if (err) {
                         callback(err);
                     } else if (!conformsToSchema) {
-                        callback('Invalid fields: Expected:', Schemas.courses);
+                        callback('Invalid fields: Expected: ' + Schemas.courses);
                     } else {
                         Loaders.loadCourses(data, models, callback);
                     }
@@ -446,7 +446,7 @@ module.exports = function(mongoose) {
                     if (err) {
                         callback(err);
                     } else if (!conformsToSchema) {
-                        callback('Invalid fields: Expected:', Schemas.requisites);
+                        callback('Invalid fields: Expected: ' + Schemas.requisites);
                     } else {
                         Loaders.loadRequisites(data, models, callback);
                     }

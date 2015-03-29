@@ -26,6 +26,7 @@ exports.loadCourses = function(courses, models, callback) {
 exports.loadRequisites = function(rows, models, callback) {
 
     var numRows = rows.length;
+    var error = false;
     var bulk = models.Requisite.collection.initializeUnorderedBulkOp();
 
     rows.forEach(function(row, index) {
@@ -40,9 +41,9 @@ exports.loadRequisites = function(rows, models, callback) {
 
         }, function(err, results) {
             if (err) {
-                console.log('Err', err);
+                error = err;
             } else if (!results.course || !results.requisite) {
-                // At least one of the courses is not in the database
+                error = 'At least one of the courses is not in the database.';
             } else {
                 var doc = new models.Requisite({
                     course:     results.course._id,
@@ -52,8 +53,13 @@ exports.loadRequisites = function(rows, models, callback) {
                 });
 
                 bulk.find({course: doc.course, requisite: doc.requisite}).upsert().updateOne(_.omit(doc.toObject(), '_id'));
+            }
 
-                if (index === numRows - 1) {
+            // Only execute bulk operation if there have been no errors
+            if (index === numRows - 1) {
+                if (error) {
+                    callback(error);
+                } else {
                     bulk.execute(callback);
                 }
             }
