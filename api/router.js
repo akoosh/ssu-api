@@ -138,5 +138,9 @@ module.exports = function(express, db) {
         db.processCourses(req.files.file.path, postRequestHandler(res));
     });
 
+    router.post('/requisites', function(req, res) {
+        db.processRequisites(req.files.file.path, postRequestHandler(res));
+    });
+
     return router;
 };

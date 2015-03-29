@@ -28,4 +28,9 @@ exports.loadCourses = function(courses, models, callback) {
     });
 };
 
+exports.loadRequisites = function(courses, models, callback) {
+    console.log('loading requisites...');
+    callback(null);
+};
+
 module.exports = exports;

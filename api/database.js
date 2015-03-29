@@ -389,6 +389,10 @@ module.exports = function(mongoose) {
         });
     };
 
+    // The next few functions should be abstracted out into a helper function.
+    // The only differences between them at this point are the names of a few
+    // function calls.
+
     exports.processCourses = function(filepath, callback) {
         callback = (typeof callback === 'function') ? callback : function() {};
 
@@ -414,6 +418,37 @@ module.exports = function(mongoose) {
                         callback('Invalid fields: Expected:', Schemas.courses);
                     } else {
                         Loaders.loadCourses(data, models, callback);
+                    }
+                });
+            }
+        });
+    };
+
+    exports.processRequisites = function(filepath, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        fs.readFile(filepath, 'utf8', function(err, data) {
+            if (err) {
+                callback(err);
+            } else {
+                var conformsToSchema = false;
+                var columnNames = function(columns) {
+                    if (Schemas.conformsToSchema('requisites', columns)) {
+                        conformsToSchema = true;
+                    }
+
+                    return columns.map(function(column) {
+                        return column.toLowerCase().replace(/ /g, '_');
+                    });
+                };
+
+                parse(data, {columns: columnNames, trim: true}, function(err, data) {
+                    if (err) {
+                        callback(err);
+                    } else if (!conformsToSchema) {
+                        callback('Invalid fields: Expected:', Schemas.requisites);
+                    } else {
+                        Loaders.loadRequisites(data, models, callback);
                     }
                 });
             }
