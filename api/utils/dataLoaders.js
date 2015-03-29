@@ -60,10 +60,88 @@ exports.loadRequisites = function(rows, models, callback) {
                 if (error) {
                     callback(error);
                 } else {
-                    bulk.execute(callback);
+                    // bulk.execute(callback);
+                    bulk.execute(function(err, result) {
+                        console.log('inserted:', result.nInserted);
+                        console.log('upserted:', result.nUpserted);
+                        console.log('matched:', result.nMatched);
+                        console.log('modified:', result.nModified);
+                        console.log('upserted ids:\n', result.getUpsertedIds());
+                        callback(null);
+                    });
                 }
             }
         });
+    });
+};
+
+function loadStudentsIfNeeded(rows, models, callback) {
+    var allStudents = {};
+
+    rows.forEach(function(row) {
+        var student = new models.Student();
+        for (var key in models.Student.schema.paths) {
+            if (key in row) {
+                student[key] = row[key];
+            }
+        }
+        allStudents[student.student_id] = student;
+    });
+
+    var studentIds = Object.keys(allStudents);
+    var studentObjectIds = {};
+
+    models.Student.find({student_id: {$in: studentIds}}, function(err, students) {
+        if (err) {
+            callback(err);
+        } else {
+            students.forEach(function(student) {
+                studentObjectIds[student.student_id] = student._id;
+            });
+
+            // we now have object ids for students in the database, but not for the rest
+            var newIds = studentIds.filter(function(id) {
+                return !studentObjectIds[id];
+            });
+
+            if (newIds.length === 0) {
+                callback(null, studentObjectIds);
+            } else {
+                var bulk = models.Student.collection.initializeUnorderedBulkOp();
+
+                newIds.forEach(function(id) {
+                    var student = allStudents[id];
+                    studentObjectIds[student.student_id] = student._id;
+                    bulk.insert(student.toObject());
+                });
+
+                bulk.execute(function(err, result) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        callback(null, studentObjectIds);
+                    }
+                });
+            }
+        }
+    });
+}
+
+function loadFacultyIfNeeded(rows, models, callback) {
+}
+
+exports.loadEnrollments = function(rows, models, callback) {
+    // This could get complicated. Right now, we can assume that all courses
+    // are in the database, but not all sections in a given semester. It is
+    // likely that this data will contian Students, Classes, and Faculty that
+    // have previously not been encountered.
+
+    loadStudentsIfNeeded(rows, models, function(err, studentObjectIds) {
+        if (err) {
+            callback(err);
+        } else {
+            callback(null);
+        }
     });
 };
 

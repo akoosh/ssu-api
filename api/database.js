@@ -455,5 +455,36 @@ module.exports = function(mongoose) {
         });
     };
 
+    exports.processEnrollments = function(filepath, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        fs.readFile(filepath, 'utf8', function(err, data) {
+            if (err) {
+                callback(err);
+            } else {
+                var conformsToSchema = false;
+                var columnNames = function(columns) {
+                    if (Schemas.conformsToSchema('enrollments', columns)) {
+                        conformsToSchema = true;
+                    }
+
+                    return columns.map(function(column) {
+                        return column.toLowerCase().replace(/ /g, '_');
+                    });
+                };
+
+                parse(data, {columns: columnNames, trim: true}, function(err, data) {
+                    if (err) {
+                        callback(err);
+                    } else if (!conformsToSchema) {
+                        callback('Invalid fields: Expected: ' + Schemas.enrollments);
+                    } else {
+                        Loaders.loadEnrollments(data, models, callback);
+                    }
+                });
+            }
+        });
+    };
+
     return exports;
 };

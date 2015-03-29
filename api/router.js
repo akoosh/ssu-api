@@ -142,5 +142,9 @@ module.exports = function(express, db) {
         db.processRequisites(req.files.file.path, postRequestHandler(res));
     });
 
+    router.post('/enrollments', function(req, res) {
+        db.processEnrollments(req.files.file.path, postRequestHandler(res));
+    });
+
     return router;
 };
