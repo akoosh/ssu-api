@@ -3,7 +3,7 @@
 
 // mongoose plugins
 var deepPopulate    = require('mongoose-deep-populate');
-var mongooseHidden  = require('mongoose-hidden')();
+var mongooseHidden  = require('mongoose-hidden')({autoHideObject: false});
 
 // models
 var StudentModule     = require('./models/student');
@@ -16,7 +16,8 @@ var AdvisementModule  = require('./models/advisement');
 // utils
 var fs          = require('fs');
 var parse       = require('csv-parse');
-var schemas     = require('./utils/dataFileSchemas');
+var Schemas     = require('./utils/dataFileSchemas');
+var Loaders     = require('./utils/dataLoaders');
 var loadData    = require('./utils/loadData');
 
 module.exports = function(mongoose) {
@@ -380,7 +381,7 @@ module.exports = function(mongoose) {
             } else {
                 var conformsToSchema = false;
                 var columnNames = function(columns) {
-                    if (schemas.conformsToSchema('courses', columns)) {
+                    if (Schemas.conformsToSchema('courses', columns)) {
                         conformsToSchema = true;
                     }
 
@@ -393,10 +394,9 @@ module.exports = function(mongoose) {
                     if (err) {
                         callback(err);
                     } else if (!conformsToSchema) {
-                        callback('Invalid fields: Expected:', schemas.courses);
+                        callback('Invalid fields: Expected:', Schemas.courses);
                     } else {
-                        // loadData(data, models, callback);
-                        loadData.loadCourses(data, models, callback);
+                        Loaders.loadCourses(data, models, callback);
                     }
                 });
             }

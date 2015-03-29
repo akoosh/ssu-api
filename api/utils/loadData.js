@@ -318,7 +318,7 @@ function buildEnrollment(data, models, studentId, classId) {
     });
 }
 
-module.exports = function(csvData, models, callback) {
+var loadData = function(csvData, models, callback) {
     
     callback = (typeof callback === 'function') ? callback : function() {};
 
@@ -363,35 +363,4 @@ module.exports = function(csvData, models, callback) {
     }
 };
 
-module.exports.loadCourses = function(csvData, models, callback) {
-    var numRows = csvData.length;
-
-    var successes = 0;
-    var success = function() {
-        successes++;
-        if (successes === (numRows - 1)) {
-            callback(null);
-        }
-    };
-
-    var done = false;
-    var failure = function(err) {
-        if (!done) {
-            done = true;
-            callback(err);
-        }
-    };
-
-    if (numRows === 0) {
-        callback('CSV Data has no rows.');
-    } else {
-
-        for (var rowNum = 1; rowNum < numRows; rowNum++) {
-            var row = csvData[rowNum];
-
-            buildCourse(row, models).done(success, failure);
-            // exractAndLoad(rowData, models).done(success, failure);
-        }
-    }
-
-};
+module.exports = loadData;
