@@ -16,6 +16,7 @@ var AdvisementModule  = require('./models/advisement');
 // utils
 var fs          = require('fs');
 var parse       = require('csv-parse');
+var schemas     = require('./utils/dataFileSchemas');
 var loadData    = require('./utils/loadData');
 
 module.exports = function(mongoose) {
@@ -364,6 +365,38 @@ module.exports = function(mongoose) {
                     } else {
                         // data is valid CSV
                         loadData(data, models, callback);
+                    }
+                });
+            }
+        });
+    };
+
+    exports.processCourses = function(filepath, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        fs.readFile(filepath, 'utf8', function(err, data) {
+            if (err) {
+                callback(err);
+            } else {
+                var conformsToSchema = false;
+                var columnNames = function(columns) {
+                    if (schemas.conformsToSchema('courses', columns)) {
+                        conformsToSchema = true;
+                    }
+
+                    return columns.map(function(column) {
+                        return column.toLowerCase().replace(/ /g, '_');
+                    });
+                };
+
+                parse(data, {columns: columnNames, trim: true}, function(err, data) {
+                    if (err) {
+                        callback(err);
+                    } else if (!conformsToSchema) {
+                        callback('Invalid fields: Expected:', schemas.courses);
+                    } else {
+                        // loadData(data, models, callback);
+                        loadData.loadCourses(data, models, callback);
                     }
                 });
             }

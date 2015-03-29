@@ -127,5 +127,9 @@ module.exports = function(express, db) {
         db.processUploadedFile(req.files.file.path, postRequestHandler(res));
     });
 
+    router.post('/courses', function(req, res) {
+        db.processCourses(req.files.file.path, postRequestHandler(res));
+    });
+
     return router;
 };
