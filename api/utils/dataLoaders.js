@@ -110,6 +110,10 @@ function advisorFromData(data, models) {
 
 function loadStudentsIfNeeded(allStudents, models, callback) {
 
+    // This function takes an array of Student entities, saves them to the database
+    // if they are not already there, and returns an object whose keys are student
+    // id numbers and whose values are the ObjectId for that entity in the database.
+
     var studentIds = Object.keys(allStudents);
     var studentObjectIds = {};
 
@@ -121,7 +125,8 @@ function loadStudentsIfNeeded(allStudents, models, callback) {
                 studentObjectIds[student.student_id] = student._id;
             });
 
-            // we now have object ids for students in the database, but not for the rest
+            // we now have object ids for students in the database, but not for the rest.
+            // This filter gets the student ids who we do not yet have ObjectIds for.
             var newIds = studentIds.filter(function(id) {
                 return !studentObjectIds[id];
             });
@@ -151,6 +156,10 @@ function loadStudentsIfNeeded(allStudents, models, callback) {
 
 function loadFacultyIfNeeded(allFaculty, models, callback) {
 
+    // This function takes an array of Faculty entities, saves them to the database
+    // if they are not already there, and returns an object whose keys are faculty
+    // id numbers and whose values are the ObjectId for that entity in the database.
+
     var facultyIds = Object.keys(allFaculty);
     var facultyObjectIds = {};
 
@@ -162,7 +171,8 @@ function loadFacultyIfNeeded(allFaculty, models, callback) {
                 facultyObjectIds[faculty.faculty_id] = faculty._id;
             });
 
-            // we now have object ids for faculty in the database, but not for the rest
+            // we now have object ids for faculty in the database, but not for the rest.
+            // This filter gets the faculty ids who we do not yet have ObjectIds for.
             var newIds = facultyIds.filter(function(id) {
                 return !facultyObjectIds[id];
             });
