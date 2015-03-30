@@ -4,6 +4,7 @@
 module.exports = function(mongoose, plugins) {
 
     var schema = new mongoose.Schema({
+        key: { type: String, required: true, index: {unique: true} },
         subject: { type: String, required: true },
         catalog: { type: String, required: true },
         class_description: { type: String, required: false }, // These two fields are the same thing but
@@ -14,9 +15,6 @@ module.exports = function(mongoose, plugins) {
         max_units: { type: String, required: false },
         career: { type: String, required: false }
     });
-
-    // Enforce uniqueness of subject-catalog combinations, i.e. 'CS 242'
-    schema.index({subject: 1, catalog: 1}, {unique: true});
 
     plugins.forEach(function(plugin) {
         schema.plugin(plugin);
