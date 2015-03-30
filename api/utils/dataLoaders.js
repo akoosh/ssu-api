@@ -86,22 +86,32 @@ exports.loadEnrollments = function(rows, models, callback) {
     var allFaculty = {};
     var allCourses = {};
 
+    console.time('first pass');
     rows.forEach(function(row) {
         // Create student entity
-        var student = studentFromData(row, models);
-        allStudents[student.student_id] = student;
+        if (!allStudents[row.student_id]) {
+            var student = studentFromData(row, models);
+            allStudents[student.student_id] = student;
+        }
 
         // Create faculty entities for instructor and advisor
-        var instructor = instructorFromData(row, models);
-        allFaculty[instructor.faculty_id] = instructor;
+        if (!allFaculty[row.instructor_id]) {
+            var instructor = instructorFromData(row, models);
+            allFaculty[instructor.faculty_id] = instructor;
+        }
 
-        var advisor = advisorFromData(row, models);
-        allFaculty[advisor.faculty_id] = advisor;
+        if (!allFaculty[row.advisor_id]) {
+            var advisor = advisorFromData(row, models);
+            allFaculty[advisor.faculty_id] = advisor;
+        }
 
         // Create course entity
-        var course = courseFromData(row, models);
-        allCourses[course.key] = course;
+        if (!allCourses[row.subject + row.catalog]) {
+            var course = courseFromData(row, models);
+            allCourses[course.key] = course;
+        }
     });
+    console.timeEnd('first pass');
 
     Async.parallel({
         studentObjectIds: function(callback) {
