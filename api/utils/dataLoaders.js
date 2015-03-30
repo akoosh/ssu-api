@@ -150,6 +150,44 @@ function loadStudentsIfNeeded(allStudents, models, callback) {
 }
 
 function loadFacultyIfNeeded(allFaculty, models, callback) {
+
+    var facultyIds = Object.keys(allFaculty);
+    var facultyObjectIds = {};
+
+    models.Faculty.find({faculty_id: {$in: facultyIds}}, function(err, docs) {
+        if (err) {
+            callback(err);
+        } else {
+            docs.forEach(function(faculty) {
+                facultyObjectIds[faculty.faculty_id] = faculty._id;
+            });
+
+            // we now have object ids for faculty in the database, but not for the rest
+            var newIds = facultyIds.filter(function(id) {
+                return !facultyObjectIds[id];
+            });
+
+            if (newIds.length === 0) {
+                callback(null, facultyObjectIds);
+            } else {
+                var bulk = models.Faculty.collection.initializeUnorderedBulkOp();
+
+                newIds.forEach(function(id) {
+                    var faculty = allFaculty[id];
+                    facultyObjectIds[faculty.faculty_id] = faculty._id;
+                    bulk.insert(faculty.toObject());
+                });
+
+                bulk.execute(function(err, result) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        callback(null, facultyObjectIds);
+                    }
+                });
+            }
+        }
+    });
 }
 
 exports.loadEnrollments = function(rows, models, callback) {
@@ -174,7 +212,7 @@ exports.loadEnrollments = function(rows, models, callback) {
         allFaculty[advisor.faculty_id] = advisor;
     });
 
-    loadStudentsIfNeeded(allStudents, models, function(err, studentObjectIds) {
+    loadFacultyIfNeeded(allFaculty, models, function(err, facultyObjectIds) {
         if (err) {
             callback(err);
         } else {
