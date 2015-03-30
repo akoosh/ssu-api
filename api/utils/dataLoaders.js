@@ -17,6 +17,7 @@ exports.loadCourses = function(courses, models, callback) {
                 doc[key] = course[key];
             }
         }
+        doc.key = doc.subject + doc.catalog;
         bulk.find({subject: doc.subject, catalog: doc.catalog}).upsert().updateOne(_.omit(doc.toObject(), '_id'));
     });
 
@@ -32,11 +33,11 @@ exports.loadRequisites = function(rows, models, callback) {
     rows.forEach(function(row, index) {
         Async.parallel({
             course: function(callback) {
-                models.Course.findOne({subject: row.subject, catalog: row.catalog}, callback);
+                models.Course.findOne({key: row.subject + row.catalog}, callback);
             },
 
             requisite: function(callback) {
-                models.Course.findOne({subject: row.requisite_subject, catalog: row.requisite_catalog}, callback);
+                models.Course.findOne({key: row.requisite_subject + row.requisite_catalog}, callback);
             }
 
         }, function(err, results) {
@@ -75,6 +76,57 @@ exports.loadRequisites = function(rows, models, callback) {
     });
 };
 
+exports.loadEnrollments = function(rows, models, callback) {
+    // This could get complicated. Right now, we can assume that all courses
+    // are in the database, but not all sections in a given semester. It is
+    // likely that this data will contian Students, Classes, and Faculty that
+    // have previously not been encountered.
+
+    var allStudents = {};
+    var allFaculty = {};
+    var allCourses = {};
+
+    rows.forEach(function(row) {
+        // Create student entity
+        var student = studentFromData(row, models);
+        allStudents[student.student_id] = student;
+
+        // Create faculty entities for instructor and advisor
+        var instructor = instructorFromData(row, models);
+        allFaculty[instructor.faculty_id] = instructor;
+
+        var advisor = advisorFromData(row, models);
+        allFaculty[advisor.faculty_id] = advisor;
+
+        // Create course entity
+        var course = courseFromData(row, models);
+        allCourses[course.key] = course;
+    });
+
+    Async.parallel({
+        studentObjectIds: function(callback) {
+            loadStudentsIfNeeded(allStudents, models, callback);
+        },
+
+        facultyObjectIds: function(callback) {
+            loadFacultyIfNeeded(allFaculty, models, callback);
+        },
+
+        courseObjectIds: function(callback) {
+            loadCoursesIfNeeded(allCourses, models, callback);
+        }
+    }, function(err, results) {
+        // At this point we should have all ObjectIds for students, courses and
+        // faculty members in the data file.
+
+        Object.keys(results).forEach(function(key) {
+            console.log(key, 'length', Object.keys(results[key]).length);
+        });
+
+        callback(null);
+    });
+};
+
 function studentFromData(data, models) {
     var student = new models.Student();
     for (var key in models.Student.schema.paths) {
@@ -106,6 +158,18 @@ function advisorFromData(data, models) {
     });
 
     return advisor;
+}
+
+function courseFromData(data, models) {
+    var course = new models.Course();
+    for (var key in models.Course.schema.paths) {
+        if (key in data) {
+            course[key] = data[key];
+        }
+    }
+
+    course.key = course.subject + course.catalog;
+    return course;
 }
 
 function loadStudentsIfNeeded(allStudents, models, callback) {
@@ -200,35 +264,45 @@ function loadFacultyIfNeeded(allFaculty, models, callback) {
     });
 }
 
-exports.loadEnrollments = function(rows, models, callback) {
-    // This could get complicated. Right now, we can assume that all courses
-    // are in the database, but not all sections in a given semester. It is
-    // likely that this data will contian Students, Classes, and Faculty that
-    // have previously not been encountered.
+function loadCoursesIfNeeded(allCourses, models, callback) {
 
-    var allStudents = {};
-    var allFaculty = {};
+    var courseKeys = Object.keys(allCourses);
+    var courseObjectIds = {};
 
-    rows.forEach(function(row) {
-        // Create student entity
-        var student = studentFromData(row, models);
-        allStudents[student.student_id] = student;
-
-        // Create faculty entities for instructor and advisor
-        var instructor = instructorFromData(row, models);
-        allFaculty[instructor.faculty_id] = instructor;
-
-        var advisor = advisorFromData(row, models);
-        allFaculty[advisor.faculty_id] = advisor;
-    });
-
-    loadFacultyIfNeeded(allFaculty, models, function(err, facultyObjectIds) {
+    models.Course.find({key: {$in: courseKeys}}, function(err, docs) {
         if (err) {
             callback(err);
         } else {
-            callback(null);
+            docs.forEach(function(course) {
+                courseObjectIds[course.key] = course._id;
+            });
+
+            // we now have object ids for courses in the database, but not for the rest.
+            // This filter gets the course keys who we do not yet have ObjectIds for.
+            var newKeys = courseKeys.filter(function(key) {
+                return !courseObjectIds[key];
+            });
+
+            if (newKeys.length === 0) {
+                callback(null, courseObjectIds);
+            } else {
+                var bulk = models.Course.collection.initializeUnorderedBulkOp();
+
+                newKeys.forEach(function(key) {
+                    var course = allCourses[key];
+                    courseObjectIds[course.key] = course._id;
+                    bulk.insert(course.toObject());
+                });
+                bulk.execute(function(err, result) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        callback(null, courseObjectIds);
+                    }
+                });
+            }
         }
     });
-};
+}
 
 module.exports = exports;
