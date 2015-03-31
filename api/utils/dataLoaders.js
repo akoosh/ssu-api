@@ -125,49 +125,76 @@ exports.loadEnrollments = function(rows, models, callback) {
             loadCoursesIfNeeded(allCourses, models, callback);
         }
     }, function(err, results) {
-        // At this point we should have all ObjectIds for students, courses and
-        // faculty members in the data file.
+        if (err) {
+            callback(err);
+        } else {
+            // At this point we should have all ObjectIds for students, courses and
+            // faculty members in the data file.
 
-        var allClasses = {};
-        var classMeetings = {};
-        var allAdvisements = {};
+            var allClasses = {};
+            var classMeetings = {};
 
-        // Second pass through data. Build classes and advisements
-        rows.forEach(function(row) {
-            // Create class
-            var classKey = row.term + row.class_nbr;
-            if (!allClasses[classKey]) {
-                var courseId = results.courseObjectIds[row.subject + row.catalog];
-                var instructorId = results.facultyObjectIds[row.instructor_id];
-                var classDoc = classFromData(row, models, courseId, instructorId);
-                allClasses[classDoc.key] = classDoc;
-                classMeetings[classKey] = {};
-            }
+            // Second pass through data. Build classes
+            rows.forEach(function(row) {
+                // Create class
+                var classKey = row.term + row.class_nbr;
+                if (!allClasses[classKey]) {
+                    var courseId = results.courseObjectIds[row.subject + row.catalog];
+                    var instructorId = results.facultyObjectIds[row.instructor_id];
+                    var classDoc = classFromData(row, models, courseId, instructorId);
+                    allClasses[classDoc.key] = classDoc;
+                    classMeetings[classKey] = {};
+                }
 
-            var meeting = meetingFromData(row);
-            var meetingKey = keyFromMeeting(meeting);
-            classMeetings[classKey][meetingKey] = meeting;
-
-            // Create advisement
-            var advisementKey = row.student_id + row.advisor_id + row.term;
-            if (!allAdvisements[advisementKey]) {
-                var studentId = results.studentObjectIds[row.student_id];
-                var advisorId = results.facultyObjectIds[row.advisor_id];
-                var advisement = advisementFromData(row, models, studentId, advisorId);
-                allAdvisements[advisementKey] = advisement;
-            }
-        });
-
-        // For every class, add its unique list of meetings
-        Object.keys(allClasses).forEach(function(classKey) {
-            var meetings = Object.keys(classMeetings[classKey]).map(function(meetingKey) {
-                return classMeetings[classKey][meetingKey];
+                var meeting = meetingFromData(row);
+                var meetingKey = keyFromMeeting(meeting);
+                classMeetings[classKey][meetingKey] = meeting;
             });
 
-            allClasses[classKey].meetings = meetings;
-        });
+            // For every class, add its unique list of meetings
+            Object.keys(allClasses).forEach(function(classKey) {
+                var meetings = Object.keys(classMeetings[classKey]).map(function(meetingKey) {
+                    return classMeetings[classKey][meetingKey];
+                });
 
-        callback(null);
+                allClasses[classKey].meetings = meetings;
+            });
+
+            loadClassesIfNeeded(allClasses, models, function(err, classObjectIds) {
+                if (err) {
+                    callback(err);
+                } else {
+                    // At this point we should also have all of the ObjectIds of the classes
+
+                    var allAdvisements = {};
+                    var allEnrollments = {};
+
+                    // Third pass through data. Create advisements and enrollments
+                    rows.forEach(function(row) {
+                        // Get studentId, used in both advisement and enrollment
+                        var studentId = results.studentObjectIds[row.student_id];
+
+                        // Create advisement
+                        var advisementKey = row.student_id + row.advisor_id + row.term;
+                        if (!allAdvisements[advisementKey]) {
+                            var advisorId = results.facultyObjectIds[row.advisor_id];
+                            var advisement = advisementFromData(row, models, studentId, advisorId);
+                            allAdvisements[advisementKey] = advisement;
+                        }
+
+                        // Create enrollment
+                        var enrollmentKey = row.student_id + row.term + row.class_nbr;
+                        if (!allEnrollments[enrollmentKey]) {
+                            var classId = classObjectIds[row.term + row.class_nbr];
+                            var enrollment = enrollmentFromData(row, models, studentId, classId);
+                            allEnrollments[enrollmentKey] = enrollment;
+                        }
+                    });
+
+                    callback(null);
+                }
+            });
+        }
     });
 };
 
@@ -260,6 +287,22 @@ function advisementFromData(data, models, studentId, advisorId) {
     advisement.advisor = advisorId;
 
     return advisement;
+}
+
+function enrollmentFromData(data, models, studentId, classId) {
+    // all required keys in Enrollment should also be in data
+    // except for student and class
+    var enrollment = new models.Enrollment();
+    for (var key in models.Enrollment.schema.paths) {
+        if (key in data) {
+            enrollment[key] = data[key];
+        }
+    }
+
+    enrollment.student = studentId;
+    enrollment.class = classId;
+
+    return enrollment;
 }
 
 function loadStudentsIfNeeded(allStudents, models, callback) {
