@@ -61,15 +61,7 @@ exports.loadRequisites = function(rows, models, callback) {
                 if (error) {
                     callback(error);
                 } else {
-                    // bulk.execute(callback);
-                    bulk.execute(function(err, result) {
-                        console.log('inserted:', result.nInserted);
-                        console.log('upserted:', result.nUpserted);
-                        console.log('matched:', result.nMatched);
-                        console.log('modified:', result.nModified);
-                        console.log('upserted ids:\n', result.getUpsertedIds());
-                        callback(null);
-                    });
+                    bulk.execute(callback);
                 }
             }
         });
