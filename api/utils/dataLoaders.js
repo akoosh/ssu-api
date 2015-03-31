@@ -130,11 +130,12 @@ exports.loadEnrollments = function(rows, models, callback) {
 
         var allClasses = {};
         var classMeetings = {};
+        var allAdvisements = {};
 
+        // Second pass through data. Build classes and advisements
         rows.forEach(function(row) {
-            // Create class entity
+            // Create class
             var classKey = row.term + row.class_nbr;
-
             if (!allClasses[classKey]) {
                 var courseId = results.courseObjectIds[row.subject + row.catalog];
                 var instructorId = results.facultyObjectIds[row.instructor_id];
@@ -146,6 +147,15 @@ exports.loadEnrollments = function(rows, models, callback) {
             var meeting = meetingFromData(row);
             var meetingKey = keyFromMeeting(meeting);
             classMeetings[classKey][meetingKey] = meeting;
+
+            // Create advisement
+            var advisementKey = row.student_id + row.advisor_id + row.term;
+            if (!allAdvisements[advisementKey]) {
+                var studentId = results.studentObjectIds[row.student_id];
+                var advisorId = results.facultyObjectIds[row.advisor_id];
+                var advisement = advisementFromData(row, models, studentId, advisorId);
+                allAdvisements[advisementKey] = advisement;
+            }
         });
 
         // For every class, add its unique list of meetings
@@ -234,6 +244,22 @@ function meetingFromData(data) {
 
 function keyFromMeeting(meeting) {
     return meeting.facil_id + meeting.mtg_start + meeting.mtg_end + meeting.pat;
+}
+
+function advisementFromData(data, models, studentId, advisorId) {
+    // all required keys in Advisement should also be in data
+    // except for student and class
+    var advisement = new models.Advisement();
+    for (var key in models.Advisement.schema.paths) {
+        if (key in data) {
+            advisement[key] = data[key];
+        }
+    }
+
+    advisement.student = studentId;
+    advisement.advisor = advisorId;
+
+    return advisement;
 }
 
 function loadStudentsIfNeeded(allStudents, models, callback) {
