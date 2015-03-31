@@ -19,7 +19,6 @@ var fs          = require('fs');
 var parse       = require('csv-parse');
 var Schemas     = require('./utils/dataFileSchemas');
 var Loaders     = require('./utils/dataLoaders');
-var loadData    = require('./utils/loadData');
 
 module.exports = function(mongoose) {
 
@@ -369,25 +368,6 @@ module.exports = function(mongoose) {
 
 
     // Data loading functions
-
-    exports.processUploadedFile = function(filepath, callback) {
-        callback = (typeof callback === 'function') ? callback : function() {};
-
-        fs.readFile(filepath, 'utf8', function(err, data) {
-            if (err) {
-                callback(err);
-            } else {
-                parse(data, function(err, data) {
-                    if (err) {
-                        callback(err);
-                    } else {
-                        // data is valid CSV
-                        loadData(data, models, callback);
-                    }
-                });
-            }
-        });
-    };
 
     // The next few functions should be abstracted out into a helper function.
     // The only differences between them at this point are the names of a few
