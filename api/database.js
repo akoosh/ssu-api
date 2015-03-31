@@ -3,7 +3,7 @@
 
 // mongoose plugins
 var deepPopulate    = require('mongoose-deep-populate');
-var mongooseHidden  = require('mongoose-hidden')();
+var mongooseHidden  = require('mongoose-hidden')({autoHideObject: false});
 
 // models
 var StudentModule     = require('./models/student');
@@ -12,11 +12,13 @@ var CourseModule      = require('./models/course');
 var ClassModule       = require('./models/class');
 var EnrollmentModule  = require('./models/enrollment');
 var AdvisementModule  = require('./models/advisement');
+var RequisiteModule   = require('./models/requisite');
 
 // utils
 var fs          = require('fs');
 var parse       = require('csv-parse');
-var loadData    = require('./utils/loadData');
+var Schemas     = require('./utils/dataFileSchemas');
+var Loaders     = require('./utils/dataLoaders');
 
 module.exports = function(mongoose) {
 
@@ -38,7 +40,8 @@ module.exports = function(mongoose) {
         Course      : new CourseModule(mongoose, plugins),
         Class       : new ClassModule(mongoose, plugins),
         Enrollment  : new EnrollmentModule(mongoose, plugins),
-        Advisement  : new AdvisementModule(mongoose, plugins)
+        Advisement  : new AdvisementModule(mongoose, plugins),
+        Requisite   : new RequisiteModule(mongoose, plugins)
     };
 
     // Student functions
@@ -349,21 +352,114 @@ module.exports = function(mongoose) {
     };
 
 
+    // Requisite functions
+
+    exports.getAllRequisites = function(callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        models.Requisite.find().populate('course requisite').exec(function(err, requisites) {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, requisites);
+            }
+        });
+    };
+
+
     // Data loading functions
 
-    exports.processUploadedFile = function(filepath, callback) {
+    // The next few functions should be abstracted out into a helper function.
+    // The only differences between them at this point are the names of a few
+    // function calls.
+
+    exports.processCourses = function(filepath, callback) {
         callback = (typeof callback === 'function') ? callback : function() {};
 
         fs.readFile(filepath, 'utf8', function(err, data) {
             if (err) {
                 callback(err);
             } else {
-                parse(data, function(err, data) {
+                var conformsToSchema = false;
+                var columnNames = function(columns) {
+                    if (Schemas.conformsToSchema('courses', columns)) {
+                        conformsToSchema = true;
+                    }
+
+                    return columns.map(function(column) {
+                        return column.toLowerCase().replace(/ /g, '_');
+                    });
+                };
+
+                parse(data, {columns: columnNames, trim: true}, function(err, data) {
                     if (err) {
                         callback(err);
+                    } else if (!conformsToSchema) {
+                        callback('Invalid fields: Expected: ' + Schemas.courses);
                     } else {
-                        // data is valid CSV
-                        loadData(data, models, callback);
+                        Loaders.loadCourses(data, models, callback);
+                    }
+                });
+            }
+        });
+    };
+
+    exports.processRequisites = function(filepath, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        fs.readFile(filepath, 'utf8', function(err, data) {
+            if (err) {
+                callback(err);
+            } else {
+                var conformsToSchema = false;
+                var columnNames = function(columns) {
+                    if (Schemas.conformsToSchema('requisites', columns)) {
+                        conformsToSchema = true;
+                    }
+
+                    return columns.map(function(column) {
+                        return column.toLowerCase().replace(/ /g, '_');
+                    });
+                };
+
+                parse(data, {columns: columnNames, trim: true}, function(err, data) {
+                    if (err) {
+                        callback(err);
+                    } else if (!conformsToSchema) {
+                        callback('Invalid fields: Expected: ' + Schemas.requisites);
+                    } else {
+                        Loaders.loadRequisites(data, models, callback);
+                    }
+                });
+            }
+        });
+    };
+
+    exports.processEnrollments = function(filepath, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        fs.readFile(filepath, 'utf8', function(err, data) {
+            if (err) {
+                callback(err);
+            } else {
+                var conformsToSchema = false;
+                var columnNames = function(columns) {
+                    if (Schemas.conformsToSchema('enrollments', columns)) {
+                        conformsToSchema = true;
+                    }
+
+                    return columns.map(function(column) {
+                        return column.toLowerCase().replace(/ /g, '_');
+                    });
+                };
+
+                parse(data, {columns: columnNames, trim: true}, function(err, data) {
+                    if (err) {
+                        callback(err);
+                    } else if (!conformsToSchema) {
+                        callback('Invalid fields: Expected: ' + Schemas.enrollments);
+                    } else {
+                        Loaders.loadEnrollments(data, models, callback);
                     }
                 });
             }

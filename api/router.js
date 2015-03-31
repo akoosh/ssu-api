@@ -121,10 +121,25 @@ module.exports = function(express, db) {
     });
 
 
+    // Requiste routes
+
+    router.get('/requisites', function(req, res) {
+        db.getAllRequisites(getRequestHandler(res));
+    });
+
+
     // Data loading routes
 
-    router.post('/update/csv', function(req, res) {
-        db.processUploadedFile(req.files.file.path, postRequestHandler(res));
+    router.post('/courses', function(req, res) {
+        db.processCourses(req.files.file.path, postRequestHandler(res));
+    });
+
+    router.post('/requisites', function(req, res) {
+        db.processRequisites(req.files.file.path, postRequestHandler(res));
+    });
+
+    router.post('/enrollments', function(req, res) {
+        db.processEnrollments(req.files.file.path, postRequestHandler(res));
     });
 
     return router;

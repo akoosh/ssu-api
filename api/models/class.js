@@ -5,10 +5,13 @@ module.exports = function(mongoose, plugins) {
 
     var ObjectId = mongoose.Schema.Types.ObjectId;
     var schema = new mongoose.Schema({
+        // This 'key' property is a concatenation of 'term' + 'class_nbr',
+        // a class in term '2147' with class number '3295' has a key '21473295'
+        key: { type: String, required: true, index: {unique: true} },
         course: { type: ObjectId, ref: 'Course', required: true },
         instructor: { type: ObjectId, ref: 'Faculty', required: true },
-        class_nbr: { type: String, required: true },
         term: { type: String, required: true },
+        class_nbr: { type: String, required: true },
         term_description: { type: String, required: true },
         section: { type: String, required: true },
         component: { type: String, required: true },
@@ -20,9 +23,6 @@ module.exports = function(mongoose, plugins) {
             pat: { type: String, required: false }
         }]
     });
-
-    // Cannot have the same class twice
-    schema.index({class_nbr: 1, term: 1}, {unique: true});
 
     plugins.forEach(function(plugin) {
         schema.plugin(plugin);
