@@ -395,4 +395,46 @@ function loadCoursesIfNeeded(allCourses, models, callback) {
     });
 }
 
+function loadClassesIfNeeded(allClasses, models, callback) {
+
+    var classKeys = Object.keys(allClasses);
+    var classObjectIds = {};
+
+    models.Class.find({key: {$in: classKeys}}, function(err, docs) {
+        if (err) {
+            callback(err);
+        } else {
+            docs.forEach(function(doc) {
+                classObjectIds[doc.key] = doc._id;
+            });
+
+            // we now have object ids for classes in the database, but not for the rest.
+            // This filter gets the keys who we do not yet have ObjectIds for.
+            var newKeys = classKeys.filter(function(classKey) {
+                return !classObjectIds[classKey];
+            });
+
+            if (newKeys.length === 0) {
+                callback(null, classObjectIds);
+            } else {
+                var bulk = models.Class.collection.initializeUnorderedBulkOp();
+
+                newKeys.forEach(function(key) {
+                    var classDoc = allClasses[key];
+                    classObjectIds[classDoc.key] = classDoc._id;
+                    bulk.insert(classDoc.toObject());
+                });
+
+                bulk.execute(function(err, result) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        callback(null, classObjectIds);
+                    }
+                });
+            }
+        }
+    });
+}
+
 module.exports = exports;
