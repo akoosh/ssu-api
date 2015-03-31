@@ -191,7 +191,15 @@ exports.loadEnrollments = function(rows, models, callback) {
                         }
                     });
 
-                    callback(null);
+                    Async.parallel([
+                        function(callback) {
+                            saveAdvisements(_.values(allAdvisements), models, callback);
+                        },
+
+                        function(callback) {
+                            saveEnrollments(_.values(allEnrollments), models, callback);
+                        }
+                    ], callback);
                 }
             });
         }
@@ -478,6 +486,37 @@ function loadClassesIfNeeded(allClasses, models, callback) {
             }
         }
     });
+}
+
+function saveAdvisements(advisements, models, callback) {
+    var bulk = models.Advisement.collection.initializeUnorderedBulkOp();
+
+    advisements.forEach(function(advisement) {
+        var params = {
+            student: advisement.student,
+            advisor: advisement.advisor,
+            term: advisement.term
+        };
+
+        bulk.find(params).upsert().updateOne(_.omit(advisement.toObject(), '_id'));
+    });
+
+    bulk.execute(callback);
+}
+
+function saveEnrollments(enrollments, models, callback) {
+    var bulk = models.Enrollment.collection.initializeUnorderedBulkOp();
+
+    enrollments.forEach(function(enrollment) {
+        var params = {
+            student: enrollment.student,
+            class: enrollment.class
+        };
+
+        bulk.find(params).upsert().updateOne(_.omit(enrollment.toObject(), '_id'));
+    });
+
+    bulk.execute(callback);
 }
 
 module.exports = exports;
