@@ -86,7 +86,7 @@ exports.loadEnrollments = function(rows, models, callback) {
     var allFaculty = {};
     var allCourses = {};
 
-    console.time('first pass');
+    // First pass through data. Build students, instructors, advisors, and courses
     rows.forEach(function(row) {
         // Create student entity
         if (!allStudents[row.student_id]) {
@@ -111,7 +111,6 @@ exports.loadEnrollments = function(rows, models, callback) {
             allCourses[course.key] = course;
         }
     });
-    console.timeEnd('first pass');
 
     Async.parallel({
         studentObjectIds: function(callback) {
@@ -129,8 +128,33 @@ exports.loadEnrollments = function(rows, models, callback) {
         // At this point we should have all ObjectIds for students, courses and
         // faculty members in the data file.
 
-        Object.keys(results).forEach(function(key) {
-            console.log(key, 'length', Object.keys(results[key]).length);
+        var allClasses = {};
+        var classMeetings = {};
+
+        rows.forEach(function(row) {
+            // Create class entity
+            var classKey = row.term + row.class_nbr;
+
+            if (!allClasses[classKey]) {
+                var courseId = results.courseObjectIds[row.subject + row.catalog];
+                var instructorId = results.facultyObjectIds[row.instructor_id];
+                var classDoc = classFromData(row, models, courseId, instructorId);
+                allClasses[classDoc.key] = classDoc;
+                classMeetings[classKey] = {};
+            }
+
+            var meeting = meetingFromData(row);
+            var meetingKey = keyFromMeeting(meeting);
+            classMeetings[classKey][meetingKey] = meeting;
+        });
+
+        // For every class, add its unique list of meetings
+        Object.keys(allClasses).forEach(function(classKey) {
+            var meetings = Object.keys(classMeetings[classKey]).map(function(meetingKey) {
+                return classMeetings[classKey][meetingKey];
+            });
+
+            allClasses[classKey].meetings = meetings;
         });
 
         callback(null);
@@ -180,6 +204,36 @@ function courseFromData(data, models) {
 
     course.key = course.subject + course.catalog;
     return course;
+}
+
+function classFromData(data, models, courseId, instructorId) {
+    // all required keys in Class should also be in data
+    // except for course, instructor, and meetings
+    var classDoc = new models.Class();
+    for (var key in models.Class.schema.paths) {
+        if (key in data) {
+            classDoc[key] = data[key];
+        }
+    }
+
+    classDoc.key = classDoc.term + classDoc.class_nbr;
+    classDoc.course = courseId;
+    classDoc.instructor = instructorId;
+
+    return classDoc;
+}
+
+function meetingFromData(data) {
+    return {
+        facil_id: data.facil_id,
+        mtg_start: data.mtg_start,
+        mtg_end: data.mtg_end,
+        pat: data.pat
+    };
+}
+
+function keyFromMeeting(meeting) {
+    return meeting.facil_id + meeting.mtg_start + meeting.mtg_end + meeting.pat;
 }
 
 function loadStudentsIfNeeded(allStudents, models, callback) {
