@@ -382,13 +382,10 @@ module.exports = function(mongoose) {
             } else {
                 var conformsToSchema = false;
                 var columnNames = function(columns) {
-                    if (Schemas.conformsToSchema('courses', columns)) {
-                        conformsToSchema = true;
-                    }
+                    var transformedColumns = columns.map(Schemas.transformField);
+                    conformsToSchema = Schemas.conformsToSchema('courses', transformedColumns);
 
-                    return columns.map(function(column) {
-                        return column.toLowerCase().replace(/ /g, '_');
-                    });
+                    return transformedColumns.map(Schemas.keyForFieldName);
                 };
 
                 parse(data, {columns: columnNames, trim: true}, function(err, data) {
@@ -413,13 +410,10 @@ module.exports = function(mongoose) {
             } else {
                 var conformsToSchema = false;
                 var columnNames = function(columns) {
-                    if (Schemas.conformsToSchema('requisites', columns)) {
-                        conformsToSchema = true;
-                    }
+                    var transformedColumns = columns.map(Schemas.transformField);
+                    conformsToSchema = Schemas.conformsToSchema('requisites', transformedColumns);
 
-                    return columns.map(function(column) {
-                        return column.toLowerCase().replace(/ /g, '_');
-                    });
+                    return transformedColumns.map(Schemas.keyForFieldName);
                 };
 
                 parse(data, {columns: columnNames, trim: true}, function(err, data) {
@@ -444,13 +438,10 @@ module.exports = function(mongoose) {
             } else {
                 var conformsToSchema = false;
                 var columnNames = function(columns) {
-                    if (Schemas.conformsToSchema('enrollments', columns)) {
-                        conformsToSchema = true;
-                    }
+                    var transformedColumns = columns.map(Schemas.transformField);
+                    conformsToSchema = Schemas.conformsToSchema('enrollments', transformedColumns);
 
-                    return columns.map(function(column) {
-                        return column.toLowerCase().replace(/ /g, '_');
-                    });
+                    return transformedColumns.map(Schemas.keyForFieldName);
                 };
 
                 parse(data, {columns: columnNames, trim: true}, function(err, data) {

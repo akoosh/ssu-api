@@ -7,13 +7,10 @@ module.exports = function(mongoose, plugins) {
         key: { type: String, required: true, index: {unique: true} },
         subject: { type: String, required: true },
         catalog: { type: String, required: true },
-        class_description: { type: String, required: false }, // These two fields are the same thing but
-        long_title: { type: String, required: false},         // named differently in different files.
-        class_type: { type: String, required: false },
-        class_units: { type: String, required: false },       // class_units should get moved to the Class entity
-        min_units: { type: String, required: false },
-        max_units: { type: String, required: false },
-        career: { type: String, required: false }
+        course_title: { type: String, required: true},
+        course_description: { type: String, required: false},
+        min_units: { type: String, required: true },
+        max_units: { type: String, required: true }
     });
 
     plugins.forEach(function(plugin) {

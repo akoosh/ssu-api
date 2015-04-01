@@ -275,6 +275,9 @@ function courseFromData(data, models) {
     }
 
     course.key = course.subject + course.catalog;
+    course.min_units = data.class_units;
+    course.max_units = data.class_units;
+
     return course;
 }
 

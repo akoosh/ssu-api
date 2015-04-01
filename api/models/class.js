@@ -12,6 +12,8 @@ module.exports = function(mongoose, plugins) {
         instructor: { type: ObjectId, ref: 'Faculty', required: true },
         term: { type: String, required: true },
         class_nbr: { type: String, required: true },
+        class_units: { type: String, required: false },
+        class_type: { type: String, required: false },
         term_description: { type: String, required: true },
         section: { type: String, required: true },
         component: { type: String, required: true },
