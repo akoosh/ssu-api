@@ -131,15 +131,15 @@ module.exports = function(express, db) {
     // Data loading routes
 
     router.post('/courses', function(req, res) {
-        db.processCourses(req.files.file.path, postRequestHandler(res));
+        db.processFileWithSchema('courses', req.files.file.path, postRequestHandler(res));
     });
 
     router.post('/requisites', function(req, res) {
-        db.processRequisites(req.files.file.path, postRequestHandler(res));
+        db.processFileWithSchema('requisites', req.files.file.path, postRequestHandler(res));
     });
 
     router.post('/enrollments', function(req, res) {
-        db.processEnrollments(req.files.file.path, postRequestHandler(res));
+        db.processFileWithSchema('enrollments', req.files.file.path, postRequestHandler(res));
     });
 
     return router;

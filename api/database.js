@@ -369,11 +369,7 @@ module.exports = function(mongoose) {
 
     // Data loading functions
 
-    // The next few functions should be abstracted out into a helper function.
-    // The only differences between them at this point are the names of a few
-    // function calls.
-
-    exports.processCourses = function(filepath, callback) {
+    exports.processFileWithSchema = function(schemaName, filepath, callback) {
         callback = (typeof callback === 'function') ? callback : function() {};
 
         fs.readFile(filepath, 'utf8', function(err, data) {
@@ -383,7 +379,7 @@ module.exports = function(mongoose) {
                 var conformsToSchema = false;
                 var columnNames = function(columns) {
                     var transformedColumns = columns.map(Schemas.transformField);
-                    conformsToSchema = Schemas.conformsToSchema('courses', transformedColumns);
+                    conformsToSchema = Schemas.conformsToSchema(schemaName, transformedColumns);
 
                     return transformedColumns.map(Schemas.keyForFieldName);
                 };
@@ -392,65 +388,9 @@ module.exports = function(mongoose) {
                     if (err) {
                         callback(err);
                     } else if (!conformsToSchema) {
-                        callback('Invalid fields: Expected: ' + Schemas.courses);
+                        callback('Invalid fields: Expected: ' + Schemas[schemaName]);
                     } else {
-                        Loaders.loadCourses(data, models, callback);
-                    }
-                });
-            }
-        });
-    };
-
-    exports.processRequisites = function(filepath, callback) {
-        callback = (typeof callback === 'function') ? callback : function() {};
-
-        fs.readFile(filepath, 'utf8', function(err, data) {
-            if (err) {
-                callback(err);
-            } else {
-                var conformsToSchema = false;
-                var columnNames = function(columns) {
-                    var transformedColumns = columns.map(Schemas.transformField);
-                    conformsToSchema = Schemas.conformsToSchema('requisites', transformedColumns);
-
-                    return transformedColumns.map(Schemas.keyForFieldName);
-                };
-
-                parse(data, {columns: columnNames, trim: true}, function(err, data) {
-                    if (err) {
-                        callback(err);
-                    } else if (!conformsToSchema) {
-                        callback('Invalid fields: Expected: ' + Schemas.requisites);
-                    } else {
-                        Loaders.loadRequisites(data, models, callback);
-                    }
-                });
-            }
-        });
-    };
-
-    exports.processEnrollments = function(filepath, callback) {
-        callback = (typeof callback === 'function') ? callback : function() {};
-
-        fs.readFile(filepath, 'utf8', function(err, data) {
-            if (err) {
-                callback(err);
-            } else {
-                var conformsToSchema = false;
-                var columnNames = function(columns) {
-                    var transformedColumns = columns.map(Schemas.transformField);
-                    conformsToSchema = Schemas.conformsToSchema('enrollments', transformedColumns);
-
-                    return transformedColumns.map(Schemas.keyForFieldName);
-                };
-
-                parse(data, {columns: columnNames, trim: true}, function(err, data) {
-                    if (err) {
-                        callback(err);
-                    } else if (!conformsToSchema) {
-                        callback('Invalid fields: Expected: ' + Schemas.enrollments);
-                    } else {
-                        Loaders.loadEnrollments(data, models, callback);
+                        Loaders.loaderForSchema[schemaName](data, models, callback);
                     }
                 });
             }

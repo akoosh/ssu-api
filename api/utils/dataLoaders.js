@@ -549,4 +549,10 @@ function saveEnrollments(enrollments, models, callback) {
     bulk.execute(callback);
 }
 
+exports.loaderForSchema = {
+    courses     : exports.loadCourses,
+    requisites  : exports.loadRequisites,
+    enrollments : exports.loadEnrollments
+};
+
 module.exports = exports;
