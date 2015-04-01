@@ -9,8 +9,6 @@ module.exports = function(mongoose, plugins) {
         first_name: { type: String, required: true },
         gender: { type: String, required: true },
         ethnic_grp: { type: String, required: true }
-        // academic_level: { type: String, required: true },
-        // term_units: { term: String, units: Number },
     });
 
     plugins.forEach(function(plugin) {

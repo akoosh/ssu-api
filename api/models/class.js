@@ -7,7 +7,7 @@ module.exports = function(mongoose, plugins) {
     var schema = new mongoose.Schema({
         // This 'key' property is a concatenation of 'term' + 'class_nbr',
         // a class in term '2147' with class number '3295' has a key '21473295'
-        key: { type: String, required: true, index: {unique: true} },
+        key: { type: String, hide: true, required: true, index: {unique: true} },
         course: { type: ObjectId, ref: 'Course', required: true },
         instructor: { type: ObjectId, ref: 'Faculty', required: true },
         term: { type: String, required: true },

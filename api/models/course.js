@@ -4,7 +4,7 @@
 module.exports = function(mongoose, plugins) {
 
     var schema = new mongoose.Schema({
-        key: { type: String, required: true, index: {unique: true} },
+        key: { type: String, hide: true, required: true, index: {unique: true} },
         subject: { type: String, required: true },
         catalog: { type: String, required: true },
         course_title: { type: String, required: true},
