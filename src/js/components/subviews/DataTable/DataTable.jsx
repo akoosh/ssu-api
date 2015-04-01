@@ -24,7 +24,7 @@ function searchDataForQuery(query, data) {
     var searchData = data.filter(function(datum) {
         return _.every(patterns, function(pattern) {
             return _.some(datum, function(prop) {
-                return prop.match(pattern);
+                return (prop || '').match(pattern);
             });
         });
     });
