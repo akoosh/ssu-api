@@ -295,23 +295,17 @@ module.exports = function(mongoose) {
                   return requisite.type === 'P';
                 });
 
-
-      
-                var reqStudentIdGetters = _.pluck(preRequisites, "requisite").map( function(prerequisite) {
+                var reqStudentIdGetters = _.pluck(preRequisites, 'requisite').map( function(prerequisite) {
                     return function(preCallback) {
-                      
-                        console.log( prerequisite );
-                        models.Class.find( { course : prerequisite }, function(err, classes ) {
-                            var classIds = _.pluck( classes, "_id" );
+                        // Find all class sections that are instances of the prerequisite
+                        models.Class.find( { course : prerequisite }, function(err, classes) {
+                            var classIds = _.pluck( classes, '_id' );
 
-
-                            models.Enrollment.find( { class : { $in : classIds } }, function(err,enrollments){
-                                var studentIds = _.uniq( _.pluck( enrollments, "student" ) );
-                                
-                                preCallback( null,studentIds );
-      
+                            // Find all students that have taken one of those classes
+                            models.Enrollment.find( { class : { $in : classIds } }, function(err, enrollments){
+                                var studentIds = _.uniq( _.pluck( enrollments, 'student' ) );
+                                preCallback( null, studentIds );
                             });
-                          
                         });
                     };
                 });
@@ -321,17 +315,8 @@ module.exports = function(mongoose) {
                     var elgStudents = _.spread( _.intersection)(results);
                     models.Student.find( { _id : { $in : elgStudents } }, callback );
                 });
-
-
-
-                // Find all the students who have taken each prereq
-                // Do the intersection of all of the 
-                // Return the modified set
-
             });
         });
-
-
     };
 
 
