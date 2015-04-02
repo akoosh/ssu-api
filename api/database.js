@@ -15,7 +15,9 @@ var AdvisementModule  = require('./models/advisement');
 var RequisiteModule   = require('./models/requisite');
 
 // utils
+var _           = require('lodash');
 var fs          = require('fs');
+var Async       = require('async');
 var parse       = require('csv-parse');
 var Schemas     = require('./utils/dataFileSchemas');
 var Loaders     = require('./utils/dataLoaders');
@@ -279,6 +281,57 @@ module.exports = function(mongoose) {
                 });
             }
         });
+    };
+
+    exports.getEligibleStudentsBySubjectAndCatalogNumber = function(subject, catalog_number, callback) {
+        callback = (typeof callback === 'function') ? callback : function() {};
+
+        // Get course for subject : catalog_number
+        models.Course.findOne({subject: subject.toUpperCase(), catalog: catalog_number}, function(err, course) {
+
+            // Get the req. for the given subject : catalog_number
+            models.Requisite.find( { course : course._id }, function(err, requisites) {
+                var preRequisites = requisites.filter( function(requisite){ 
+                  return requisite.type === 'P';
+                });
+
+
+      
+                var reqStudentIdGetters = _.pluck(preRequisites, "_id").map( function(prerequisite) {
+                    return function(preCallback) {
+                      
+                        console.log( prerequisite );
+                        models.Class.find( { course : prerequisite }, function(err, classes ) {
+                            var classIds = _.pluck( classes, "_id" );
+
+
+                            models.Enrollment.find( { class : { $in : classIds } }, function(err,enrollments){
+                                var studentIds = _.uniq( _.pluck( enrollments, "student" ) );
+                                
+                                preCallback( null,studentIds );
+      
+                            });
+                          
+                        });
+                    };
+                });
+
+                Async.parallel( reqStudentIdGetters, function(err,results) {
+                    // Produces all of the studentIds who are eligible to take the class
+                    var elgStudents = _.spread( _.intersection)(results);
+                    models.Student.find( { _id : { $in : elgStudents } }, callback );
+                });
+
+
+
+                // Find all the students who have taken each prereq
+                // Do the intersection of all of the 
+                // Return the modified set
+
+            });
+        });
+
+
     };
 
 
