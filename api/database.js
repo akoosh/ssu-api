@@ -283,6 +283,21 @@ module.exports = function(mongoose) {
         });
     };
 
+    // This is a stopgap solution. Grades should probably be stored as numbers.
+    var gradePoints = {
+        'A+'    : 4.0,
+        'A'     : 4.0,
+        'A-'    : 3.7,
+        'B+'    : 3.3,
+        'B'     : 3.0,
+        'B-'    : 2.7,
+        'C+'    : 2.3,
+        'C'     : 2.0,
+        'C-'    : 1.7,
+        'D+'    : 1.3,
+        'D'     : 1.0
+    };
+
     exports.getEligibleStudentsBySubjectAndCatalogNumber = function(subject, catalog_number, callback) {
         callback = (typeof callback === 'function') ? callback : function() {};
 
@@ -295,15 +310,20 @@ module.exports = function(mongoose) {
                   return requisite.type === 'P';
                 });
 
-                var reqStudentIdGetters = _.pluck(preRequisites, 'requisite').map( function(prerequisite) {
+                var reqStudentIdGetters = preRequisites.map( function(prerequisite) {
                     return function(preCallback) {
                         // Find all class sections that are instances of the prerequisite
-                        models.Class.find( { course : prerequisite }, function(err, classes) {
+                        models.Class.find( { course : prerequisite.requisite }, function(err, classes) {
                             var classIds = _.pluck( classes, '_id' );
 
                             // Find all students that have taken one of those classes
                             models.Enrollment.find( { class : { $in : classIds } }, function(err, enrollments){
-                                var studentIds = _.uniq( _.pluck( enrollments, 'student' ) );
+                                // Filter out failing grades
+                                var passing = enrollments.filter(function(enrollment) {
+                                    return (gradePoints[enrollment.grade] || 0) >= (gradePoints[prerequisite.grade] || 0);
+                                });
+
+                                var studentIds = _.uniq( _.pluck( passing, 'student' ) );
                                 preCallback( null, studentIds );
                             });
                         });
