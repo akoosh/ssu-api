@@ -297,7 +297,7 @@ module.exports = function(mongoose) {
 
 
       
-                var reqStudentIdGetters = _.pluck(preRequisites, "_id").map( function(prerequisite) {
+                var reqStudentIdGetters = _.pluck(preRequisites, "requisite").map( function(prerequisite) {
                     return function(preCallback) {
                       
                         console.log( prerequisite );
