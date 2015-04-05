@@ -323,18 +323,48 @@ module.exports = function(mongoose) {
                                     return (gradePoints[enrollment.grade] || 0) >= (gradePoints[prerequisite.grade] || 0);
                                 });
 
-                                var studentIds = _.uniq( _.pluck( passing, 'student' ) );
+                                var studentIds = _.uniq( _.pluck( passing, 'student' ).map(String) );
                                 preCallback( null, studentIds );
                             });
                         });
                     };
                 });
 
-                Async.parallel( reqStudentIdGetters, function(err,results) {
-                    // Produces all of the studentIds who are eligible to take the class
-                    var elgStudents = _.spread( _.intersection)(results);
-                    models.Student.find( { _id : { $in : elgStudents } }, callback );
+                Async.parallel({
+                    // all students that have fullfilled prerequisites
+                    eligibleStudentIds: function(callback) {
+                        Async.parallel( reqStudentIdGetters, function(err,results) {
+                            // Produces all of the studentIds who are eligible to take the class
+                            var elgStudents = _.spread( _.intersection)(results);
+                            callback(null, elgStudents);
+                        });
+                    },
+
+                    // all students that have already passed the course
+                    doneStudentIds: function(callback) {
+                        models.Class.find( { course : course._id }, function(err, classes) {
+                            var classIds = _.pluck( classes, '_id' );
+
+                            // Find all students that have taken one of those classes
+                            models.Enrollment.find( { class : { $in : classIds } }, function(err, enrollments){
+                                // Filter out failing grades
+                                var passing = enrollments.filter(function(enrollment) {
+                                    return (gradePoints[enrollment.grade] || 0) >= gradePoints['C-'];
+                                });
+
+                                var studentIds = _.uniq( _.pluck( passing, 'student' ).map(String) );
+                                callback( null, studentIds );
+                            });
+                        });
+                    }
+
+                }, function(err, results) {
+                    // Produces the list of students that are eligible to take the course excluding those
+                    // that have already taken and passed it.
+                    var studentIds = _.difference(results.eligibleStudentIds.map(String), results.doneStudentIds.map(String));
+                    models.Student.find( { _id : { $in : studentIds } }, callback );
                 });
+
             });
         });
     };
