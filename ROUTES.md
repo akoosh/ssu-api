@@ -1,58 +1,70 @@
 ### Student routes
 
-`/students`
+`GET /students`
 
-`/students/:student_id`
+`GET /students/:student_id`
 
-`/students/:student_id/advisors`
+`GET /students/:student_id/advisors`
 
-`/students/:student_id/classes`
+`GET /students/:student_id/classes`
 
 
 ### Instructor routes
 
-`/instructors`
+`GET /instructors`
 
-`/instructors/:instructor_id`
+`GET /instructors/:instructor_id`
 
-`/instructors/:instructor_id/classes`
+`GET /instructors/:instructor_id/classes`
 
 
 ### Advisor routes
 
-`/advisors`
+`GET /advisors`
 
-`/advisors/:advisor_id`
+`GET /advisors/:advisor_id`
 
-`/advisors/:advisor_id/students`
+`GET /advisors/:advisor_id/students`
 
 
 ### Course routes
 
-`/courses`
+`GET /courses`
 
-`/courses/subjects`
+`GET /courses/subjects`
 
-`/courses/subjects/:subject`
+`GET /courses/subjects/:subject`
 
-`/courses/subjects/:subject/:catalog_number`
+`GET /courses/subjects/:subject/:catalog_number`
 
-`/courses/subjects/:subject/:catalog_number/classes`
+`GET /courses/subjects/:subject/:catalog_number/classes`
 
 
 ### Class routes
 
-`/classes`
+`GET /classes`
 
-`/classes/terms`
+`GET /classes/terms`
 
-`/classes/terms/:term`
+`GET /classes/terms/:term`
 
-`/classes/terms/:term/:class_number`
+`GET /classes/terms/:term/:class_number`
 
-`/classes/terms/:term/:class_number/students`
+`GET /classes/terms/:term/:class_number/students`
+
+
+### Requiste routes
+
+`GET /requisites`
 
 
 ### Data loading routes
 
-`/update/csv`
+All of these require a `multipart/form-data` encoding and a `file` parameter
+containing the CSV data file.
+
+`POST /courses`
+
+`POST /requisites`
+
+`POST /enrollments`
