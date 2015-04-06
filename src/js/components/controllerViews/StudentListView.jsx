@@ -42,7 +42,7 @@ var StudentListView = React.createClass({
         return (
             <div className='StudentListView'>
                 <Bootstrap.PageHeader>Students</Bootstrap.PageHeader>
-                <DataTable data={this.state.students} onRowClick={this.onRowClick}/>
+                <DataTable clickable data={this.state.students} onRowClick={this.onRowClick}/>
             </div>
         );
     }

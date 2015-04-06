@@ -8,7 +8,7 @@ var Bootstrap   = require('react-bootstrap');
 var TableHeader = React.createClass({
     render: function() {
         var headings = this.props.columns.map(function(column, i) {
-            var bsStyle = 'clickable';
+            var bsStyle = this.props.simple ? '' : 'clickable';
 
             if (column.key === this.props.sortKey) {
                 bsStyle += ' active';

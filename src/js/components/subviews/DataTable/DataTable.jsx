@@ -101,35 +101,37 @@ var DataTable = React.createClass({
     },
 
     onHeaderClick: function(event) {
-        var sortKey = event.target.dataset.key;
-        var sortOrder = 0;
-        if (sortKey === this.state.sortKey) {
-            switch (this.state.sortOrder) {
-                case -1:
-                    sortOrder = 1;
-                    break;
-                case 0:
-                    sortOrder = 1;
-                    break;
-                case 1:
-                    sortOrder = -1;
-                    break;
-                default:
-                    break;
+        if (!this.props.simple) {
+            var sortKey = event.target.dataset.key;
+            var sortOrder = 0;
+            if (sortKey === this.state.sortKey) {
+                switch (this.state.sortOrder) {
+                    case -1:
+                        sortOrder = 1;
+                        break;
+                    case 0:
+                        sortOrder = 1;
+                        break;
+                    case 1:
+                        sortOrder = -1;
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                sortOrder = 1;
             }
-        } else {
-            sortOrder = 1;
+
+            var sortData = this.sortedData(sortKey, sortOrder);
+            var searchData = searchDataForQuery(this.state.searchQuery, sortData);
+
+            this.setState({
+                sortKey: sortKey,
+                sortOrder: sortOrder,
+                sortData: sortData,
+                searchData: searchData
+            });
         }
-
-        var sortData = this.sortedData(sortKey, sortOrder);
-        var searchData = searchDataForQuery(this.state.searchQuery, sortData);
-
-        this.setState({
-            sortKey: sortKey,
-            sortOrder: sortOrder,
-            sortData: sortData,
-            searchData: searchData
-        });
     },
 
     onPerPage: function(event) {
@@ -186,8 +188,8 @@ var DataTable = React.createClass({
                 <Bootstrap.Row>
                     <Bootstrap.Col xs={12}>
                         <Bootstrap.Table striped bordered condensed hover>
-                            <TableHeader columns={this.state.columns} sortKey={this.state.sortKey} sortOrder={this.state.sortOrder} onHeaderClick={this.onHeaderClick}/>
-                            <TableBody rows={this.pagifiedData()} columns={this.state.columns} sortKey={this.state.sortKey} onRowClick={this.onRowClick}/>
+                            <TableHeader simple={this.props.simple} columns={this.state.columns} sortKey={this.state.sortKey} sortOrder={this.state.sortOrder} onHeaderClick={this.onHeaderClick}/>
+                            <TableBody clickable={this.props.clickable} rows={this.pagifiedData()} columns={this.state.columns} sortKey={this.state.sortKey} onRowClick={this.onRowClick}/>
                         </Bootstrap.Table>
                     </Bootstrap.Col>
                 </Bootstrap.Row>

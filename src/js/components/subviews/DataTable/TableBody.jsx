@@ -14,10 +14,11 @@ var TableBody = React.createClass({
     },
 
     render: function() {
+        var className = this.props.clickable ? 'clickable' : '';
         var rows = this.props.rows.map(function(item, i) {
             var clickHandler = this.clickHandlerForData(item);
             return (
-                <tr key={i} onClick={clickHandler}>
+                <tr className={className} key={i} onClick={clickHandler}>
                     {this.props.columns.map(function(column, i) {
                         var bsStyle = column.key === this.props.sortKey ? 'active' : '';
                         return <td key={i} className={bsStyle}>{item[column.key]}</td>;
