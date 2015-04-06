@@ -4,9 +4,9 @@ var React                   = require('react');
 var Router                  = require('react-router');
 var Bootstrap               = require('react-bootstrap');
 var _                       = require('lodash');
-var AppActions              = require('../../actions/AppActions');
-var DataTable               = require('../subviews/DataTable/DataTable');
-var StudentDataStore        = require('../../stores/StudentDataStore');
+var AppActions              = require('../../../actions/AppActions');
+var DataTable               = require('../../subviews/DataTable/DataTable');
+var StudentDataStore        = require('../../../stores/StudentDataStore');
 
 function formattedName(obj) {
     return [obj.last_name, obj.first_name].join(', ');

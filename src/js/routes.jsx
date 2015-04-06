@@ -12,11 +12,11 @@ var ApiClientApp        = require('./components/ApiClientApp');
 // ControllerViews
 var HomeView            = require('./components/controllerViews/HomeView');
 var FileUploadView      = require('./components/controllerViews/FileUploadView');
-var StudentListView     = require('./components/controllerViews/StudentListView');
-var StudentDetailView   = require('./components/controllerViews/StudentDetailView');
-var InstructorListView  = require('./components/controllerViews/InstructorListView');
-var AdvisorListView     = require('./components/controllerViews/AdvisorListView');
-var CourseListView      = require('./components/controllerViews/CourseListView');
+var StudentListView     = require('./components/controllerViews/listViews/StudentListView');
+var InstructorListView  = require('./components/controllerViews/listViews/InstructorListView');
+var AdvisorListView     = require('./components/controllerViews/listViews/AdvisorListView');
+var CourseListView      = require('./components/controllerViews/listViews/CourseListView');
+var StudentDetailView   = require('./components/controllerViews/detailViews/StudentDetailView');
 
 var routes = (
     <Route path='/' handler={ApiClientApp}>

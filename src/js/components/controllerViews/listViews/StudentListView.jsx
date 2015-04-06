@@ -3,9 +3,9 @@
 var React                   = require('react');
 var Router                  = require('react-router');
 var Bootstrap               = require('react-bootstrap');
-var AppActions              = require('../../actions/AppActions');
-var DataTable               = require('../subviews/DataTable/DataTable');
-var StudentListDataStore    = require('../../stores/StudentListDataStore');
+var AppActions              = require('../../../actions/AppActions');
+var DataTable               = require('../../subviews/DataTable/DataTable');
+var StudentListDataStore    = require('../../../stores/StudentListDataStore');
 
 function getViewState() {
     return {
