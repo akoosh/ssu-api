@@ -5,13 +5,15 @@ var express     = require('express');
 var bodyParser  = require('body-parser');
 var compression = require('compression');
 var multer      = require('multer');
-var mongoose    = require('mongoose');
 var morgan      = require('morgan');
+var mongoose    = require('mongoose');
 var multerOpts  = require('./api/utils/multerOptions');
-var db          = require('./api/database')(mongoose);
+var db          = require('./api/database');
 var apiRouter   = require('./api/router')(express, db);
 var port        = process.env.PORT || 8080;
 var app         = express();
+
+mongoose.connect('mongodb://localhost/students');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
