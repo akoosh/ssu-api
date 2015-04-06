@@ -97,6 +97,10 @@ module.exports = function(express, db) {
         db.getClassesBySubjectAndCatalogNumber(req.params.subject, req.params.catalog_number, getRequestHandler(res));
     });
 
+    router.get('/courses/subjects/:subject/:catalog_number/eligible', function(req, res) {
+        db.getEligibleStudentsBySubjectAndCatalogNumber(req.params.subject, req.params.catalog_number, getRequestHandler(res));
+    });
+
 
     // Class routes
 
@@ -119,6 +123,7 @@ module.exports = function(express, db) {
     router.get('/classes/terms/:term/:class_number/students', function(req, res) {
         db.getAllStudentsInClassByTermAndClassNumber(req.params.term, req.params.class_number, getRequestHandler(res));
     });
+
 
 
     // Requiste routes
