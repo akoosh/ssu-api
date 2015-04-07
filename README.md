@@ -4,11 +4,7 @@ This application is a server for an API meant for use by an arbitrary number
 of clients. The purpose of the API and its clients is to display aggregated
 and organized student data for the Department Chairs at SSU.
 
-This is one part of a three part project:
-
-- A back-end API to serve the data
-- A web-based client
-- An iOS client targeting iPad
+This repository contains code for the API and a web client.
 
 ## Project Discussion/Planning
 
@@ -21,6 +17,9 @@ it as a place to discuss it.
 
 ## Dependencies
 - [Node.js](nodejs.org) - The command is `nodejs` on Linux, but I make a link `/usr/bin/node -> /usr/bin/nodejs`
+    Installing node should also install `npm`, node's package manager. For development,
+    you'll need to install the `gulp` and `forever` packages globally, using
+    `npm install -g gulp forever`
 - [MongoDB](mongodb.org) - Installation instructions:
     [Ubuntu](http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/),
     [OSX](http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/)
@@ -28,12 +27,12 @@ it as a place to discuss it.
 ## Getting Started
 
 1. Once you have cloned the repository, run `npm install`. This will install the
-node modules listed as dependencies in `package.json` necessary to run the server.
+node modules listed as dependencies in `package.json` necessary to run the app.
 
-2. Once you have a MongoDB service running, run `node mockData.js`. This will
-inject some student data into the database with random names and student IDs.
-Note that this is just fake data, and only populates the student table. To test
-the whole application, you'll need to use some actual sample data.
+2. Once you have a MongoDB service running, run `node populateDatabase.js`. This will
+populate the database using the CSV files in `/data`, which contain all of the course
+information for SSU, some course requisite information, and four semesters' worth of
+(fake) student enrollment information.
 
 3. Start the server with `npm start`. This will run the server using [Forever](https://github.com/foreverjs/forever),
 which will restart the server if it crashes or if you change its source files.
@@ -44,3 +43,8 @@ are looking at raw JSON and are using Chrome, I recommend the [JSON Formatter](h
 Chrome extension. You can also use [Postman](https://chrome.google.com/webstore/detail/postman-rest-client/fdmmgilgnpjigdojojpjoooidkmcomcm?hl=en)
 to generate http requests of any type, which will be more helpful when this api
 uses more than just GET requests.
+
+5. The client application UI is built using Facebook's React library. To build it, run
+`gulp`. This will combine the source files for the client into a bunle that lives in
+`/public`, from which the server will serve static files. The client will be located at
+[localhost:8080/#/](localhost:8080/#/).
