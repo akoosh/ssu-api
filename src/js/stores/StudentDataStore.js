@@ -33,16 +33,8 @@ DataStore.dispatcherId = AppDispatcher.register(function(payload) {
     var action = payload.action;
 
     switch(action.actionType) {
-        case AppConstants.RECEIVE_STUDENT:
-            studentData.student = action.student;
-            DataStore.emitChange();
-            break;
-        case AppConstants.RECEIVE_STUDENT_ADVISORS:
-            studentData.advisors = action.advisors;
-            DataStore.emitChange();
-            break;
-        case AppConstants.RECEIVE_STUDENT_SECTIONS:
-            studentData.sections = action.sections;
+        case AppConstants.RECEIVE_STUDENT_DATA:
+            _.assign(studentData, _.omit(action, 'actionType'));
             DataStore.emitChange();
             break;
         default:

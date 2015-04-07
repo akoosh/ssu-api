@@ -1,6 +1,7 @@
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var AppConstants  = require('../constants/AppConstants');
 var AppApi        = require('../utils/AppApi');
+var Async         = require('async');
 var _             = require('lodash');
 
 var AppActions = {};
@@ -19,36 +20,25 @@ AppActions.fetchStudents = function() {
 };
 
 AppActions.fetchDataForStudent = function(student_id) {
-    AppApi.getStudentById(student_id, function(err, student) {
-        if (err) {
-            console.log(err);
-        } else {
-            AppDispatcher.handleAction({
-                actionType: AppConstants.RECEIVE_STUDENT,
-                student: student
-            });
-        }
-    });
+    Async.parallel({
+        student: function(callback) {
+            AppApi.getStudentById(student_id, callback);
+        },
 
-    AppApi.getAdvisorsByStudentId(student_id, function(err, advisors) {
-        if (err) {
-            console.log(err);
-        } else {
-            AppDispatcher.handleAction({
-                actionType: AppConstants.RECEIVE_STUDENT_ADVISORS,
-                advisors: advisors
-            });
-        }
-    });
+        advisors: function(callback) {
+            AppApi.getAdvisorsByStudentId(student_id, callback);
+        },
 
-    AppApi.getSectionsByStudentId(student_id, function(err, sections) {
+        sections: function(callback) {
+            AppApi.getSectionsByStudentId(student_id, callback);
+        }
+    }, function(err, results) {
         if (err) {
             console.log(err);
         } else {
-            AppDispatcher.handleAction({
-                actionType: AppConstants.RECEIVE_STUDENT_SECTIONS,
-                sections: sections
-            });
+            AppDispatcher.handleAction(_.assign(results, {
+                actionType: AppConstants.RECEIVE_STUDENT_DATA
+            }));
         }
     });
 };
