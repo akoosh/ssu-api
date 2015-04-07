@@ -58,7 +58,7 @@ AppActions.fetchInstructors = function() {
 
 AppActions.fetchDataForInstructor = function(instructor_id) {
     Async.parallel({
-        student: function(callback) {
+        instructor: function(callback) {
             AppApi.getInstructorById(instructor_id, callback);
         },
 

@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 
 var React                   = require('react');
+var Router                  = require('react-router');
 var Bootstrap               = require('react-bootstrap');
 var AppActions              = require('../../../actions/AppActions');
 var DataTable               = require('../../subviews/DataTable/DataTable');
@@ -13,6 +14,8 @@ function getViewState() {
 }
 
 var InstructorListView = React.createClass({
+
+    mixins: [Router.Navigation],
 
     getInitialState: function() {
         return getViewState();
@@ -31,11 +34,15 @@ var InstructorListView = React.createClass({
         InstructorListDataStore.removeChangeListener(this.onChange);
     },
 
+    onRowClick: function(instructor) {
+        this.transitionTo('instructor-detail', {instructor_id: instructor.faculty_id});
+    },
+
     render: function() {
         return (
             <div className='InstructorListView'>
                 <Bootstrap.PageHeader>Instructors</Bootstrap.PageHeader>
-                <DataTable data={this.state.instructors}/>
+                <DataTable clickable data={this.state.instructors} onRowClick={this.onRowClick}/>
             </div>
         );
     }
