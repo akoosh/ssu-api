@@ -18,6 +18,7 @@ var AdvisorListView         = require('./components/controllerViews/listViews/Ad
 var CourseListView          = require('./components/controllerViews/listViews/CourseListView');
 var StudentDetailView       = require('./components/controllerViews/detailViews/StudentDetailView');
 var InstructorDetailView    = require('./components/controllerViews/detailViews/InstructorDetailView');
+var SectionDetailView       = require('./components/controllerViews/detailViews/SectionDetailView');
 
 var routes = (
     <Route path='/' handler={ApiClientApp}>
@@ -33,6 +34,10 @@ var routes = (
 
         <Route name='advisors' path='/advisors' handler={AdvisorListView}/>
         <Route name='courses' path='/courses' handler={CourseListView}/>
+
+        <Route path='/sections/:term'>
+            <Route name='section-detail' path=':class_nbr' handler={SectionDetailView}/>
+        </Route>
     </Route>
 );
 
