@@ -15,7 +15,8 @@ function formattedName(obj) {
 function advisorList(advisements) {
     return advisements.map(function(advisement) {
         return {
-            advisor: formattedName(advisement.advisor),
+            advisor_id: advisement.advisor.faculty_id,
+            advisor_name: formattedName(advisement.advisor),
             term: advisement.term_description,
             academic_plan: advisement.acad_plan_descr
         };
@@ -90,6 +91,10 @@ var StudentDetailView = React.createClass({
         StudentDataStore.removeChangeListener(this.onChange);
     },
 
+    onAdvisorRowClick: function(advisor) {
+        this.transitionTo('advisor-detail', {advisor_id: advisor.advisor_id});
+    },
+
     onSectionRowClick: function(term, section) {
         this.transitionTo('section-detail', this.state.sectionLinkParams[term + section.class_number]);
     },
@@ -104,7 +109,7 @@ var StudentDetailView = React.createClass({
                 <h2>Advisors</h2>
                 <Bootstrap.Row>
                     <Bootstrap.Col xs={6}>
-                        <DataTable simple data={this.state.advisors}/>
+                        <DataTable simple clickable data={this.state.advisors} onRowClick={this.onAdvisorRowClick}/>
                     </Bootstrap.Col>
                 </Bootstrap.Row>
 
