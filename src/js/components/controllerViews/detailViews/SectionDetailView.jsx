@@ -71,7 +71,9 @@ var InstructorDetailView = React.createClass({
                 </Bootstrap.PageHeader>
 
                 <h2>Course Title</h2>
-                <h4>{(this.state.section.course || {}).course_title}</h4>
+                <h4><Router.Link to='course-detail' params={{subject: (this.state.section.course || {}).subject || '', catalog_number: (this.state.section.course || {}).catalog || ''}}>
+                    {(this.state.section.course || {}).course_title}
+                </Router.Link></h4>
 
                 <h2>Instructor</h2>
                 <h4><Router.Link to='instructor-detail' params={{instructor_id: (this.state.section.instructor || {}).faculty_id || ''}}>{formattedName(this.state.section.instructor)}</Router.Link></h4>

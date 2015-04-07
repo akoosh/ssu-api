@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 
 var React                   = require('react');
+var Router                  = require('react-router');
 var Bootstrap               = require('react-bootstrap');
 var AppActions              = require('../../../actions/AppActions');
 var DataTable               = require('../../subviews/DataTable/DataTable');
@@ -26,6 +27,8 @@ function getViewState() {
 
 var CourseListView = React.createClass({
 
+    mixins: [Router.Navigation],
+
     getInitialState: function() {
         return getViewState();
     },
@@ -43,11 +46,15 @@ var CourseListView = React.createClass({
         CourseListDataStore.removeChangeListener(this.onChange);
     },
 
+    onRowClick: function(course) {
+        this.transitionTo('course-detail', {subject: course.subject, catalog_number: course.catalog});
+    },
+
     render: function() {
         return (
             <div className='CourseListView'>
                 <Bootstrap.PageHeader>Courses</Bootstrap.PageHeader>
-                <DataTable data={this.state.courses}/>
+                <DataTable clickable data={this.state.courses} onRowClick={this.onRowClick}/>
             </div>
         );
     }
