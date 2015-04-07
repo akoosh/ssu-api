@@ -57,4 +57,14 @@ AppApi.getCourses = function(callback) {
     makeApiRequest('api/v0/courses', callback);
 };
 
+AppApi.getSectionByTermAndClassNumber = function(term, class_nbr, callback) {
+    var path = 'api/v0/classes/terms/' + term + '/' + class_nbr;
+    makeApiRequest(path, callback);
+};
+
+AppApi.getStudentsInSectionByTermAndClassNumber = function(term, class_nbr, callback) {
+    var path = 'api/v0/classes/terms/' + term + '/' + class_nbr + '/students';
+    makeApiRequest(path, callback);
+};
+
 module.exports = AppApi;

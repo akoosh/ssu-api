@@ -102,4 +102,24 @@ AppActions.fetchCourses = function() {
     });
 };
 
+AppActions.fetchDataForSection = function(term, class_nbr) {
+    Async.parallel({
+        section: function(callback) {
+            AppApi.getSectionByTermAndClassNumber(term, class_nbr, callback);
+        },
+
+        students: function(callback) {
+            AppApi.getStudentsInSectionByTermAndClassNumber(term, class_nbr, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            console.log(err);
+        } else {
+            AppDispatcher.handleAction(_.assign(results, {
+                actionType: AppConstants.RECEIVE_SECTION_DATA
+            }));
+        }
+    });
+};
+
 module.exports = AppActions;
