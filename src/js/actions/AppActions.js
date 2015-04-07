@@ -56,6 +56,26 @@ AppActions.fetchInstructors = function() {
     });
 };
 
+AppActions.fetchDataForInstructor = function(instructor_id) {
+    Async.parallel({
+        student: function(callback) {
+            AppApi.getInstructorById(instructor_id, callback);
+        },
+
+        sections: function(callback) {
+            AppApi.getSectionsByInstructorId(instructor_id, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            console.log(err);
+        } else {
+            AppDispatcher.handleAction(_.assign(results, {
+                actionType: AppConstants.RECEIVE_INSTRUCTOR_DATA
+            }));
+        }
+    });
+};
+
 AppActions.fetchAdvisors = function() {
     AppApi.getAdvisors(function(err, advisors) {
         if (err) {

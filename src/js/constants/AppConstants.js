@@ -7,5 +7,6 @@ module.exports = keyMirror({
     RECEIVE_ADVISORS: null,
     RECEIVE_COURSES: null,
 
-    RECEIVE_STUDENT_DATA: null
+    RECEIVE_STUDENT_DATA: null,
+    RECEIVE_INSTRUCTOR_DATA: null
 });

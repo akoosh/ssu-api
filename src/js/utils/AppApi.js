@@ -39,6 +39,16 @@ AppApi.getInstructors = function(callback) {
     makeApiRequest('api/v0/instructors', callback);
 };
 
+AppApi.getInstructorById = function(instructor_id, callback) {
+    var path = 'api/v0/instructors/' + instructor_id;
+    makeApiRequest(path, callback);
+};
+
+AppApi.getSectionsByInstructorId = function(instructor_id, callback) {
+    var path = 'api/v0/instructors/' + instructor_id + '/classes';
+    makeApiRequest(path, callback);
+};
+
 AppApi.getAdvisors = function(callback) {
     makeApiRequest('api/v0/advisors', callback);
 };
