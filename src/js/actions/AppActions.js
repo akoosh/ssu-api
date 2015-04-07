@@ -89,6 +89,26 @@ AppActions.fetchAdvisors = function() {
     });
 };
 
+AppActions.fetchDataForAdvisor = function(advisor_id) {
+    Async.parallel({
+        advisor: function(callback) {
+            AppApi.getAdvisorById(advisor_id, callback);
+        },
+
+        students: function(callback) {
+            AppApi.getStudentsByAdvisorId(advisor_id, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            console.log(err);
+        } else {
+            AppDispatcher.handleAction(_.assign(results, {
+                actionType: AppConstants.RECEIVE_ADVISOR_DATA
+            }));
+        }
+    });
+};
+
 AppActions.fetchCourses = function() {
     AppApi.getCourses(function(err, courses) {
         if (err) {
