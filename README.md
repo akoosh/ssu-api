@@ -47,4 +47,4 @@ uses more than just GET requests.
 5. The client application UI is built using Facebook's React library. To build it, run
 `gulp`. This will combine the source files for the client into a bunle that lives in
 `/public`, from which the server will serve static files. The client will be located at
-[localhost:8080/#/](localhost:8080/#/).
+[localhost:8080/](localhost:8080/).
