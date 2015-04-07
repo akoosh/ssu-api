@@ -122,6 +122,26 @@ AppActions.fetchCourses = function() {
     });
 };
 
+AppActions.fetchDataForCourse = function(subject, catalog_number) {
+    Async.parallel({
+        course: function(callback) {
+            AppApi.getCourseBySubjectAndCatalogNumber(subject, catalog_number, callback);
+        },
+
+        sections: function(callback) {
+            AppApi.getSectionsBySubjectAndCatalogNumber(subject, catalog_number, callback);
+        }
+    }, function(err, results) {
+        if (err) {
+            console.log(err);
+        } else {
+            AppDispatcher.handleAction(_.assign(results, {
+                actionType: AppConstants.RECEIVE_COURSE_DATA
+            }));
+        }
+    });
+};
+
 AppActions.fetchDataForSection = function(term, class_nbr) {
     Async.parallel({
         section: function(callback) {

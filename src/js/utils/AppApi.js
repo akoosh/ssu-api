@@ -16,6 +16,8 @@ function makeApiRequest(url, callback) {
 
 var AppApi = {};
 
+// Student
+
 AppApi.getStudents = function(callback) {
     makeApiRequest('api/v0/students', callback);
 };
@@ -35,6 +37,8 @@ AppApi.getSectionsByStudentId = function(student_id, callback) {
     makeApiRequest(path, callback);
 };
 
+// Instructor
+
 AppApi.getInstructors = function(callback) {
     makeApiRequest('api/v0/instructors', callback);
 };
@@ -48,6 +52,8 @@ AppApi.getSectionsByInstructorId = function(instructor_id, callback) {
     var path = 'api/v0/instructors/' + instructor_id + '/classes';
     makeApiRequest(path, callback);
 };
+
+// Advisor
 
 AppApi.getAdvisors = function(callback) {
     makeApiRequest('api/v0/advisors', callback);
@@ -63,9 +69,23 @@ AppApi.getStudentsByAdvisorId = function(advisor_id, callback) {
     makeApiRequest(path, callback);
 };
 
+// Course
+
 AppApi.getCourses = function(callback) {
     makeApiRequest('api/v0/courses', callback);
 };
+
+AppApi.getCourseBySubjectAndCatalogNumber = function(subject, catalog_number, callback) {
+    var path = 'api/v0/courses/subjects/' + subject + '/' + catalog_number;
+    makeApiRequest(path, callback);
+};
+
+AppApi.getSectionsBySubjectAndCatalogNumber = function(subject, catalog_number, callback) {
+    var path = 'api/v0/courses/subjects/' + subject + '/' + catalog_number + '/classes';
+    makeApiRequest(path, callback);
+};
+
+// Section
 
 AppApi.getSectionByTermAndClassNumber = function(term, class_nbr, callback) {
     var path = 'api/v0/classes/terms/' + term + '/' + class_nbr;
