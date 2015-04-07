@@ -245,6 +245,7 @@ exports.getClassesBySubjectAndCatalogNumber = function(subject, catalog_number, 
                 if (err) {
                     callback(err);
                 } else {
+                    classes.forEach(function(classDoc) { classDoc.course = undefined; });
                     callback(null, classes);
                 }
             });
