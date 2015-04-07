@@ -70,13 +70,18 @@ var InstructorDetailView = React.createClass({
                     {(this.state.section.course || {}).subject} {(this.state.section.course || {}).catalog} <small>Class Number: {this.state.section.class_nbr}, {this.state.section.term_description}</small>
                 </Bootstrap.PageHeader>
 
-                <h2>Course Title</h2>
-                <h4><Router.Link to='course-detail' params={{subject: (this.state.section.course || {}).subject || '', catalog_number: (this.state.section.course || {}).catalog || ''}}>
-                    {(this.state.section.course || {}).course_title}
-                </Router.Link></h4>
-
-                <h2>Instructor</h2>
-                <h4><Router.Link to='instructor-detail' params={{instructor_id: (this.state.section.instructor || {}).faculty_id || ''}}>{formattedName(this.state.section.instructor)}</Router.Link></h4>
+                <Bootstrap.Row>
+                    <Bootstrap.Col xs={2}>
+                        <h2>Course Title</h2>
+                        <h4><Router.Link to='course-detail' params={{subject: (this.state.section.course || {}).subject || '', catalog_number: (this.state.section.course || {}).catalog || ''}}>
+                            {(this.state.section.course || {}).course_title}
+                        </Router.Link></h4>
+                    </Bootstrap.Col>
+                    <Bootstrap.Col xs={2}>
+                        <h2>Instructor</h2>
+                        <h4><Router.Link to='instructor-detail' params={{instructor_id: (this.state.section.instructor || {}).faculty_id || ''}}>{formattedName(this.state.section.instructor)}</Router.Link></h4>
+                    </Bootstrap.Col>
+                </Bootstrap.Row>
 
                 <h2>Students</h2>
                 <Bootstrap.Row>
