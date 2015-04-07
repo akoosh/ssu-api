@@ -31,6 +31,7 @@ function classHistory(sections) {
     Object.keys(grouped).forEach(function(term) {
         history[term] = grouped[term].map(function(section) {
             return {
+                class_number: section.class.class_nbr,
                 subject: section.class.course.subject,
                 catalog: section.class.course.catalog,
                 course_title: section.class.course.course_title,
@@ -46,18 +47,31 @@ function classHistory(sections) {
     return history;
 }
 
+function sectionLinkParams(sections) {
+    var params = {};
+    sections.forEach(function(section) {
+        params[section.class.term_description + section.class.class_nbr] = {
+            term: section.class.term,
+            class_nbr: section.class.class_nbr
+        };
+    });
+
+    return params;
+}
+
 function getViewState() {
     var data = StudentDataStore.getStudentData();
     return {
         student: data.student,
         advisors: advisorList(data.advisors),
-        classHistory: classHistory(data.sections)
+        classHistory: classHistory(data.sections),
+        sectionLinkParams: sectionLinkParams(data.sections)
     };
 }
 
 var StudentDetailView = React.createClass({
 
-    mixins: [Router.State],
+    mixins: [Router.State, Router.Navigation],
 
     getInitialState: function() {
         return getViewState();
@@ -74,6 +88,10 @@ var StudentDetailView = React.createClass({
 
     componentWillUnmount: function() {
         StudentDataStore.removeChangeListener(this.onChange);
+    },
+
+    onSectionRowClick: function(term, section) {
+        this.transitionTo('section-detail', this.state.sectionLinkParams[term + section.class_number]);
     },
 
     render: function() {
@@ -97,7 +115,7 @@ var StudentDetailView = React.createClass({
                             return (
                                 <div key={term}>
                                     <h4>{term}</h4>
-                                    <DataTable simple data={this.state.classHistory[term]}/>
+                                    <DataTable simple clickable data={this.state.classHistory[term]} onRowClick={this.onSectionRowClick.bind(this, term)}/>
                                 </div>
                             );
                         }.bind(this))}

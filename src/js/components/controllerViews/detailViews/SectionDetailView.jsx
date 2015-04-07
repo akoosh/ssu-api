@@ -38,7 +38,7 @@ function getViewState() {
 
 var InstructorDetailView = React.createClass({
 
-    mixins: [Router.State],
+    mixins: [Router.State, Router.Navigation],
 
     getInitialState: function() {
         return getViewState();
@@ -59,6 +59,10 @@ var InstructorDetailView = React.createClass({
         SectionDataStore.removeChangeListener(this.onChange);
     },
 
+    onStudentRowClick: function(student) {
+        this.transitionTo('student-detail', {student_id: student.student_id});
+    },
+
     render: function() {
         return (
             <div className='InstructorDetailView'>
@@ -70,12 +74,12 @@ var InstructorDetailView = React.createClass({
                 <h4>{(this.state.section.course || {}).course_title}</h4>
 
                 <h2>Instructor</h2>
-                <h4>{formattedName(this.state.section.instructor)}</h4>
+                <h4><Router.Link to='instructor-detail' params={{instructor_id: (this.state.section.instructor || {}).faculty_id || ''}}>{formattedName(this.state.section.instructor)}</Router.Link></h4>
 
                 <h2>Students</h2>
                 <Bootstrap.Row>
                     <Bootstrap.Col xs={6}>
-                        <DataTable simple data={this.state.students}/>
+                        <DataTable simple clickable data={this.state.students} onRowClick={this.onStudentRowClick}/>
                     </Bootstrap.Col>
                 </Bootstrap.Row>
             </div>
