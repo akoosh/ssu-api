@@ -3,6 +3,7 @@
 var React                   = require('react');
 var Router                  = require('react-router');
 var Bootstrap               = require('react-bootstrap');
+var BarChart                = require('react-d3/barchart').BarChart;
 var _                       = require('lodash');
 var AppActions              = require('../../../actions/AppActions');
 var DataTable               = require('../../subviews/DataTable/DataTable');
@@ -28,11 +29,36 @@ function formattedStudents(students) {
     });
 }
 
+function gradeDistribution(students) {
+    var dist = _.groupBy(students, 'grade');
+
+    return [
+        'F',
+        'D-',
+        'D',
+        'D+',
+        'C-',
+        'C',
+        'C+',
+        'B-',
+        'B',
+        'B+',
+        'A-',
+        'A'
+    ].map(function(grade) {
+        return {
+            label: grade,
+            value: (dist[grade] || []).length
+        };
+    });
+}
+
 function getViewState() {
     var data = SectionDataStore.getSectionData();
     return {
         section: data.section,
-        students: formattedStudents(data.students)
+        students: formattedStudents(data.students),
+        gradeDistribution: gradeDistribution(data.students)
     };
 }
 
@@ -89,6 +115,9 @@ var InstructorDetailView = React.createClass({
                         <DataTable simple clickable data={this.state.students} onRowClick={this.onStudentRowClick}/>
                     </Bootstrap.Col>
                 </Bootstrap.Row>
+
+                <h2>Grade Distribution</h2>
+                <BarChart data={this.state.gradeDistribution} width={500} height={200} fill={'#3182bd'}/>
             </div>
         );
     }

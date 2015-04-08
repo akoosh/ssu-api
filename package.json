@@ -24,6 +24,7 @@
     "promise": "~6.1.0",
     "react": "^0.12.2",
     "react-bootstrap": "^0.16.1",
+    "react-d3": "^0.3.0",
     "react-router": "^0.12.4",
     "reactable": "^0.10.1"
   },
