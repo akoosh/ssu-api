@@ -10,14 +10,12 @@ var Schemas     = require('./utils/dataFileSchemas');
 var Loaders     = require('./utils/dataLoaders');
 var models      = require('./models');
 
-var exports = {};
-
 // Enable this to see mongoose activity
 // mongoose.set('debug', true);
 
 // Student functions
 
-exports.getAllStudents = function(callback) {
+function getAllStudents(callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Student.find(function(err, students) {
@@ -27,9 +25,9 @@ exports.getAllStudents = function(callback) {
             callback(null, students);
         }
     });
-};
+}
 
-exports.getStudentById = function(student_id, callback) {
+function getStudentById(student_id, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Student.findOne({student_id: student_id}, function(err, student) {
@@ -39,9 +37,9 @@ exports.getStudentById = function(student_id, callback) {
             callback(null, student);
         }
     });
-};
+}
 
-exports.getAdvisorsByStudentId = function(student_id, callback) {
+function getAdvisorsByStudentId(student_id, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Student.findOne({student_id: student_id}, function(err, student) {
@@ -58,9 +56,9 @@ exports.getAdvisorsByStudentId = function(student_id, callback) {
             });
         }
     });
-};
+}
 
-exports.getClassesByStudentId = function(student_id, callback) {
+function getClassesByStudentId(student_id, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Student.findOne({student_id: student_id}, function(err, student) {
@@ -77,12 +75,12 @@ exports.getClassesByStudentId = function(student_id, callback) {
             });
         }
     });
-};
+}
 
 
 // Instructor functions
 
-exports.getAllInstructors = function(callback) {
+function getAllInstructors(callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Faculty.find(function(err, instructors) {
@@ -92,9 +90,9 @@ exports.getAllInstructors = function(callback) {
             callback(null, instructors);
         }
     });
-};
+}
 
-exports.getInstructorById = function(instructor_id, callback) {
+function getInstructorById(instructor_id, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Faculty.findOne({faculty_id: instructor_id}, function(err, instructor) {
@@ -104,9 +102,9 @@ exports.getInstructorById = function(instructor_id, callback) {
             callback(null, instructor);
         }
     });
-};
+}
 
-exports.getClassesByInstructorId = function(instructor_id, callback) {
+function getClassesByInstructorId(instructor_id, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Faculty.findOne({faculty_id: instructor_id}, function(err, instructor) {
@@ -123,12 +121,12 @@ exports.getClassesByInstructorId = function(instructor_id, callback) {
             });
         }
     });
-};
+}
 
 
 // Advisor functions
 
-exports.getAllAdvisors = function(callback) {
+function getAllAdvisors(callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Advisement.distinct('advisor', function(err, advisor_ids) {
@@ -144,9 +142,9 @@ exports.getAllAdvisors = function(callback) {
             });
         }
     });
-};
+}
 
-exports.getAdvisorById = function(advisor_id, callback) {
+function getAdvisorById(advisor_id, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Advisement.distinct('advisor', function(err, advisor_ids) {
@@ -162,9 +160,9 @@ exports.getAdvisorById = function(advisor_id, callback) {
             });
         }
     });
-};
+}
 
-exports.getStudentsByAdvisorId = function(advisor_id, callback) {
+function getStudentsByAdvisorId(advisor_id, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Faculty.findOne({faculty_id: advisor_id}, function(err, advisor) {
@@ -181,12 +179,12 @@ exports.getStudentsByAdvisorId = function(advisor_id, callback) {
             });
         }
     });
-};
+}
 
 
 // Course routes
 
-exports.getAllCourses = function(callback) {
+function getAllCourses(callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Course.find(function(err, courses) {
@@ -196,9 +194,9 @@ exports.getAllCourses = function(callback) {
             callback(null, courses);
         }
     });
-};
+}
 
-exports.getAllSubjects = function(callback) {
+function getAllSubjects(callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Course.distinct('subject', function(err, subjects) {
@@ -208,9 +206,9 @@ exports.getAllSubjects = function(callback) {
             callback(null, subjects);
         }
     });
-};
+}
 
-exports.getCoursesBySubject = function(subject, callback) {
+function getCoursesBySubject(subject, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Course.find({subject: subject.toUpperCase()}, function(err, courses) {
@@ -220,9 +218,9 @@ exports.getCoursesBySubject = function(subject, callback) {
             callback(null, courses);
         }
     });
-};
+}
 
-exports.getCourseBySubjectAndCatalogNumber = function(subject, catalog_number, callback) {
+function getCourseBySubjectAndCatalogNumber(subject, catalog_number, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Course.findOne({subject: subject.toUpperCase(), catalog: catalog_number}, function(err, course) {
@@ -232,9 +230,9 @@ exports.getCourseBySubjectAndCatalogNumber = function(subject, catalog_number, c
             callback(null, course);
         }
     });
-};
+}
 
-exports.getClassesBySubjectAndCatalogNumber = function(subject, catalog_number, callback) {
+function getClassesBySubjectAndCatalogNumber(subject, catalog_number, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Course.findOne({subject: subject.toUpperCase(), catalog: catalog_number}, function(err, course) {
@@ -251,7 +249,7 @@ exports.getClassesBySubjectAndCatalogNumber = function(subject, catalog_number, 
             });
         }
     });
-};
+}
 
 // This is a stopgap solution. Grades should probably be stored as numbers.
 var gradePoints = {
@@ -268,7 +266,7 @@ var gradePoints = {
     'D'     : 1.0
 };
 
-exports.getEligibleStudentsBySubjectAndCatalogNumber = function(subject, catalog_number, callback) {
+function getEligibleStudentsBySubjectAndCatalogNumber(subject, catalog_number, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     // Get course for subject : catalog_number
@@ -337,12 +335,12 @@ exports.getEligibleStudentsBySubjectAndCatalogNumber = function(subject, catalog
 
         });
     });
-};
+}
 
 
 // Class functions
 
-exports.getAllClasses = function(callback) {
+function getAllClasses(callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Class.find(function(err, classes) {
@@ -352,9 +350,9 @@ exports.getAllClasses = function(callback) {
             callback(null, classes);
         }
     });
-};
+}
 
-exports.getAllTerms = function(callback) {
+function getAllTerms(callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Class.distinct('term', function(err, terms) {
@@ -364,9 +362,9 @@ exports.getAllTerms = function(callback) {
             callback(null, terms);
         }
     });
-};
+}
 
-exports.getAllClassesByTerm = function(term, callback) {
+function getAllClassesByTerm(term, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Class.find({term: term}).populate('course instructor').exec(function(err, classes) {
@@ -376,9 +374,9 @@ exports.getAllClassesByTerm = function(term, callback) {
             callback(null, classes);
         }
     });
-};
+}
 
-exports.getClassByTermAndClassNumber = function(term, class_number, callback) {
+function getClassByTermAndClassNumber(term, class_number, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Class.findOne({term: term, class_nbr: class_number}).populate('course instructor').exec(function(err, classDoc) {
@@ -388,9 +386,9 @@ exports.getClassByTermAndClassNumber = function(term, class_number, callback) {
             callback(null, classDoc);
         }
     });
-};
+}
 
-exports.getAllStudentsInClassByTermAndClassNumber = function(term, class_number, callback) {
+function getAllStudentsInClassByTermAndClassNumber(term, class_number, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Class.findOne({term: term, class_nbr: class_number}).populate('course instructor').exec(function(err, classDoc) {
@@ -407,12 +405,12 @@ exports.getAllStudentsInClassByTermAndClassNumber = function(term, class_number,
             });
         }
     });
-};
+}
 
 
 // Requisite functions
 
-exports.getAllRequisites = function(callback) {
+function getAllRequisites(callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     models.Requisite.find().populate('course requisite').exec(function(err, requisites) {
@@ -422,12 +420,12 @@ exports.getAllRequisites = function(callback) {
             callback(null, requisites);
         }
     });
-};
+}
 
 
 // Data loading functions
 
-exports.processFileWithSchema = function(schemaName, filepath, callback) {
+function processFileWithSchema(schemaName, filepath, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     fs.readFile(filepath, 'utf8', function(err, data) {
@@ -453,6 +451,30 @@ exports.processFileWithSchema = function(schemaName, filepath, callback) {
             });
         }
     });
-};
+}
 
-module.exports = exports;
+module.exports = {
+    getAllStudents                                  : getAllStudents,
+    getStudentById                                  : getStudentById,
+    getAdvisorsByStudentId                          : getAdvisorsByStudentId,
+    getClassesByStudentId                           : getClassesByStudentId,
+    getAllInstructors                               : getAllInstructors,
+    getInstructorById                               : getInstructorById,
+    getClassesByInstructorId                        : getClassesByInstructorId,
+    getAllAdvisors                                  : getAllAdvisors,
+    getAdvisorById                                  : getAdvisorById,
+    getStudentsByAdvisorId                          : getStudentsByAdvisorId,
+    getAllCourses                                   : getAllCourses,
+    getAllSubjects                                  : getAllSubjects,
+    getCoursesBySubject                             : getCoursesBySubject,
+    getCourseBySubjectAndCatalogNumber              : getCourseBySubjectAndCatalogNumber,
+    getClassesBySubjectAndCatalogNumber             : getClassesBySubjectAndCatalogNumber,
+    getEligibleStudentsBySubjectAndCatalogNumber    : getEligibleStudentsBySubjectAndCatalogNumber,
+    getAllClasses                                   : getAllClasses,
+    getAllTerms                                     : getAllTerms,
+    getAllClassesByTerm                             : getAllClassesByTerm,
+    getClassByTermAndClassNumber                    : getClassByTermAndClassNumber,
+    getAllStudentsInClassByTermAndClassNumber       : getAllStudentsInClassByTermAndClassNumber,
+    getAllRequisites                                : getAllRequisites,
+    processFileWithSchema                           : processFileWithSchema
+};
