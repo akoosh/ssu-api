@@ -4,8 +4,13 @@ function makeApiRequest(url, callback) {
     $.ajax({
         url: url,
         dataType: 'json',
-        success: function(data) {
-            callback(null, data);
+        success: function(data, status) {
+            // Return [] in the case that 'nocontent' status is received.
+            if (status === 'nocontent') {
+                callback(null, []);
+            } else {
+                callback(null, data);
+            }
         }.bind(this),
         error: function(xhr, status, err) {
             console.error(url, status, err.toString());
