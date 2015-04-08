@@ -103,7 +103,7 @@ var StudentDetailView = React.createClass({
         return (
             <div className='StudentDetailView'>
                 <Bootstrap.PageHeader>
-                    {this.state.student.first_name} {this.state.student.last_name} <small>{this.state.student.student_id}</small>
+                    {this.state.student.first_name} {this.state.student.last_name} <small>Student ID: {this.state.student.student_id}</small>
                 </Bootstrap.PageHeader>
 
                 <h2>Advisors</h2>
@@ -130,7 +130,5 @@ var StudentDetailView = React.createClass({
         );
     }
 });
-
-// <DataTable simple data={this.state.sections}/>
 
 module.exports = StudentDetailView;

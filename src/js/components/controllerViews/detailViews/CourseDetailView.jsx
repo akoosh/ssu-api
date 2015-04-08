@@ -86,9 +86,11 @@ var InstructorDetailView = React.createClass({
                     {this.state.course.subject} {this.state.course.catalog}: {this.state.course.course_title}
                 </Bootstrap.PageHeader>
 
-                <h2>Class History</h2>
                 <Bootstrap.Row>
                     <Bootstrap.Col xs={8}>
+                    <h4>{this.state.course.course_description}</h4>
+
+                    <h2>Class History</h2>
                         {Object.keys(this.state.classHistory).map(function(term) {
                             return (
                                 <div key={term}>

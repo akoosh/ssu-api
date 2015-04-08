@@ -79,10 +79,10 @@ var InstructorDetailView = React.createClass({
         return (
             <div className='InstructorDetailView'>
                 <Bootstrap.PageHeader>
-                    {this.state.instructor.first_name} {this.state.instructor.last_name} <small>{this.state.instructor.faculty_id}</small>
+                    {this.state.instructor.first_name} {this.state.instructor.last_name} <small>Instructor ID: {this.state.instructor.faculty_id}</small>
                 </Bootstrap.PageHeader>
 
-                <h2>Class History</h2>
+                <h2>Instructor History</h2>
                 <Bootstrap.Row>
                     <Bootstrap.Col xs={8}>
                         {Object.keys(this.state.classHistory).map(function(term) {

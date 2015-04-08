@@ -65,7 +65,7 @@ var InstructorDetailView = React.createClass({
         return (
             <div className='InstructorDetailView'>
                 <Bootstrap.PageHeader>
-                    {this.state.advisor.first_name} {this.state.advisor.last_name} <small>{this.state.advisor.faculty_id}</small>
+                    {this.state.advisor.first_name} {this.state.advisor.last_name} <small>Advisor ID: {this.state.advisor.faculty_id}</small>
                 </Bootstrap.PageHeader>
 
                 <h2>Advisees</h2>
