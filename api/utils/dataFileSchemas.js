@@ -13,7 +13,8 @@ var schemas = {};
 var transforms = {
     'Long Title'        : 'Course Title',
     'Class Description' : 'Course Title',
-    'Course Descr'      : 'Course Description'
+    'Course Descr'      : 'Course Description',
+    'Section'           : 'Section Number'
 };
 
 schemas.courses = [
@@ -41,7 +42,7 @@ schemas.classes = [
     'Term',
     'Subject',
     'Catalog',
-    'Section',
+    'Section Number',
     'Class Nbr',
     'Comb Sect',
     'CS Number',
@@ -84,7 +85,7 @@ schemas.enrollments = [
     'Class Nbr',
     'Subject',
     'Catalog',
-    'Section',
+    'Section Number',
     'Course Title',
     'Component',
     'Class Type',

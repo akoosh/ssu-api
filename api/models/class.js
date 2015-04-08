@@ -16,7 +16,7 @@ var schema = new mongoose.Schema({
     class_units: { type: String, required: false },
     class_type: { type: String, required: false },
     term_description: { type: String, required: true },
-    section: { type: String, required: true },
+    section_number: { type: String, required: true },
     component: { type: String, required: true },
     designation: { type: String, required: false },
     meetings: [{
