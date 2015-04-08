@@ -13,68 +13,72 @@ var models      = require('./models');
 // Enable this to see mongoose activity
 // mongoose.set('debug', true);
 
+// This is a callback factory for callbacks that expect an array of results.
+// The success function is only called if the data is good.
+function arrayHandler(failure, success) {
+    return function(err, array) {
+        if (err) {
+            failure(err);
+        } else if (!array.length) {
+            failure(204);
+        } else {
+            success(array);
+        }
+    };
+}
+
+// This is a callback factory for callbacks that expect a single result object.
+// The success function is only called if the data is good.
+function objectHandler(failure, success) {
+    return function(err, object) {
+        if (err) {
+            failure(err);
+        } else if (!object) {
+            failure(404);
+        } else {
+            success(object);
+        }
+    };
+}
+
 // Student functions
 
 function getAllStudents(callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Student.find(function(err, students) {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null, students);
-        }
-    });
+    models.Student.find(arrayHandler(callback, function(students) {
+        callback(null, students);
+    }));
 }
 
 function getStudentById(student_id, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Student.findOne({student_id: student_id}, function(err, student) {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null, student);
-        }
-    });
+    models.Student.findOne({student_id: student_id}, objectHandler(callback, function(student) {
+        callback(null, student);
+    }));
 }
 
 function getAdvisorsByStudentId(student_id, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Student.findOne({student_id: student_id}, function(err, student) {
-        if (err) {
-            callback(err);
-        } else {
-            models.Advisement.find({student: student._id}).populate('advisor').exec(function(err, advisements) {
-                if (err) {
-                    callback(err);
-                } else {
-                    advisements.forEach(function(advisement) { advisement.student = undefined; });
-                    callback(null, advisements);
-                }
-            });
-        }
-    });
+    getStudentById(student_id, objectHandler(callback, function(student) {
+        models.Advisement.find({student: student._id}).populate('advisor').exec(arrayHandler(callback, function(advisements) {
+            advisements.forEach(function(advisement) { advisement.student = undefined; });
+            callback(null, advisements);
+        }));
+    }));
 }
 
 function getClassesByStudentId(student_id, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Student.findOne({student_id: student_id}, function(err, student) {
-        if (err) {
-            callback(err);
-        } else {
-            models.Enrollment.find({student: student._id}).deepPopulate('class class.instructor class.course').exec(function(err, enrollments) {
-                if (err) {
-                    callback(err);
-                } else {
-                    enrollments.forEach(function(enrollment) { enrollment.student = undefined; });
-                    callback(null, enrollments);
-                }
-            });
-        }
-    });
+    getStudentById(student_id, objectHandler(callback, function(student) {
+        models.Enrollment.find({student: student._id}).deepPopulate('class class.instructor class.course').exec(arrayHandler(callback, function(enrollments) {
+            enrollments.forEach(function(enrollment) { enrollment.student = undefined; });
+            callback(null, enrollments);
+        }));
+    }));
 }
 
 
@@ -83,102 +87,70 @@ function getClassesByStudentId(student_id, callback) {
 function getAllInstructors(callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Faculty.find(function(err, instructors) {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null, instructors);
-        }
-    });
+    models.Faculty.find(arrayHandler(callback, function(instructors) {
+        callback(null, instructors);
+    }));
 }
 
 function getInstructorById(instructor_id, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Faculty.findOne({faculty_id: instructor_id}, function(err, instructor) {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null, instructor);
-        }
-    });
+    models.Faculty.findOne({faculty_id: instructor_id}, objectHandler(callback, function(instructor) {
+        callback(null, instructor);
+    }));
 }
 
 function getClassesByInstructorId(instructor_id, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Faculty.findOne({faculty_id: instructor_id}, function(err, instructor) {
-        if (err) {
-            callback(err);
-        } else {
-            models.Class.find({instructor: instructor._id}).populate('course').exec(function(err, classes) {
-                if (err) {
-                    callback(err);
-                } else {
-                    classes.forEach(function(c) { c.instructor = undefined; });
-                    callback(null, classes);
-                }
-            });
-        }
-    });
+    getInstructorById(instructor_id, objectHandler(callback, function(instructor) {
+        models.Class.find({instructor: instructor._id}).populate('course').exec(arrayHandler(callback, function(classes) {
+            classes.forEach(function(c) { c.instructor = undefined; });
+            callback(null, classes);
+        }));
+    }));
 }
 
 
 // Advisor functions
 
+function getAllAdvisorIds(callback) {
+    callback = (typeof callback === 'function') ? callback : function() {};
+
+    models.Advisement.distinct('advisor', arrayHandler(callback, function(advisor_ids) {
+        callback(null, advisor_ids);
+    }));
+}
+
 function getAllAdvisors(callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Advisement.distinct('advisor', function(err, advisor_ids) {
-        if (err) {
-            callback(err);
-        } else {
-            models.Faculty.find({_id: {$in: advisor_ids}}, function(err, advisors) {
-                if (err) {
-                    callback(err);
-                } else {
-                    callback(null, advisors);
-                }
-            });
-        }
-    });
+    getAllAdvisorIds(arrayHandler(callback, function(advisor_ids) {
+        models.Faculty.find({_id: {$in: advisor_ids}}, arrayHandler(callback, function(advisors) {
+            callback(null, advisors);
+        }));
+    }));
 }
 
 function getAdvisorById(advisor_id, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Advisement.distinct('advisor', function(err, advisor_ids) {
-        if (err) {
-            callback(err);
-        } else {
-            models.Faculty.findOne({_id: {$in: advisor_ids}, faculty_id: advisor_id}, function(err, advisor) {
-                if (err) {
-                    callback(err);
-                } else {
-                    callback(null, advisor);
-                }
-            });
-        }
-    });
+    getAllAdvisorIds(arrayHandler(callback, function(advisor_ids) {
+        models.Faculty.findOne({_id: {$in: advisor_ids}, faculty_id: advisor_id}, objectHandler(callback, function(advisor) {
+            callback(null, advisor);
+        }));
+    }));
 }
 
 function getStudentsByAdvisorId(advisor_id, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Faculty.findOne({faculty_id: advisor_id}, function(err, advisor) {
-        if (err) {
-            callback(err);
-        } else {
-            models.Advisement.find({advisor: advisor._id}).populate('student').exec(function(err, advisements) {
-                if (err) {
-                    callback(err);
-                } else {
-                    advisements.forEach(function(advisement) { advisement.advisor = undefined; });
-                    callback(null, advisements);
-                }
-            });
-        }
-    });
+    getAdvisorById(advisor_id, objectHandler(callback, function(advisor) {
+        models.Advisement.find({advisor: advisor._id}).populate('student').exec(arrayHandler(callback, function(advisements) {
+            advisements.forEach(function(advisement) { advisement.advisor = undefined; });
+            callback(null, advisements);
+        }));
+    }));
 }
 
 
@@ -187,68 +159,44 @@ function getStudentsByAdvisorId(advisor_id, callback) {
 function getAllCourses(callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Course.find(function(err, courses) {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null, courses);
-        }
-    });
+    models.Course.find(arrayHandler(callback, function(courses) {
+        callback(null, courses);
+    }));
 }
 
 function getAllSubjects(callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Course.distinct('subject', function(err, subjects) {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null, subjects);
-        }
-    });
+    models.Course.distinct('subject', arrayHandler(callback, function(subjects) {
+        callback(null, subjects);
+    }));
 }
 
 function getCoursesBySubject(subject, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Course.find({subject: subject.toUpperCase()}, function(err, courses) {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null, courses);
-        }
-    });
+    models.Course.find({subject: subject.toUpperCase()}, arrayHandler(callback, function(courses) {
+        callback(null, courses);
+    }));
 }
 
 function getCourseBySubjectAndCatalogNumber(subject, catalog_number, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Course.findOne({subject: subject.toUpperCase(), catalog: catalog_number}, function(err, course) {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null, course);
-        }
-    });
+    models.Course.findOne({subject: subject.toUpperCase(), catalog: catalog_number}, objectHandler(callback, function(course) {
+        callback(null, course);
+    }));
 }
 
 function getClassesBySubjectAndCatalogNumber(subject, catalog_number, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Course.findOne({subject: subject.toUpperCase(), catalog: catalog_number}, function(err, course) {
-        if (err) {
-            callback(err);
-        } else {
-            models.Class.find({course: course._id}).populate('course instructor').exec(function(err, classes) {
-                if (err) {
-                    callback(err);
-                } else {
-                    classes.forEach(function(classDoc) { classDoc.course = undefined; });
-                    callback(null, classes);
-                }
-            });
-        }
-    });
+    getCourseBySubjectAndCatalogNumber(subject, catalog_number, objectHandler(callback, function(course) {
+        models.Class.find({course: course._id}).populate('course instructor').exec(arrayHandler(callback, function(classes) {
+            classes.forEach(function(classDoc) { classDoc.course = undefined; });
+            callback(null, classes);
+        }));
+    }));
 }
 
 // This is a stopgap solution. Grades should probably be stored as numbers.
@@ -343,68 +291,44 @@ function getEligibleStudentsBySubjectAndCatalogNumber(subject, catalog_number, c
 function getAllClasses(callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Class.find(function(err, classes) {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null, classes);
-        }
-    });
+    models.Class.find(arrayHandler(callback, function(classes) {
+        callback(null, classes);
+    }));
 }
 
 function getAllTerms(callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Class.distinct('term', function(err, terms) {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null, terms);
-        }
-    });
+    models.Class.distinct('term', arrayHandler(callback, function(terms) {
+        callback(null, terms);
+    }));
 }
 
 function getAllClassesByTerm(term, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Class.find({term: term}).populate('course instructor').exec(function(err, classes) {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null, classes);
-        }
-    });
+    models.Class.find({term: term}).populate('course instructor').exec(arrayHandler(callback, function(classes) {
+        callback(null, classes);
+    }));
 }
 
 function getClassByTermAndClassNumber(term, class_number, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Class.findOne({term: term, class_nbr: class_number}).populate('course instructor').exec(function(err, classDoc) {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null, classDoc);
-        }
-    });
+    models.Class.findOne({term: term, class_nbr: class_number}).populate('course instructor').exec(objectHandler(callback, function(classDoc) {
+        callback(null, classDoc);
+    }));
 }
 
 function getAllStudentsInClassByTermAndClassNumber(term, class_number, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Class.findOne({term: term, class_nbr: class_number}).populate('course instructor').exec(function(err, classDoc) {
-        if (err) {
-            callback(err);
-        } else {
-            models.Enrollment.find({class: classDoc._id}).populate('student').exec(function(err, enrollments) {
-                if (err) {
-                    callback(err);
-                } else {
-                    enrollments.forEach(function(enrollment) { enrollment.class = undefined; });
-                    callback(null, enrollments);
-                }
-            });
-        }
-    });
+    getClassByTermAndClassNumber(term, class_number, objectHandler(callback, function(classDoc) {
+        models.Enrollment.find({class: classDoc._id}).populate('student').exec(arrayHandler(callback, function(enrollments) {
+            enrollments.forEach(function(enrollment) { enrollment.class = undefined; });
+            callback(null, enrollments);
+        }));
+    }));
 }
 
 
@@ -413,13 +337,20 @@ function getAllStudentsInClassByTermAndClassNumber(term, class_number, callback)
 function getAllRequisites(callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Requisite.find().populate('course requisite').exec(function(err, requisites) {
-        if (err) {
-            callback(err);
-        } else {
+    models.Requisite.find().populate('course requisite').exec(arrayHandler(callback, function(requisites) {
+        callback(null, requisites);
+    }));
+}
+
+function getRequisitesBySubjectAndCatalogNumber(subject, catalog_number, callback) {
+    callback = (typeof callback === 'function') ? callback : function() {};
+
+    getCourseBySubjectAndCatalogNumber(subject, catalog_number, objectHandler(callback, function(course) {
+        models.Requisite.find({course: course._id}).populate('requisite').exec(arrayHandler(callback, function(requisites) {
+            requisites.forEach(function(requisite) { requisite.course = undefined; });
             callback(null, requisites);
-        }
-    });
+        }));
+    }));
 }
 
 
@@ -458,23 +389,30 @@ module.exports = {
     getStudentById                                  : getStudentById,
     getAdvisorsByStudentId                          : getAdvisorsByStudentId,
     getClassesByStudentId                           : getClassesByStudentId,
+
     getAllInstructors                               : getAllInstructors,
     getInstructorById                               : getInstructorById,
     getClassesByInstructorId                        : getClassesByInstructorId,
+
     getAllAdvisors                                  : getAllAdvisors,
     getAdvisorById                                  : getAdvisorById,
     getStudentsByAdvisorId                          : getStudentsByAdvisorId,
+
     getAllCourses                                   : getAllCourses,
     getAllSubjects                                  : getAllSubjects,
     getCoursesBySubject                             : getCoursesBySubject,
     getCourseBySubjectAndCatalogNumber              : getCourseBySubjectAndCatalogNumber,
     getClassesBySubjectAndCatalogNumber             : getClassesBySubjectAndCatalogNumber,
     getEligibleStudentsBySubjectAndCatalogNumber    : getEligibleStudentsBySubjectAndCatalogNumber,
+
     getAllClasses                                   : getAllClasses,
     getAllTerms                                     : getAllTerms,
     getAllClassesByTerm                             : getAllClassesByTerm,
     getClassByTermAndClassNumber                    : getClassByTermAndClassNumber,
     getAllStudentsInClassByTermAndClassNumber       : getAllStudentsInClassByTermAndClassNumber,
+
     getAllRequisites                                : getAllRequisites,
+    getRequisitesBySubjectAndCatalogNumber          : getRequisitesBySubjectAndCatalogNumber,
+
     processFileWithSchema                           : processFileWithSchema
 };
