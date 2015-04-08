@@ -83,13 +83,17 @@ var DataTable = React.createClass({
     },
 
     pagifiedData: function() {
-        var begin = this.state.perPage * this.state.pageNum;
-        var end = begin + this.state.perPage;
+        if (!this.props.simple) {
+            var begin = this.state.perPage * this.state.pageNum;
+            var end = begin + this.state.perPage;
 
-        end = end < this.state.searchData.length ? end : this.state.searchData.length;
+            end = end < this.state.searchData.length ? end : this.state.searchData.length;
 
-        // state.numPages = state.searchData.length / state.perPage;
-        return this.state.searchData.slice(begin, end);
+            // state.numPages = state.searchData.length / state.perPage;
+            return this.state.searchData.slice(begin, end);
+        } else {
+            return this.state.searchData;
+        }
     },
 
     componentWillMount: function() {
