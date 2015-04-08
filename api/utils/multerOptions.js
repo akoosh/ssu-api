@@ -1,24 +1,20 @@
 // multerOptions.js
 'use strict';
 
-module.exports = function() {
+module.exports = {
 
-    var options = {};
+    dest : './api/uploads',
 
-    options.dest = './api/uploads';
-
-    options.rename = function (fieldname, filename) {
+    rename : function (fieldname, filename) {
         return [fieldname, filename, Date.now()].join('-');
-    };
+    },
 
-    options.onFileUploadComplete = function (file) {
+    onFileUploadComplete : function (file) {
         console.log('File uploaded: ' + file.path);
-    };
+    },
 
-    options.onError = function (error, next) {
+    onError : function (error, next) {
         console.log(error);
         next(error);
-    };
-
-    return options;
-}();
+    }
+};

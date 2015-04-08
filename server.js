@@ -8,8 +8,7 @@ var multer      = require('multer');
 var morgan      = require('morgan');
 var mongoose    = require('mongoose');
 var multerOpts  = require('./api/utils/multerOptions');
-var db          = require('./api/database');
-var apiRouter   = require('./api/router')(express, db);
+var apiRouter   = require('./api/router');
 var port        = process.env.PORT || 8080;
 var app         = express();
 
