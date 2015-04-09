@@ -96,6 +96,10 @@ router.get('/courses/subjects/:subject/:catalog_number/sections', function(req, 
     db.getSectionsBySubjectAndCatalogNumber(req.params.subject, req.params.catalog_number, getRequestHandler(res));
 });
 
+router.get('/courses/subjects/:subject/:catalog_number/requisites', function(req, res) {
+    db.getRequisitesBySubjectAndCatalogNumber(req.params.subject, req.params.catalog_number, getRequestHandler(res));
+});
+
 router.get('/courses/subjects/:subject/:catalog_number/eligible', function(req, res) {
     db.getEligibleStudentsBySubjectAndCatalogNumber(req.params.subject, req.params.catalog_number, getRequestHandler(res));
 });

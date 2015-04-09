@@ -6,7 +6,7 @@
 
 `GET /students/:student_id/advisors`
 
-`GET /students/:student_id/classes`
+`GET /students/:student_id/sections`
 
 
 ### Instructor routes
@@ -15,7 +15,7 @@
 
 `GET /instructors/:instructor_id`
 
-`GET /instructors/:instructor_id/classes`
+`GET /instructors/:instructor_id/sections`
 
 
 ### Advisor routes
@@ -37,20 +37,23 @@
 
 `GET /courses/subjects/:subject/:catalog_number`
 
-`GET /courses/subjects/:subject/:catalog_number/classes`
+`GET /courses/subjects/:subject/:catalog_number/sections`
 
+`GET /courses/subjects/:subject/:catalog_number/requisites`
 
-### Class routes
+`GET /courses/subjects/:subject/:catalog_number/eligible`
 
-`GET /classes`
+### Section routes
 
-`GET /classes/terms`
+`GET /sections`
 
-`GET /classes/terms/:term`
+`GET /sections/terms`
 
-`GET /classes/terms/:term/:class_number`
+`GET /sections/terms/:term`
 
-`GET /classes/terms/:term/:class_number/students`
+`GET /sections/terms/:term/:class_number`
+
+`GET /sections/terms/:term/:class_number/students`
 
 
 ### Requiste routes
