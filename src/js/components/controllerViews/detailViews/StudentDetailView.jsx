@@ -25,21 +25,21 @@ function advisorList(advisements) {
 
 function classHistory(sections) {
     var grouped = _.groupBy(sections, function(section) {
-        return section.class.term_description;
+        return section.section.term_description;
     });
 
     var history = {};
     Object.keys(grouped).forEach(function(term) {
         history[term] = grouped[term].map(function(section) {
             return {
-                class_number: section.class.class_nbr,
-                subject: section.class.course.subject,
-                catalog: section.class.course.catalog,
-                course_title: section.class.course.course_title,
-                instructor: formattedName(section.class.instructor),
-                units: section.class.class_units,
-                section: section.class.section,
-                component: section.class.component,
+                class_number: section.section.class_nbr,
+                subject: section.section.course.subject,
+                catalog: section.section.course.catalog,
+                course_title: section.section.course.course_title,
+                instructor: formattedName(section.section.instructor),
+                units: section.section.class_units,
+                section: section.section.section,
+                component: section.section.component,
                 grade: section.grade
             };
         });
@@ -51,9 +51,9 @@ function classHistory(sections) {
 function sectionLinkParams(sections) {
     var params = {};
     sections.forEach(function(section) {
-        params[section.class.term_description + section.class.class_nbr] = {
-            term: section.class.term,
-            class_nbr: section.class.class_nbr
+        params[section.section.term_description + section.section.class_nbr] = {
+            term: section.section.term,
+            class_nbr: section.section.class_nbr
         };
     });
 

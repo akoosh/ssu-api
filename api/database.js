@@ -315,7 +315,7 @@ function getAllSectionsByTerm(term, callback) {
 function getSectionByTermAndClassNumber(term, class_number, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Section.findOne({term: term, section_nbr: class_number}).populate('course instructor').exec(objectHandler(callback, function(section) {
+    models.Section.findOne({term: term, class_nbr: class_number}).populate('course instructor').exec(objectHandler(callback, function(section) {
         callback(null, section);
     }));
 }
