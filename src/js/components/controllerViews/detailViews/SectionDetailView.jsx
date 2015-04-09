@@ -109,15 +109,15 @@ var InstructorDetailView = React.createClass({
                     </Bootstrap.Col>
                 </Bootstrap.Row>
 
+                <h2>Grade Distribution</h2>
+                <BarChart data={this.state.gradeDistribution} width={800} height={200} fill={'#3182bd'}/>
+
                 <h2>Students</h2>
                 <Bootstrap.Row>
                     <Bootstrap.Col xs={6}>
                         <DataTable simple clickable data={this.state.students} onRowClick={this.onStudentRowClick}/>
                     </Bootstrap.Col>
                 </Bootstrap.Row>
-
-                <h2>Grade Distribution</h2>
-                <BarChart data={this.state.gradeDistribution} width={500} height={200} fill={'#3182bd'}/>
             </div>
         );
     }
