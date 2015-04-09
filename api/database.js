@@ -70,11 +70,11 @@ function getAdvisorsByStudentId(student_id, callback) {
     }));
 }
 
-function getClassesByStudentId(student_id, callback) {
+function getSectionsByStudentId(student_id, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     getStudentById(student_id, objectHandler(callback, function(student) {
-        models.Enrollment.find({student: student._id}).deepPopulate('class class.instructor class.course').exec(arrayHandler(callback, function(enrollments) {
+        models.Enrollment.find({student: student._id}).deepPopulate('section section.instructor section.course').exec(arrayHandler(callback, function(enrollments) {
             enrollments.forEach(function(enrollment) { enrollment.student = undefined; });
             callback(null, enrollments);
         }));
@@ -100,13 +100,13 @@ function getInstructorById(instructor_id, callback) {
     }));
 }
 
-function getClassesByInstructorId(instructor_id, callback) {
+function getSectionsByInstructorId(instructor_id, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     getInstructorById(instructor_id, objectHandler(callback, function(instructor) {
-        models.Class.find({instructor: instructor._id}).populate('course').exec(arrayHandler(callback, function(classes) {
-            classes.forEach(function(c) { c.instructor = undefined; });
-            callback(null, classes);
+        models.Section.find({instructor: instructor._id}).populate('course').exec(arrayHandler(callback, function(sections) {
+            sections.forEach(function(c) { c.instructor = undefined; });
+            callback(null, sections);
         }));
     }));
 }
@@ -188,13 +188,13 @@ function getCourseBySubjectAndCatalogNumber(subject, catalog_number, callback) {
     }));
 }
 
-function getClassesBySubjectAndCatalogNumber(subject, catalog_number, callback) {
+function getSectionsBySubjectAndCatalogNumber(subject, catalog_number, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
     getCourseBySubjectAndCatalogNumber(subject, catalog_number, objectHandler(callback, function(course) {
-        models.Class.find({course: course._id}).populate('course instructor').exec(arrayHandler(callback, function(classes) {
-            classes.forEach(function(classDoc) { classDoc.course = undefined; });
-            callback(null, classes);
+        models.Section.find({course: course._id}).populate('course instructor').exec(arrayHandler(callback, function(sections) {
+            sections.forEach(function(section) { section.course = undefined; });
+            callback(null, sections);
         }));
     }));
 }
@@ -228,12 +228,12 @@ function getEligibleStudentsBySubjectAndCatalogNumber(subject, catalog_number, c
 
             var reqStudentIdGetters = preRequisites.map( function(prerequisite) {
                 return function(preCallback) {
-                    // Find all class sections that are instances of the prerequisite
-                    models.Class.find( { course : prerequisite.requisite }, function(err, classes) {
-                        var classIds = _.pluck( classes, '_id' );
+                    // Find all section sections that are instances of the prerequisite
+                    models.Section.find( { course : prerequisite.requisite }, function(err, sections) {
+                        var sectionIds = _.pluck( sections, '_id' );
 
-                        // Find all students that have taken one of those classes
-                        models.Enrollment.find( { class : { $in : classIds } }, function(err, enrollments){
+                        // Find all students that have taken one of those sections
+                        models.Enrollment.find( { section : { $in : sectionIds } }, function(err, enrollments){
                             // Filter out failing grades
                             var passing = enrollments.filter(function(enrollment) {
                                 return (gradePoints[enrollment.grade] || 0) >= (gradePoints[prerequisite.grade] || 0);
@@ -250,7 +250,7 @@ function getEligibleStudentsBySubjectAndCatalogNumber(subject, catalog_number, c
                 // all students that have fullfilled prerequisites
                 eligibleStudentIds: function(callback) {
                     Async.parallel( reqStudentIdGetters, function(err,results) {
-                        // Produces all of the studentIds who are eligible to take the class
+                        // Produces all of the studentIds who are eligible to take the section
                         var elgStudents = _.spread( _.intersection)(results);
                         callback(null, elgStudents);
                     });
@@ -258,11 +258,11 @@ function getEligibleStudentsBySubjectAndCatalogNumber(subject, catalog_number, c
 
                 // all students that have already passed the course
                 doneStudentIds: function(callback) {
-                    models.Class.find( { course : course._id }, function(err, classes) {
-                        var classIds = _.pluck( classes, '_id' );
+                    models.Section.find( { course : course._id }, function(err, sections) {
+                        var sectionIds = _.pluck( sections, '_id' );
 
-                        // Find all students that have taken one of those classes
-                        models.Enrollment.find( { class : { $in : classIds } }, function(err, enrollments){
+                        // Find all students that have taken one of those sections
+                        models.Enrollment.find( { section : { $in : sectionIds } }, function(err, enrollments){
                             // Filter out failing grades
                             var passing = enrollments.filter(function(enrollment) {
                                 return (gradePoints[enrollment.grade] || 0) >= gradePoints['C-'];
@@ -286,46 +286,46 @@ function getEligibleStudentsBySubjectAndCatalogNumber(subject, catalog_number, c
 }
 
 
-// Class functions
+// Section functions
 
-function getAllClasses(callback) {
+function getAllSections(callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Class.find(arrayHandler(callback, function(classes) {
-        callback(null, classes);
+    models.Section.find(arrayHandler(callback, function(sections) {
+        callback(null, sections);
     }));
 }
 
 function getAllTerms(callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Class.distinct('term', arrayHandler(callback, function(terms) {
+    models.Section.distinct('term', arrayHandler(callback, function(terms) {
         callback(null, terms);
     }));
 }
 
-function getAllClassesByTerm(term, callback) {
+function getAllSectionsByTerm(term, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Class.find({term: term}).populate('course instructor').exec(arrayHandler(callback, function(classes) {
-        callback(null, classes);
+    models.Section.find({term: term}).populate('course instructor').exec(arrayHandler(callback, function(sections) {
+        callback(null, sections);
     }));
 }
 
-function getClassByTermAndClassNumber(term, class_number, callback) {
+function getSectionByTermAndClassNumber(term, class_number, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    models.Class.findOne({term: term, class_nbr: class_number}).populate('course instructor').exec(objectHandler(callback, function(classDoc) {
-        callback(null, classDoc);
+    models.Section.findOne({term: term, section_nbr: class_number}).populate('course instructor').exec(objectHandler(callback, function(section) {
+        callback(null, section);
     }));
 }
 
-function getAllStudentsInClassByTermAndClassNumber(term, class_number, callback) {
+function getAllStudentsInSectionByTermAndClassNumber(term, class_number, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
 
-    getClassByTermAndClassNumber(term, class_number, objectHandler(callback, function(classDoc) {
-        models.Enrollment.find({class: classDoc._id}).populate('student').exec(arrayHandler(callback, function(enrollments) {
-            enrollments.forEach(function(enrollment) { enrollment.class = undefined; });
+    getSectionByTermAndClassNumber(term, class_number, objectHandler(callback, function(section) {
+        models.Enrollment.find({section: section._id}).populate('student').exec(arrayHandler(callback, function(enrollments) {
+            enrollments.forEach(function(enrollment) { enrollment.section = undefined; });
             callback(null, enrollments);
         }));
     }));
@@ -388,11 +388,11 @@ module.exports = {
     getAllStudents                                  : getAllStudents,
     getStudentById                                  : getStudentById,
     getAdvisorsByStudentId                          : getAdvisorsByStudentId,
-    getClassesByStudentId                           : getClassesByStudentId,
+    getSectionsByStudentId                          : getSectionsByStudentId,
 
     getAllInstructors                               : getAllInstructors,
     getInstructorById                               : getInstructorById,
-    getClassesByInstructorId                        : getClassesByInstructorId,
+    getSectionsByInstructorId                       : getSectionsByInstructorId,
 
     getAllAdvisors                                  : getAllAdvisors,
     getAdvisorById                                  : getAdvisorById,
@@ -402,14 +402,14 @@ module.exports = {
     getAllSubjects                                  : getAllSubjects,
     getCoursesBySubject                             : getCoursesBySubject,
     getCourseBySubjectAndCatalogNumber              : getCourseBySubjectAndCatalogNumber,
-    getClassesBySubjectAndCatalogNumber             : getClassesBySubjectAndCatalogNumber,
+    getSectionsBySubjectAndCatalogNumber            : getSectionsBySubjectAndCatalogNumber,
     getEligibleStudentsBySubjectAndCatalogNumber    : getEligibleStudentsBySubjectAndCatalogNumber,
 
-    getAllClasses                                   : getAllClasses,
+    getAllSections                                  : getAllSections,
     getAllTerms                                     : getAllTerms,
-    getAllClassesByTerm                             : getAllClassesByTerm,
-    getClassByTermAndClassNumber                    : getClassByTermAndClassNumber,
-    getAllStudentsInClassByTermAndClassNumber       : getAllStudentsInClassByTermAndClassNumber,
+    getAllSectionsByTerm                            : getAllSectionsByTerm,
+    getSectionByTermAndClassNumber                  : getSectionByTermAndClassNumber,
+    getAllStudentsInSectionByTermAndClassNumber     : getAllStudentsInSectionByTermAndClassNumber,
 
     getAllRequisites                                : getAllRequisites,
     getRequisitesBySubjectAndCatalogNumber          : getRequisitesBySubjectAndCatalogNumber,

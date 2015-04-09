@@ -71,7 +71,7 @@ exports.loadRequisites = function(rows, models, callback) {
 exports.loadEnrollments = function(rows, models, callback) {
     // This could get complicated. Right now, we can assume that all courses
     // are in the database, but not all sections in a given semester. It is
-    // likely that this data will contian Students, Classes, and Faculty that
+    // likely that this data will contian Students, Sections, and Faculty that
     // have previously not been encountered.
 
     var allStudents = studentDictFromData(rows, models);
@@ -97,16 +97,16 @@ exports.loadEnrollments = function(rows, models, callback) {
             // At this point we should have all ObjectIds for students, courses and
             // faculty members in the data file.
 
-            var allClasses = classDictFromData(rows, models, results.courseObjectIds, results.facultyObjectIds);
+            var allSections = sectionDictFromData(rows, models, results.courseObjectIds, results.facultyObjectIds);
 
-            loadClassesIfNeeded(allClasses, models, function(err, classObjectIds) {
+            loadSectionsIfNeeded(allSections, models, function(err, sectionObjectIds) {
                 if (err) {
                     callback(err);
                 } else {
-                    // At this point we should also have all of the ObjectIds of the classes
+                    // At this point we should also have all of the ObjectIds of the sections
 
                     var allAdvisements = advisementDictFromData(rows, models, results.studentObjectIds, results.facultyObjectIds);
-                    var allEnrollments = enrollmentDictFromData(rows, models, results.studentObjectIds, classObjectIds);
+                    var allEnrollments = enrollmentDictFromData(rows, models, results.studentObjectIds, sectionObjectIds);
 
                     Async.parallel([
                         function(callback) {
@@ -167,36 +167,36 @@ function courseDictFromData(rows, models) {
     return allCourses;
 }
 
-function classDictFromData(rows, models, courseObjectIds, facultyObjectIds) {
-    var allClasses = {};
-    var classMeetings = {};
+function sectionDictFromData(rows, models, courseObjectIds, facultyObjectIds) {
+    var allSections = {};
+    var sectionMeetings = {};
 
     rows.forEach(function(row) {
-        // Create class
-        var classKey = row.term + row.class_nbr;
-        if (!allClasses[classKey]) {
+        // Create section
+        var sectionKey = row.term + row.class_nbr;
+        if (!allSections[sectionKey]) {
             var courseId = courseObjectIds[row.subject + row.catalog];
             var instructorId = facultyObjectIds[row.instructor_id];
-            var classDoc = classFromData(row, models, courseId, instructorId);
-            allClasses[classDoc.key] = classDoc;
-            classMeetings[classKey] = {};
+            var section = sectionFromData(row, models, courseId, instructorId);
+            allSections[section.key] = section;
+            sectionMeetings[sectionKey] = {};
         }
 
         var meeting = meetingFromData(row);
         var meetingKey = keyFromMeeting(meeting);
-        classMeetings[classKey][meetingKey] = meeting;
+        sectionMeetings[sectionKey][meetingKey] = meeting;
     });
 
-    // For every class, add its unique list of meetings
-    Object.keys(allClasses).forEach(function(classKey) {
-        var meetings = Object.keys(classMeetings[classKey]).map(function(meetingKey) {
-            return classMeetings[classKey][meetingKey];
+    // For every section, add its unique list of meetings
+    Object.keys(allSections).forEach(function(sectionKey) {
+        var meetings = Object.keys(sectionMeetings[sectionKey]).map(function(meetingKey) {
+            return sectionMeetings[sectionKey][meetingKey];
         });
 
-        allClasses[classKey].meetings = meetings;
+        allSections[sectionKey].meetings = meetings;
     });
 
-    return allClasses;
+    return allSections;
 }
 
 function advisementDictFromData(rows, models, studentObjectIds, facultyObjectIds) {
@@ -215,15 +215,15 @@ function advisementDictFromData(rows, models, studentObjectIds, facultyObjectIds
     return allAdvisements;
 }
 
-function enrollmentDictFromData(rows, models, studentObjectIds, classObjectIds) {
+function enrollmentDictFromData(rows, models, studentObjectIds, sectionObjectIds) {
     var allEnrollments = {};
     rows.forEach(function(row) {
         // Create enrollment
         var enrollmentKey = row.student_id + row.term + row.class_nbr;
         if (!allEnrollments[enrollmentKey]) {
             var studentId = studentObjectIds[row.student_id];
-            var classId = classObjectIds[row.term + row.class_nbr];
-            var enrollment = enrollmentFromData(row, models, studentId, classId);
+            var sectionId = sectionObjectIds[row.term + row.class_nbr];
+            var enrollment = enrollmentFromData(row, models, studentId, sectionId);
             allEnrollments[enrollmentKey] = enrollment;
         }
     });
@@ -275,27 +275,27 @@ function courseFromData(data, models) {
     }
 
     course.key = course.subject + course.catalog;
-    course.min_units = data.class_units;
-    course.max_units = data.class_units;
+    course.min_units = data.section_units;
+    course.max_units = data.section_units;
 
     return course;
 }
 
-function classFromData(data, models, courseId, instructorId) {
-    // all required keys in Class should also be in data
+function sectionFromData(data, models, courseId, instructorId) {
+    // all required keys in Section should also be in data
     // except for course, instructor, and meetings
-    var classDoc = new models.Class();
-    for (var key in models.Class.schema.paths) {
+    var section = new models.Section();
+    for (var key in models.Section.schema.paths) {
         if (key in data) {
-            classDoc[key] = data[key];
+            section[key] = data[key];
         }
     }
 
-    classDoc.key = classDoc.term + classDoc.class_nbr;
-    classDoc.course = courseId;
-    classDoc.instructor = instructorId;
+    section.key = section.term + section.class_nbr;
+    section.course = courseId;
+    section.instructor = instructorId;
 
-    return classDoc;
+    return section;
 }
 
 function meetingFromData(data) {
@@ -313,7 +313,7 @@ function keyFromMeeting(meeting) {
 
 function advisementFromData(data, models, studentId, advisorId) {
     // all required keys in Advisement should also be in data
-    // except for student and class
+    // except for student and section
     var advisement = new models.Advisement();
     for (var key in models.Advisement.schema.paths) {
         if (key in data) {
@@ -327,9 +327,9 @@ function advisementFromData(data, models, studentId, advisorId) {
     return advisement;
 }
 
-function enrollmentFromData(data, models, studentId, classId) {
+function enrollmentFromData(data, models, studentId, sectionId) {
     // all required keys in Enrollment should also be in data
-    // except for student and class
+    // except for student and section
     var enrollment = new models.Enrollment();
     for (var key in models.Enrollment.schema.paths) {
         if (key in data) {
@@ -338,7 +338,7 @@ function enrollmentFromData(data, models, studentId, classId) {
     }
 
     enrollment.student = studentId;
-    enrollment.class = classId;
+    enrollment.section = sectionId;
 
     return enrollment;
 }
@@ -476,41 +476,41 @@ function loadCoursesIfNeeded(allCourses, models, callback) {
     });
 }
 
-function loadClassesIfNeeded(allClasses, models, callback) {
+function loadSectionsIfNeeded(allSections, models, callback) {
 
-    var classKeys = Object.keys(allClasses);
-    var classObjectIds = {};
+    var sectionKeys = Object.keys(allSections);
+    var sectionObjectIds = {};
 
-    models.Class.find({key: {$in: classKeys}}, function(err, docs) {
+    models.Section.find({key: {$in: sectionKeys}}, function(err, docs) {
         if (err) {
             callback(err);
         } else {
             docs.forEach(function(doc) {
-                classObjectIds[doc.key] = doc._id;
+                sectionObjectIds[doc.key] = doc._id;
             });
 
-            // we now have object ids for classes in the database, but not for the rest.
+            // we now have object ids for sections in the database, but not for the rest.
             // This filter gets the keys who we do not yet have ObjectIds for.
-            var newKeys = classKeys.filter(function(classKey) {
-                return !classObjectIds[classKey];
+            var newKeys = sectionKeys.filter(function(sectionKey) {
+                return !sectionObjectIds[sectionKey];
             });
 
             if (newKeys.length === 0) {
-                callback(null, classObjectIds);
+                callback(null, sectionObjectIds);
             } else {
-                var bulk = models.Class.collection.initializeUnorderedBulkOp();
+                var bulk = models.Section.collection.initializeUnorderedBulkOp();
 
                 newKeys.forEach(function(key) {
-                    var classDoc = allClasses[key];
-                    classObjectIds[classDoc.key] = classDoc._id;
-                    bulk.insert(classDoc.toObject());
+                    var section = allSections[key];
+                    sectionObjectIds[section.key] = section._id;
+                    bulk.insert(section.toObject());
                 });
 
                 bulk.execute(function(err, result) {
                     if (err) {
                         callback(err);
                     } else {
-                        callback(null, classObjectIds);
+                        callback(null, sectionObjectIds);
                     }
                 });
             }
@@ -540,7 +540,7 @@ function saveEnrollments(enrollments, models, callback) {
     enrollments.forEach(function(enrollment) {
         var params = {
             student: enrollment.student,
-            class: enrollment.class
+            section: enrollment.section
         };
 
         bulk.find(params).upsert().updateOne(_.omit(enrollment.toObject(), '_id'));

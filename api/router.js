@@ -39,8 +39,8 @@ router.get('/students/:student_id/advisors', function(req, res) {
     db.getAdvisorsByStudentId(req.params.student_id, getRequestHandler(res));
 });
 
-router.get('/students/:student_id/classes', function(req, res) {
-    db.getClassesByStudentId(req.params.student_id, getRequestHandler(res));
+router.get('/students/:student_id/sections', function(req, res) {
+    db.getSectionsByStudentId(req.params.student_id, getRequestHandler(res));
 });
 
 
@@ -54,8 +54,8 @@ router.get('/instructors/:instructor_id', function(req, res) {
     db.getInstructorById(req.params.instructor_id, getRequestHandler(res));
 });
 
-router.get('/instructors/:instructor_id/classes', function(req, res) {
-    db.getClassesByInstructorId(req.params.instructor_id, getRequestHandler(res));
+router.get('/instructors/:instructor_id/sections', function(req, res) {
+    db.getSectionsByInstructorId(req.params.instructor_id, getRequestHandler(res));
 });
 
 
@@ -92,8 +92,8 @@ router.get('/courses/subjects/:subject/:catalog_number', function(req, res) {
     db.getCourseBySubjectAndCatalogNumber(req.params.subject, req.params.catalog_number, getRequestHandler(res));
 });
 
-router.get('/courses/subjects/:subject/:catalog_number/classes', function(req, res) {
-    db.getClassesBySubjectAndCatalogNumber(req.params.subject, req.params.catalog_number, getRequestHandler(res));
+router.get('/courses/subjects/:subject/:catalog_number/sections', function(req, res) {
+    db.getSectionsBySubjectAndCatalogNumber(req.params.subject, req.params.catalog_number, getRequestHandler(res));
 });
 
 router.get('/courses/subjects/:subject/:catalog_number/eligible', function(req, res) {
@@ -101,26 +101,26 @@ router.get('/courses/subjects/:subject/:catalog_number/eligible', function(req, 
 });
 
 
-// Class routes
+// Section routes
 
-router.get('/classes', function(req, res) {
-    db.getAllClasses(getRequestHandler(res));
+router.get('/sections', function(req, res) {
+    db.getAllSections(getRequestHandler(res));
 });
 
-router.get('/classes/terms', function(req, res) {
+router.get('/sections/terms', function(req, res) {
     db.getAllTerms(getRequestHandler(res));
 });
 
-router.get('/classes/terms/:term', function(req, res) {
-    db.getAllClassesByTerm(req.params.term, getRequestHandler(res));
+router.get('/sections/terms/:term', function(req, res) {
+    db.getAllSectionsByTerm(req.params.term, getRequestHandler(res));
 });
 
-router.get('/classes/terms/:term/:class_number', function(req, res) {
-    db.getClassByTermAndClassNumber(req.params.term, req.params.class_number, getRequestHandler(res));
+router.get('/sections/terms/:term/:class_number', function(req, res) {
+    db.getSectionByTermAndClassNumber(req.params.term, req.params.class_number, getRequestHandler(res));
 });
 
-router.get('/classes/terms/:term/:class_number/students', function(req, res) {
-    db.getAllStudentsInClassByTermAndClassNumber(req.params.term, req.params.class_number, getRequestHandler(res));
+router.get('/sections/terms/:term/:class_number/students', function(req, res) {
+    db.getAllStudentsInSectionByTermAndClassNumber(req.params.term, req.params.class_number, getRequestHandler(res));
 });
 
 
