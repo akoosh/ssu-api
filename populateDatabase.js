@@ -13,6 +13,7 @@ mongoose.connect('mongodb://localhost/students', function(err) {
     if (err) {
         console.log('Connection error:', err);
     } else {
+        console.time('Time Elapsed');
         Async.series([
             function(callback) {
                 console.log('Processing courses...');
@@ -35,6 +36,7 @@ mongoose.connect('mongodb://localhost/students', function(err) {
                 console.log('Success!');
             }
 
+            console.timeEnd('Time Elapsed');
             mongoose.disconnect();
         });
     }
