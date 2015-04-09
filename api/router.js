@@ -3,6 +3,7 @@
 
 var router      = require('express').Router();
 var db          = require('./database');
+var eligibility = require('./eligibility');
 
 function getRequestHandler(res) {
     return function(err, product) {
@@ -101,7 +102,7 @@ router.get('/courses/subjects/:subject/:catalog_number/requisites', function(req
 });
 
 router.get('/courses/subjects/:subject/:catalog_number/eligible', function(req, res) {
-    db.getEligibleStudentsBySubjectAndCatalogNumber(req.params.subject, req.params.catalog_number, getRequestHandler(res));
+    eligibility.getEligibleStudentsBySubjectAndCatalogNumber(req.params.subject, req.params.catalog_number, getRequestHandler(res));
 });
 
 
