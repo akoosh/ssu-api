@@ -26,11 +26,15 @@ function formattedStudents(students) {
     });
 }
 
+function formattedStudentsByTerm(students) {
+    return _.groupBy(formattedStudents(students), 'term');
+}
+
 function getViewState() {
     var data = AdvisorDataStore.getAdvisorData();
     return {
         advisor: data.advisor,
-        students: formattedStudents(data.students)
+        studentsByTerm: formattedStudentsByTerm(data.students)
     };
 }
 
@@ -68,8 +72,16 @@ var InstructorDetailView = React.createClass({
                     {this.state.advisor.first_name} {this.state.advisor.last_name} <small>Advisor ID: {this.state.advisor.faculty_id}</small>
                 </Bootstrap.PageHeader>
 
-                <h2>Advisees</h2>
-                <DataTable clickable data={this.state.students} onRowClick={this.onStudentRowClick}/>
+                <Bootstrap.TabbedArea defaultActiveKey={0}>
+                    {Object.keys(this.state.studentsByTerm).reverse().map(function(term, i) {
+                        return (
+                            <Bootstrap.TabPane key={i} eventKey={i} tab={term}>
+                                <h2>Advisees</h2>
+                                <DataTable clickable data={this.state.studentsByTerm[term]} onRowClick={this.onStudentRowClick}/>
+                            </Bootstrap.TabPane>
+                        );
+                    }.bind(this))}
+                </Bootstrap.TabbedArea>
             </div>
         );
     }
