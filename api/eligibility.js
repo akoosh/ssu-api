@@ -3,25 +3,14 @@
 
 var Async           = require('async');
 var _               = require('lodash');
+var utils           = require('./utils/schoolUtils');
 var models          = require('./models');
 var db              = require('./database');
 var arrayHandler    = db.arrayHandler;
 var objectHandler   = db.objectHandler;
 
-// This is a stopgap solution. Grades should probably be stored as numbers.
-var gradePoints = {
-    'A+'    : 4.0,
-    'A'     : 4.0,
-    'A-'    : 3.7,
-    'B+'    : 3.3,
-    'B'     : 3.0,
-    'B-'    : 2.7,
-    'C+'    : 2.3,
-    'C'     : 2.0,
-    'C-'    : 1.7,
-    'D+'    : 1.3,
-    'D'     : 1.0
-};
+function getEligibleStudentsBySubjectCatalogNumberAndTerm(subject, catalog_number, term, callback) {
+}
 
 function getEligibleStudentsBySubjectAndCatalogNumber(subject, catalog_number, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
@@ -53,7 +42,7 @@ function getEligibleStudentsBySubjectAndCatalogNumber(subject, catalog_number, c
                         models.Enrollment.find( { section : { $in : sectionIds } }, arrayHandler(callback, function(enrollments){
                             // Filter out failing grades
                             var passing = enrollments.filter(function(enrollment) {
-                                return (gradePoints[enrollment.grade] || 0) >= gradePoints['C-'];
+                                return (utils.gradePointsFromGrade(enrollment.grade) || 0) >= utils.gradePointsFromGrade('C-');
                             });
 
                             var studentIds = _.uniq( _.pluck( passing, 'student' ).map(String) );
@@ -86,7 +75,7 @@ function eligibleStudentIdGetterByPrerequisite(prerequisite) {
             models.Enrollment.find( { section : { $in : sectionIds } }, arrayHandler(callback, function(enrollments){
                 // Filter out failing grades
                 var passing = enrollments.filter(function(enrollment) {
-                    return (gradePoints[enrollment.grade] || -1) >= (gradePoints[prerequisite.grade] || 0);
+                    return (utils.gradePointsFromGrade(enrollment.grade) || -1) >= (utils.gradePointsFromGrade(prerequisite.grade) || 0);
                 });
 
                 var studentIds = _.uniq( _.pluck( passing, 'student' ).map(String) );
