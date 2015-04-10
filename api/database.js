@@ -19,8 +19,6 @@ function arrayHandler(failure, success) {
     return function(err, array) {
         if (err) {
             failure(err);
-        } else if (!array.length) {
-            failure(204);
         } else {
             success(array);
         }
