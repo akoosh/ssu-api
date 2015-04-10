@@ -62,7 +62,7 @@ function getEligibleStudentsBySubjectAndCatalogNumber(subject, catalog_number, c
                     }));
                 }
 
-            }, arrayHandler(callback, function(results) {
+            }, objectHandler(callback, function(results) {
                 // Produces the list of students that are eligible to take the course excluding those
                 // that have already taken and passed it.
                 var studentIds = _.difference(results.eligibleStudentIds.map(String), results.doneStudentIds.map(String));
