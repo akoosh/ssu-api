@@ -14,7 +14,7 @@ var minifyCSS   = require('gulp-minify-css');
 var gulpif      = require('gulp-if');
 var concat      = require('gulp-concat');
 
-var production = false;
+var production = process.env.PRODUCTION || false;
  
 // Define some paths.
 var paths = {
