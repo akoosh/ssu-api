@@ -24,47 +24,41 @@ exports.loadCourses = function(courses, models, callback) {
     bulk.execute(callback);
 };
 
-exports.loadRequisites = function(rows, models, callback) {
+exports.loadRequisites = function(rows, models,callback) {
+    var courseKeys = {};
+    rows.forEach(function(row) {
+        courseKeys[row.subject + row.catalog] = true;
+        courseKeys[row.requisite_subject + row.requisite_catalog] = true;
+    });
+    var keys = Object.keys(courseKeys);
 
-    var numRows = rows.length;
-    var error = false;
-    var bulk = models.Requisite.collection.initializeUnorderedBulkOp();
+    models.Course.find({key: {$in: keys}}, function(err, courses) {
+        if (err) {
+            callback(err);
+        } else if (courses.length < keys.length) {
+            callback('At least one of the courses is not in the database.');
+        } else {
+            var bulk = models.Requisite.collection.initializeUnorderedBulkOp();
+            var coursesByKey = {};
+            courses.forEach(function(course) {
+                coursesByKey[course.key] = course;
+            });
 
-    rows.forEach(function(row, index) {
-        Async.parallel({
-            course: function(callback) {
-                models.Course.findOne({key: row.subject + row.catalog}, callback);
-            },
-
-            requisite: function(callback) {
-                models.Course.findOne({key: row.requisite_subject + row.requisite_catalog}, callback);
-            }
-
-        }, function(err, results) {
-            if (err) {
-                error = err;
-            } else if (!results.course || !results.requisite) {
-                error = 'At least one of the courses is not in the database.';
-            } else {
+            rows.forEach(function(row) {
+                var course = coursesByKey[row.subject + row.catalog];
+                var requisite = coursesByKey[row.requisite_subject + row.requisite_catalog];
                 var doc = new models.Requisite({
-                    course:     results.course._id,
-                    requisite:   results.requisite._id,
+                    course:     course._id,
+                    requisite:  requisite._id,
                     type:       row.type,
                     grade:      row.grade
                 });
 
                 bulk.find({course: doc.course, requisite: doc.requisite}).upsert().updateOne(_.omit(doc.toObject(), '_id'));
-            }
+            });
 
-            // Only execute bulk operation if there have been no errors
-            if (index === numRows - 1) {
-                if (error) {
-                    callback(error);
-                } else {
-                    bulk.execute(callback);
-                }
-            }
-        });
+            bulk.execute(callback);
+        }
     });
 };
 
