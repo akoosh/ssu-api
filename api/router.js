@@ -105,6 +105,10 @@ router.get('/courses/subjects/:subject/:catalog_number/eligible', function(req, 
     eligibility.getEligibleStudentsBySubjectAndCatalogNumber(req.params.subject, req.params.catalog_number, getRequestHandler(res));
 });
 
+router.get('/courses/subjects/:subject/:catalog_number/eligible/:term', function(req, res) {
+    eligibility.getEligibleStudentsBySubjectCatalogNumberAndTerm(req.params.subject, req.params.catalog_number, req.params.term, getRequestHandler(res));
+});
+
 
 // Section routes
 
