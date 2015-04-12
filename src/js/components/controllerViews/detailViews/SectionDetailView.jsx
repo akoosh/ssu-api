@@ -8,6 +8,7 @@ var _                       = require('lodash');
 var AppActions              = require('../../../actions/AppActions');
 var DataTable               = require('../../subviews/DataTable/DataTable');
 var SectionDataStore        = require('../../../stores/SectionDataStore');
+var utils                   = require('../../../utils/schoolUtils');
 
 function formattedName(obj) {
     if (obj) {
@@ -53,12 +54,35 @@ function gradeDistribution(students) {
     });
 }
 
+function averageGrade(grades) {
+    if (grades.length) {
+        var gradePoints = grades.map(utils.gradePointsFromGrade);
+        var average = _.sum(gradePoints) / gradePoints.length;
+
+        return utils.nearestGradeFromGradePoints(average);
+    } else {
+        return '';
+    }
+}
+
+function passRate(grades, required) {
+    var passing = grades.filter(function(grade) {
+        return utils.gradePointsFromGrade(grade) >= utils.gradePointsFromGrade(required);
+    });
+
+    return (passing.length / grades.length) || 0;
+}
+
 function getViewState() {
     var data = SectionDataStore.getSectionData();
+    var grades = _.pluck(data.students, 'grade');
     return {
         section: data.section,
         students: formattedStudents(data.students),
-        gradeDistribution: gradeDistribution(data.students)
+        gradeDistribution: gradeDistribution(data.students),
+        averageGrade: averageGrade(grades),
+        majorPassRate: passRate(grades, 'C-'),
+        generalPassRate: passRate(grades, 'D-')
     };
 }
 
@@ -109,15 +133,29 @@ var InstructorDetailView = React.createClass({
                     </Bootstrap.Col>
                 </Bootstrap.Row>
 
-                <h2>Grade Distribution</h2>
-                <BarChart data={this.state.gradeDistribution} width={800} height={200} fill={'#3182bd'}/>
+                <Bootstrap.TabbedArea defaultActiveKey={0}>
+                    <Bootstrap.TabPane eventKey={0} tab='Students'>
+                        <Bootstrap.Row>
+                            <Bootstrap.Col xs={6}>
+                                <h2>{this.state.students.length} Students</h2>
+                                <DataTable simple clickable data={this.state.students} onRowClick={this.onStudentRowClick}/>
+                            </Bootstrap.Col>
+                        </Bootstrap.Row>
+                    </Bootstrap.TabPane>
 
-                <h2>Students</h2>
-                <Bootstrap.Row>
-                    <Bootstrap.Col xs={6}>
-                        <DataTable simple clickable data={this.state.students} onRowClick={this.onStudentRowClick}/>
-                    </Bootstrap.Col>
-                </Bootstrap.Row>
+                    <Bootstrap.TabPane eventKey={1} tab='Grade Distribution'>
+                        <Bootstrap.Row>
+                            <Bootstrap.Col xs={4}>
+                                <Bootstrap.Table>
+                                    <tr><th>Average Grade</th><td>{this.state.averageGrade}</td></tr>
+                                    <tr><th>General Pass Rate</th><td>{(this.state.majorPassRate * 100).toFixed(0)}%</td></tr>
+                                    <tr><th>Major Pass Rate</th><td>{(this.state.generalPassRate * 100).toFixed(0)}%</td></tr>
+                                </Bootstrap.Table>
+                                <BarChart data={this.state.gradeDistribution} width={800} height={200} fill={'#3182bd'}/>
+                            </Bootstrap.Col>
+                        </Bootstrap.Row>
+                    </Bootstrap.TabPane>
+                </Bootstrap.TabbedArea>
             </div>
         );
     }
