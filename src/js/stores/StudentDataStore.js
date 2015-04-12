@@ -3,16 +3,32 @@ var AppConstants  = require('../constants/AppConstants');
 var EventEmitter  = require('events').EventEmitter;
 var _             = require('lodash');
 
-var studentData = {
-    student: {},
-    advisors: [],
-    sections: []
-};
+var studentData = {};
+
+function getInitialStudentData() {
+    return {
+        student: {},
+        advisors: [],
+        sections: []
+    };
+}
+
+function updateDataForStudent(studentId, data) {
+    if (!studentData[studentId]) {
+        studentData[studentId] = getInitialStudentData();
+    }
+
+    _.assign(studentData[studentId], data);
+}
 
 var DataStore = _.assign({}, EventEmitter.prototype, {
 
-    getStudentData: function() {
-        return studentData;
+    getDataForStudent: function(studentId) {
+        return studentData[studentId] || getInitialStudentData();
+    },
+
+    hasDataForStudent: function(studentId) {
+        return Boolean(studentData[studentId]);
     },
 
     emitChange: function() {
@@ -34,7 +50,7 @@ DataStore.dispatcherId = AppDispatcher.register(function(payload) {
 
     switch(action.actionType) {
         case AppConstants.RECEIVE_STUDENT_DATA:
-            _.assign(studentData, _.omit(action, 'actionType'));
+            updateDataForStudent(action.student_id, action.data);
             DataStore.emitChange();
             break;
         default:

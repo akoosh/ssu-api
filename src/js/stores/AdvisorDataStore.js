@@ -8,10 +8,29 @@ var advisorData = {
     students: []
 };
 
+function getInitialAdvisorData() {
+    return {
+        advisor: {},
+        students: []
+    };
+}
+
+function updateDataForAdvisor(advisorId, data) {
+    if (!advisorData[advisorId]) {
+        advisorData[advisorId] = getInitialAdvisorData();
+    }
+
+    _.assign(advisorData[advisorId], data);
+}
+
 var DataStore = _.assign({}, EventEmitter.prototype, {
 
-    getAdvisorData: function() {
-        return advisorData;
+    getDataForAdvisor: function(advisorId) {
+        return advisorData[advisorId] || getInitialAdvisorData();
+    },
+
+    hasDataForAdvisor: function(advisorId) {
+        return Boolean(advisorData[advisorId]);
     },
 
     emitChange: function() {
@@ -33,7 +52,7 @@ DataStore.dispatcherId = AppDispatcher.register(function(payload) {
 
     switch(action.actionType) {
         case AppConstants.RECEIVE_ADVISOR_DATA:
-            _.assign(advisorData, _.omit(action, 'actionType'));
+            updateDataForAdvisor(action.advisor_id, action.data);
             DataStore.emitChange();
             break;
         default:

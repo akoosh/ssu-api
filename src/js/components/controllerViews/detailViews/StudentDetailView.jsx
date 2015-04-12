@@ -60,31 +60,35 @@ function sectionLinkParams(sections) {
     return params;
 }
 
-function getViewState() {
-    var data = StudentDataStore.getStudentData();
-    return {
-        student: data.student,
-        advisors: advisorList(data.advisors),
-        classHistory: classHistory(data.sections),
-        sectionLinkParams: sectionLinkParams(data.sections)
-    };
-}
-
 var StudentDetailView = React.createClass({
 
     mixins: [Router.State, Router.Navigation],
 
     getInitialState: function() {
-        return getViewState();
+        return this.getViewState();
+    },
+
+    getViewState: function() {
+        var data = StudentDataStore.getDataForStudent(this.getParams().student_id);
+        return {
+            student: data.student,
+            advisors: advisorList(data.advisors),
+            classHistory: classHistory(data.sections),
+            sectionLinkParams: sectionLinkParams(data.sections)
+        };
     },
 
     onChange: function() {
-        this.setState(getViewState());
+        this.setState(this.getViewState());
     },
 
     componentDidMount: function() {
         StudentDataStore.addChangeListener(this.onChange);
-        AppActions.fetchDataForStudent(this.getParams().student_id);
+
+        var student_id = this.getParams().student_id;
+        if (!StudentDataStore.hasDataForStudent(student_id)) {
+            AppActions.fetchDataForStudent(this.getParams().student_id);
+        }
     },
 
     componentWillUnmount: function() {

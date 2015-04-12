@@ -43,32 +43,35 @@ function sectionLinkParams(sections) {
     return params;
 }
 
-function getViewState() {
-    var data = CourseDataStore.getCourseData();
-    return {
-        course: data.course,
-        classHistory: classHistory(data.sections),
-        sectionLinkParams: sectionLinkParams(data.sections)
-    };
-}
-
 var InstructorDetailView = React.createClass({
 
     mixins: [Router.State, Router.Navigation],
 
     getInitialState: function() {
-        return getViewState();
+        return this.getViewState();
+    },
+
+    getViewState: function() {
+        var params = this.getParams();
+        var data = CourseDataStore.getDataForCourse(params.subject, params.catalog_number);
+        return {
+            course: data.course,
+            classHistory: classHistory(data.sections),
+            sectionLinkParams: sectionLinkParams(data.sections)
+        };
     },
 
     onChange: function() {
-        this.setState(getViewState());
+        this.setState(this.getViewState());
     },
 
     componentDidMount: function() {
         CourseDataStore.addChangeListener(this.onChange);
 
         var params = this.getParams();
-        AppActions.fetchDataForCourse(params.subject, params.catalog_number);
+        if (!CourseDataStore.hasDataForCourse(params.subject, params.catalog_number)) {
+            AppActions.fetchDataForCourse(params.subject, params.catalog_number);
+        }
     },
 
     componentWillUnmount: function() {

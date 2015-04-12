@@ -41,30 +41,34 @@ function sectionLinkParams(sections) {
     return params;
 }
 
-function getViewState() {
-    var data = InstructorDataStore.getInstructorData();
-    return {
-        instructor: data.instructor,
-        classHistory: classHistory(data.sections),
-        sectionLinkParams: sectionLinkParams(data.sections)
-    };
-}
-
 var InstructorDetailView = React.createClass({
 
     mixins: [Router.State, Router.Navigation],
 
     getInitialState: function() {
-        return getViewState();
+        return this.getViewState();
+    },
+
+    getViewState: function() {
+        var data = InstructorDataStore.getDataForInstructor(this.getParams().instructor_id);
+        return {
+            instructor: data.instructor,
+            classHistory: classHistory(data.sections),
+            sectionLinkParams: sectionLinkParams(data.sections)
+        };
     },
 
     onChange: function() {
-        this.setState(getViewState());
+        this.setState(this.getViewState());
     },
 
     componentDidMount: function() {
         InstructorDataStore.addChangeListener(this.onChange);
-        AppActions.fetchDataForInstructor(this.getParams().instructor_id);
+
+        var instructor_id = this.getParams().instructor_id;
+        if (!InstructorDataStore.hasDataForInstructor(instructor_id)) {
+            AppActions.fetchDataForInstructor(instructor_id);
+        }
     },
 
     componentWillUnmount: function() {

@@ -30,31 +30,33 @@ function formattedStudentsByTerm(students) {
     return _.groupBy(formattedStudents(students), 'term');
 }
 
-function getViewState() {
-    var data = AdvisorDataStore.getAdvisorData();
-    return {
-        advisor: data.advisor,
-        studentsByTerm: formattedStudentsByTerm(data.students)
-    };
-}
-
 var InstructorDetailView = React.createClass({
 
     mixins: [Router.State, Router.Navigation],
 
     getInitialState: function() {
-        return getViewState();
+        return this.getViewState();
+    },
+
+    getViewState: function() {
+        var data = AdvisorDataStore.getDataForAdvisor(this.getParams().advisor_id);
+        return {
+            advisor: data.advisor,
+            studentsByTerm: formattedStudentsByTerm(data.students)
+        };
     },
 
     onChange: function() {
-        this.setState(getViewState());
+        this.setState(this.getViewState());
     },
 
     componentDidMount: function() {
         AdvisorDataStore.addChangeListener(this.onChange);
 
-        var params = this.getParams();
-        AppActions.fetchDataForAdvisor(this.getParams().advisor_id);
+        var advisor_id = this.getParams().advisor_id;
+        if (!AdvisorDataStore.hasDataForAdvisor(advisor_id)) {
+            AppActions.fetchDataForAdvisor(advisor_id);
+        }
     },
 
     componentWillUnmount: function() {

@@ -36,9 +36,11 @@ AppActions.fetchDataForStudent = function(student_id) {
         if (err) {
             console.log(err);
         } else {
-            AppDispatcher.handleAction(_.assign(results, {
-                actionType: AppConstants.RECEIVE_STUDENT_DATA
-            }));
+            AppDispatcher.handleAction({
+                actionType: AppConstants.RECEIVE_STUDENT_DATA,
+                student_id: student_id,
+                data: results
+            });
         }
     });
 };
@@ -69,9 +71,11 @@ AppActions.fetchDataForInstructor = function(instructor_id) {
         if (err) {
             console.log(err);
         } else {
-            AppDispatcher.handleAction(_.assign(results, {
-                actionType: AppConstants.RECEIVE_INSTRUCTOR_DATA
-            }));
+            AppDispatcher.handleAction({
+                actionType: AppConstants.RECEIVE_INSTRUCTOR_DATA,
+                instructor_id: instructor_id,
+                data: results
+            });
         }
     });
 };
@@ -102,9 +106,11 @@ AppActions.fetchDataForAdvisor = function(advisor_id) {
         if (err) {
             console.log(err);
         } else {
-            AppDispatcher.handleAction(_.assign(results, {
-                actionType: AppConstants.RECEIVE_ADVISOR_DATA
-            }));
+            AppDispatcher.handleAction({
+                actionType: AppConstants.RECEIVE_ADVISOR_DATA,
+                advisor_id: advisor_id,
+                data: results
+            });
         }
     });
 };
@@ -135,9 +141,12 @@ AppActions.fetchDataForCourse = function(subject, catalog_number) {
         if (err) {
             console.log(err);
         } else {
-            AppDispatcher.handleAction(_.assign(results, {
-                actionType: AppConstants.RECEIVE_COURSE_DATA
-            }));
+            AppDispatcher.handleAction({
+                actionType: AppConstants.RECEIVE_COURSE_DATA,
+                subject: subject,
+                catalog: catalog_number,
+                data: results
+            });
         }
     });
 };
@@ -155,9 +164,12 @@ AppActions.fetchDataForSection = function(term, class_nbr) {
         if (err) {
             console.log(err);
         } else {
-            AppDispatcher.handleAction(_.assign(results, {
-                actionType: AppConstants.RECEIVE_SECTION_DATA
-            }));
+            AppDispatcher.handleAction({
+                actionType: AppConstants.RECEIVE_SECTION_DATA,
+                term: term,
+                class_nbr: class_nbr,
+                data: results
+            });
         }
     });
 };

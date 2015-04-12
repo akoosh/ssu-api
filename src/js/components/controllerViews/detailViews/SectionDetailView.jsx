@@ -73,36 +73,39 @@ function passRate(grades, required) {
     return (passing.length / grades.length) || 0;
 }
 
-function getViewState() {
-    var data = SectionDataStore.getSectionData();
-    var grades = _.pluck(data.students, 'grade');
-    return {
-        section: data.section,
-        students: formattedStudents(data.students),
-        gradeDistribution: gradeDistribution(data.students),
-        averageGrade: averageGrade(grades),
-        majorPassRate: passRate(grades, 'C-'),
-        generalPassRate: passRate(grades, 'D-')
-    };
-}
-
 var InstructorDetailView = React.createClass({
 
     mixins: [Router.State, Router.Navigation],
 
     getInitialState: function() {
-        return getViewState();
+        return this.getViewState();
+    },
+
+    getViewState: function() {
+        var params = this.getParams();
+        var data = SectionDataStore.getDataForSection(params.term, params.class_nbr);
+        var grades = _.pluck(data.students, 'grade');
+        return {
+            section: data.section,
+            students: formattedStudents(data.students),
+            gradeDistribution: gradeDistribution(data.students),
+            averageGrade: averageGrade(grades),
+            majorPassRate: passRate(grades, 'C-'),
+            generalPassRate: passRate(grades, 'D-')
+        };
     },
 
     onChange: function() {
-        this.setState(getViewState());
+        this.setState(this.getViewState());
     },
 
     componentDidMount: function() {
         SectionDataStore.addChangeListener(this.onChange);
 
         var params = this.getParams();
-        AppActions.fetchDataForSection(params.term, params.class_nbr);
+        if (!SectionDataStore.hasDataForSection(params.term, params.class_nbr)) {
+            AppActions.fetchDataForSection(params.term, params.class_nbr);
+        }
     },
 
     componentWillUnmount: function() {
