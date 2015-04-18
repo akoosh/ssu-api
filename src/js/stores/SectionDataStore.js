@@ -1,5 +1,6 @@
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var AppConstants  = require('../constants/AppConstants');
+// SectionDataStore.js
+'use strict';
+
 var EventEmitter  = require('events').EventEmitter;
 var _             = require('lodash');
 
@@ -10,14 +11,6 @@ function getInitialSectionData() {
         section: {},
         students: []
     };
-}
-
-function updateDataForSection(sectionKey, data) {
-    if (!sectionData[sectionKey]) {
-        sectionData[sectionKey] = getInitialSectionData();
-    }
-
-    _.assign(sectionData[sectionKey], data);
 }
 
 var DataStore = _.assign({}, EventEmitter.prototype, {
@@ -42,21 +35,15 @@ var DataStore = _.assign({}, EventEmitter.prototype, {
         this.removeListener('change', callback);
     },
 
-});
+    updateDataForSection: function(term, class_number, data) {
+        var sectionKey =  term + class_number;
+        if (!sectionData[sectionKey]) {
+            sectionData[sectionKey] = getInitialSectionData();
+        }
 
-DataStore.dispatcherId = AppDispatcher.register(function(payload) {
-    var action = payload.action;
-
-    switch(action.actionType) {
-        case AppConstants.RECEIVE_SECTION_DATA:
-            updateDataForSection(action.term + action.class_nbr, action.data);
-            DataStore.emitChange();
-            break;
-        default:
-            break;
+        _.assign(sectionData[sectionKey], data);
+        this.emitChange();
     }
-
-    return true;
 });
 
 module.exports = DataStore;

@@ -1,5 +1,6 @@
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var AppConstants  = require('../constants/AppConstants');
+// AppActions.js
+'use strict';
+
 var AppApi        = require('../utils/AppApi');
 var Async         = require('async');
 var _             = require('lodash');
@@ -9,6 +10,13 @@ var StudentListDataStore    = require('../stores/StudentListDataStore');
 var InstructorListDataStore = require('../stores/InstructorListDataStore');
 var AdvisorListDataStore    = require('../stores/AdvisorListDataStore');
 var CourseListDataStore     = require('../stores/CourseListDataStore');
+
+// Individual data stores
+var StudentDataStore    = require('../stores/StudentDataStore');
+var InstructorDataStore = require('../stores/InstructorDataStore');
+var AdvisorDataStore    = require('../stores/AdvisorDataStore');
+var CourseDataStore     = require('../stores/CourseDataStore');
+var SectionDataStore    = require('../stores/SectionDataStore');
 
 var AppActions = {};
 
@@ -39,11 +47,7 @@ AppActions.fetchDataForStudent = function(student_id) {
         if (err) {
             console.log(err);
         } else {
-            AppDispatcher.handleAction({
-                actionType: AppConstants.RECEIVE_STUDENT_DATA,
-                student_id: student_id,
-                data: results
-            });
+            StudentDataStore.updateDataForStudent(student_id, results);
         }
     });
 };
@@ -71,11 +75,7 @@ AppActions.fetchDataForInstructor = function(instructor_id) {
         if (err) {
             console.log(err);
         } else {
-            AppDispatcher.handleAction({
-                actionType: AppConstants.RECEIVE_INSTRUCTOR_DATA,
-                instructor_id: instructor_id,
-                data: results
-            });
+            InstructorDataStore.updateDataForInstructor(instructor_id, results);
         }
     });
 };
@@ -103,11 +103,7 @@ AppActions.fetchDataForAdvisor = function(advisor_id) {
         if (err) {
             console.log(err);
         } else {
-            AppDispatcher.handleAction({
-                actionType: AppConstants.RECEIVE_ADVISOR_DATA,
-                advisor_id: advisor_id,
-                data: results
-            });
+            AdvisorDataStore.updateDataForAdvisor(advisor_id, results);
         }
     });
 };
@@ -135,12 +131,7 @@ AppActions.fetchDataForCourse = function(subject, catalog_number) {
         if (err) {
             console.log(err);
         } else {
-            AppDispatcher.handleAction({
-                actionType: AppConstants.RECEIVE_COURSE_DATA,
-                subject: subject,
-                catalog: catalog_number,
-                data: results
-            });
+            CourseDataStore.updateDataForCourse(subject, catalog_number, results);
         }
     });
 };
@@ -158,12 +149,7 @@ AppActions.fetchDataForSection = function(term, class_nbr) {
         if (err) {
             console.log(err);
         } else {
-            AppDispatcher.handleAction({
-                actionType: AppConstants.RECEIVE_SECTION_DATA,
-                term: term,
-                class_nbr: class_nbr,
-                data: results
-            });
+            SectionDataStore.updateDataForSection(term, class_nbr, results);
         }
     });
 };

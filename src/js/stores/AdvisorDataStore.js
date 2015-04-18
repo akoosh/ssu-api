@@ -1,5 +1,6 @@
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var AppConstants  = require('../constants/AppConstants');
+// AdvisorDataStore.js
+'use strict';
+
 var EventEmitter  = require('events').EventEmitter;
 var _             = require('lodash');
 
@@ -13,14 +14,6 @@ function getInitialAdvisorData() {
         advisor: {},
         students: []
     };
-}
-
-function updateDataForAdvisor(advisorId, data) {
-    if (!advisorData[advisorId]) {
-        advisorData[advisorId] = getInitialAdvisorData();
-    }
-
-    _.assign(advisorData[advisorId], data);
 }
 
 var DataStore = _.assign({}, EventEmitter.prototype, {
@@ -45,21 +38,14 @@ var DataStore = _.assign({}, EventEmitter.prototype, {
         this.removeListener('change', callback);
     },
 
-});
+    updateDataForAdvisor: function(advisorId, data) {
+        if (!advisorData[advisorId]) {
+            advisorData[advisorId] = getInitialAdvisorData();
+        }
 
-DataStore.dispatcherId = AppDispatcher.register(function(payload) {
-    var action = payload.action;
-
-    switch(action.actionType) {
-        case AppConstants.RECEIVE_ADVISOR_DATA:
-            updateDataForAdvisor(action.advisor_id, action.data);
-            DataStore.emitChange();
-            break;
-        default:
-            break;
+        _.assign(advisorData[advisorId], data);
+        this.emitChange();
     }
-
-    return true;
 });
 
 module.exports = DataStore;

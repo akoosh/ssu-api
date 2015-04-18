@@ -1,5 +1,6 @@
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var AppConstants  = require('../constants/AppConstants');
+// CourseDataStore.js
+'use strict';
+
 var EventEmitter  = require('events').EventEmitter;
 var _             = require('lodash');
 
@@ -10,14 +11,6 @@ function getInitialCourseData() {
         course: {},
         sections: []
     };
-}
-
-function updateDataForCourse(courseKey, data) {
-    if (!courseData[courseKey]) {
-        courseData[courseKey] = getInitialCourseData();
-    }
-
-    _.assign(courseData[courseKey], data);
 }
 
 var DataStore = _.assign({}, EventEmitter.prototype, {
@@ -42,21 +35,15 @@ var DataStore = _.assign({}, EventEmitter.prototype, {
         this.removeListener('change', callback);
     },
 
-});
+    updateDataForCourse: function(subject, catalog, data) {
+        var courseKey = subject + catalog;
+        if (!courseData[courseKey]) {
+            courseData[courseKey] = getInitialCourseData();
+        }
 
-DataStore.dispatcherId = AppDispatcher.register(function(payload) {
-    var action = payload.action;
-
-    switch(action.actionType) {
-        case AppConstants.RECEIVE_COURSE_DATA:
-            updateDataForCourse(action.subject + action.catalog, action.data);
-            DataStore.emitChange();
-            break;
-        default:
-            break;
+        _.assign(courseData[courseKey], data);
+        this.emitChange();
     }
-
-    return true;
 });
 
 module.exports = DataStore;
