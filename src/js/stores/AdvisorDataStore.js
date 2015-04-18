@@ -1,13 +1,10 @@
 // AdvisorDataStore.js
 'use strict';
 
-var EventEmitter  = require('events').EventEmitter;
+var DataStoreUtils  = require('../utils/DataStoreUtils');
 var _             = require('lodash');
 
-var advisorData = {
-    advisor: {},
-    students: []
-};
+var advisorData = {};
 
 function getInitialAdvisorData() {
     return {
@@ -16,34 +13,47 @@ function getInitialAdvisorData() {
     };
 }
 
-var DataStore = _.assign({}, EventEmitter.prototype, {
+function updateDataForAdvisor(advisorId, data) {
+    if (!advisorData[advisorId]) {
+        advisorData[advisorId] = getInitialAdvisorData();
+    }
+
+    _.assign(advisorData[advisorId], data);
+}
+
+var DataStore = DataStoreUtils.createDataStore({
 
     getDataForAdvisor: function(advisorId) {
         return advisorData[advisorId] || getInitialAdvisorData();
     },
 
     hasDataForAdvisor: function(advisorId) {
-        return Boolean(advisorData[advisorId]);
+        var data = advisorData[advisorId];
+        if (data) {
+            return Boolean(data.students.length);
+        } else {
+            return false;
+        }
     },
 
-    emitChange: function() {
-        this.emit('change');
+    getAllAdvisors: function() {
+        var advisors = _.pluck(advisorData, 'advisor');
+        return advisors;
     },
 
-    addChangeListener: function(callback) {
-        this.on('change', callback);
-    },
-
-    removeChangeListener: function(callback) {
-        this.removeListener('change', callback);
+    getAdvisorById: function(advisorId) {
+        return (advisorData[advisorId] || {}).advisor || {};
     },
 
     updateDataForAdvisor: function(advisorId, data) {
-        if (!advisorData[advisorId]) {
-            advisorData[advisorId] = getInitialAdvisorData();
-        }
+        updateDataForAdvisor(advisorId, data);
+        this.emitChange();
+    },
 
-        _.assign(advisorData[advisorId], data);
+    updateAdvisors: function(advisors) {
+        advisors.forEach(function(advisor) {
+            updateDataForAdvisor(advisor.faculty_id, {advisor: advisor});
+        });
         this.emitChange();
     }
 });

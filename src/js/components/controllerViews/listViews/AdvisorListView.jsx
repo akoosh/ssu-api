@@ -1,16 +1,16 @@
 // AdvisorListView.jsx
 'use strict';
 
-var React                   = require('react');
-var Router                  = require('react-router');
-var Bootstrap               = require('react-bootstrap');
-var AppActions              = require('../../../actions/AppActions');
-var DataTable               = require('../../subviews/DataTable/DataTable');
-var AdvisorListDataStore    = require('../../../stores/AdvisorListDataStore');
+var React               = require('react');
+var Router              = require('react-router');
+var Bootstrap           = require('react-bootstrap');
+var AppActions          = require('../../../actions/AppActions');
+var DataTable           = require('../../subviews/DataTable/DataTable');
+var AdvisorDataStore    = require('../../../stores/AdvisorDataStore');
 
 function getViewState() {
     return {
-        advisors: AdvisorListDataStore.getAdvisors()
+        advisors: AdvisorDataStore.getAllAdvisors()
     };
 }
 
@@ -27,12 +27,12 @@ var AdvisorListView = React.createClass({
     },
 
     componentDidMount: function() {
-        AdvisorListDataStore.addChangeListener(this.onChange);
+        AdvisorDataStore.addChangeListener(this.onChange);
         AppActions.fetchAdvisors();
     },
 
     componentWillUnmount: function() {
-        AdvisorListDataStore.removeChangeListener(this.onChange);
+        AdvisorDataStore.removeChangeListener(this.onChange);
     },
 
     onRowClick: function(advisor) {

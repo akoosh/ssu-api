@@ -1,7 +1,7 @@
 // StudentDataStore.js
 'use strict';
 
-var EventEmitter  = require('events').EventEmitter;
+var DataStoreUtils  = require('../utils/DataStoreUtils');
 var _             = require('lodash');
 
 var studentData = {};
@@ -14,34 +14,46 @@ function getInitialStudentData() {
     };
 }
 
-var DataStore = _.assign({}, EventEmitter.prototype, {
+function updateDataForStudent(studentId, data) {
+    if (!studentData[studentId]) {
+        studentData[studentId] = getInitialStudentData();
+    }
+
+    _.assign(studentData[studentId], data);
+}
+
+var DataStore = DataStoreUtils.createDataStore({
 
     getDataForStudent: function(studentId) {
         return studentData[studentId] || getInitialStudentData();
     },
 
     hasDataForStudent: function(studentId) {
-        return Boolean(studentData[studentId]);
+        var data = studentData[studentId];
+        if (data) {
+            return Boolean(data.advisors.length && data.sections.length);
+        } else {
+            return false;
+        }
     },
 
-    emitChange: function() {
-        this.emit('change');
+    getAllStudents: function() {
+        return _.pluck(studentData, 'student');
     },
 
-    addChangeListener: function(callback) {
-        this.on('change', callback);
-    },
-
-    removeChangeListener: function(callback) {
-        this.removeListener('change', callback);
+    getStudentById: function(studentId) {
+        return (studentData[studentId] || {}).student || {};
     },
 
     updateDataForStudent: function(studentId, data) {
-        if (!studentData[studentId]) {
-            studentData[studentId] = getInitialStudentData();
-        }
+        updateDataForStudent(studentId, data);
+        this.emitChange();
+    },
 
-        _.assign(studentData[studentId], data);
+    updateStudents: function(students) {
+        students.forEach(function(student) {
+            updateDataForStudent(student.student_id, {student: student});
+        });
         this.emitChange();
     }
 });

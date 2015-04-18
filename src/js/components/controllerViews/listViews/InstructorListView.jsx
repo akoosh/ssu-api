@@ -1,16 +1,16 @@
 // InstructorListView.jsx
 'use strict';
 
-var React                   = require('react');
-var Router                  = require('react-router');
-var Bootstrap               = require('react-bootstrap');
-var AppActions              = require('../../../actions/AppActions');
-var DataTable               = require('../../subviews/DataTable/DataTable');
-var InstructorListDataStore = require('../../../stores/InstructorListDataStore');
+var React               = require('react');
+var Router              = require('react-router');
+var Bootstrap           = require('react-bootstrap');
+var AppActions          = require('../../../actions/AppActions');
+var DataTable           = require('../../subviews/DataTable/DataTable');
+var InstructorDataStore = require('../../../stores/InstructorDataStore');
 
 function getViewState() {
     return {
-        instructors: InstructorListDataStore.getInstructors()
+        instructors: InstructorDataStore.getAllInstructors()
     };
 }
 
@@ -27,12 +27,12 @@ var InstructorListView = React.createClass({
     },
 
     componentDidMount: function() {
-        InstructorListDataStore.addChangeListener(this.onChange);
+        InstructorDataStore.addChangeListener(this.onChange);
         AppActions.fetchInstructors();
     },
 
     componentWillUnmount: function() {
-        InstructorListDataStore.removeChangeListener(this.onChange);
+        InstructorDataStore.removeChangeListener(this.onChange);
     },
 
     onRowClick: function(instructor) {

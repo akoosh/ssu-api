@@ -1,16 +1,16 @@
 // StudentListView.jsx
 'use strict';
 
-var React                   = require('react');
-var Router                  = require('react-router');
-var Bootstrap               = require('react-bootstrap');
-var AppActions              = require('../../../actions/AppActions');
-var DataTable               = require('../../subviews/DataTable/DataTable');
-var StudentListDataStore    = require('../../../stores/StudentListDataStore');
+var React               = require('react');
+var Router              = require('react-router');
+var Bootstrap           = require('react-bootstrap');
+var AppActions          = require('../../../actions/AppActions');
+var DataTable           = require('../../subviews/DataTable/DataTable');
+var StudentDataStore    = require('../../../stores/StudentDataStore');
 
 function getViewState() {
     return {
-        students: StudentListDataStore.getStudents()
+        students: StudentDataStore.getAllStudents()
     };
 }
 
@@ -27,12 +27,12 @@ var StudentListView = React.createClass({
     },
 
     componentDidMount: function() {
-        StudentListDataStore.addChangeListener(this.onChange);
+        StudentDataStore.addChangeListener(this.onChange);
         AppActions.fetchStudents();
     },
 
     componentWillUnmount: function() {
-        StudentListDataStore.removeChangeListener(this.onChange);
+        StudentDataStore.removeChangeListener(this.onChange);
     },
 
     onRowClick: function(student) {

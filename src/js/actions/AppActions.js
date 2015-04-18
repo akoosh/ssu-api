@@ -5,13 +5,7 @@ var AppApi        = require('../utils/AppApi');
 var Async         = require('async');
 var _             = require('lodash');
 
-// List data stores
-var StudentListDataStore    = require('../stores/StudentListDataStore');
-var InstructorListDataStore = require('../stores/InstructorListDataStore');
-var AdvisorListDataStore    = require('../stores/AdvisorListDataStore');
-var CourseListDataStore     = require('../stores/CourseListDataStore');
-
-// Individual data stores
+// Data stores
 var StudentDataStore    = require('../stores/StudentDataStore');
 var InstructorDataStore = require('../stores/InstructorDataStore');
 var AdvisorDataStore    = require('../stores/AdvisorDataStore');
@@ -25,7 +19,7 @@ AppActions.fetchStudents = function() {
         if (err) {
             console.log(err);
         } else {
-            StudentListDataStore.updateStudents(students);
+            StudentDataStore.updateStudents(students);
         }
     });
 };
@@ -57,7 +51,7 @@ AppActions.fetchInstructors = function() {
         if (err) {
             console.log(err);
         } else {
-            InstructorListDataStore.updateInstructors(instructors);
+            InstructorDataStore.updateInstructors(instructors);
         }
     });
 };
@@ -85,7 +79,7 @@ AppActions.fetchAdvisors = function() {
         if (err) {
             console.log(err);
         } else {
-            AdvisorListDataStore.updateAdvisors(advisors);
+            AdvisorDataStore.updateAdvisors(advisors);
         }
     });
 };
@@ -113,7 +107,7 @@ AppActions.fetchCourses = function() {
         if (err) {
             console.log(err);
         } else {
-            CourseListDataStore.updateCourses(courses);
+            CourseDataStore.updateCourses(courses);
         }
     });
 };

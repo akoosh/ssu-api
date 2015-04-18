@@ -1,7 +1,7 @@
 // CourseDataStore.js
 'use strict';
 
-var EventEmitter  = require('events').EventEmitter;
+var DataStoreUtils  = require('../utils/DataStoreUtils');
 var _             = require('lodash');
 
 var courseData = {};
@@ -13,35 +13,48 @@ function getInitialCourseData() {
     };
 }
 
-var DataStore = _.assign({}, EventEmitter.prototype, {
+function updateDataForCourse(subject, catalog, data) {
+    var courseKey = subject + catalog;
+    if (!courseData[courseKey]) {
+        courseData[courseKey] = getInitialCourseData();
+    }
+
+    _.assign(courseData[courseKey], data);
+}
+
+var DataStore = DataStoreUtils.createDataStore({
 
     getDataForCourse: function(subject, catalog) {
         return courseData[subject + catalog] || getInitialCourseData();
     },
 
     hasDataForCourse: function(subject, catalog) {
-        return Boolean(courseData[subject + catalog]);
+        var data = courseData[subject + catalog];
+        if (data) {
+            return Boolean(data.sections.length);
+        } else {
+            return false;
+        }
     },
 
-    emitChange: function() {
-        this.emit('change');
+    getAllCourses: function() {
+        return _.pluck(courseData, 'course');
     },
 
-    addChangeListener: function(callback) {
-        this.on('change', callback);
-    },
-
-    removeChangeListener: function(callback) {
-        this.removeListener('change', callback);
+    getCourseBySubjectAndCatalogNumber: function(subject, catalog) {
+        var courseKey = subject + catalog;
+        return (courseData[courseKey] || {}).course || {};
     },
 
     updateDataForCourse: function(subject, catalog, data) {
-        var courseKey = subject + catalog;
-        if (!courseData[courseKey]) {
-            courseData[courseKey] = getInitialCourseData();
-        }
+        updateDataForCourse(subject, catalog, data);
+        this.emitChange();
+    },
 
-        _.assign(courseData[courseKey], data);
+    updateCourses: function(courses) {
+        courses.forEach(function(course) {
+            updateDataForCourse(course.subject, course.catalog, {course: course});
+        });
         this.emitChange();
     }
 });

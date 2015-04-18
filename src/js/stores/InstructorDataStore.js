@@ -1,7 +1,7 @@
 // InstructorDataStore.js
 'use strict';
 
-var EventEmitter  = require('events').EventEmitter;
+var DataStoreUtils  = require('../utils/DataStoreUtils');
 var _             = require('lodash');
 
 var instructorData = {};
@@ -13,34 +13,46 @@ function getInitialInstructorData() {
     };
 }
 
-var DataStore = _.assign({}, EventEmitter.prototype, {
+function updateDataForInstructor(instructorId, data) {
+    if (!instructorData[instructorId]) {
+        instructorData[instructorId] = getInitialInstructorData();
+    }
+
+    _.assign(instructorData[instructorId], data);
+}
+
+var DataStore = DataStoreUtils.createDataStore({
 
     getDataForInstructor: function(instructorId) {
         return instructorData[instructorId] || getInitialInstructorData();
     },
 
     hasDataForInstructor: function(instructorId) {
-        return Boolean(instructorData[instructorId]);
+        var data = instructorData[instructorId];
+        if (data) {
+            return Boolean(data.sections.length);
+        } else {
+            return false;
+        }
     },
 
-    emitChange: function() {
-        this.emit('change');
+    getAllInstructors: function() {
+        return _.pluck(instructorData, 'instructor');
     },
 
-    addChangeListener: function(callback) {
-        this.on('change', callback);
-    },
-
-    removeChangeListener: function(callback) {
-        this.removeListener('change', callback);
+    getInstructorById: function(instructorId) {
+        return (instructorData[instructorId] || {}).instructor || {};
     },
 
     updateDataForInstructor: function(instructorId, data) {
-        if (!instructorData[instructorId]) {
-            instructorData[instructorId] = getInitialInstructorData();
-        }
+        updateDataForInstructor(instructorId, data);
+        this.emitChange();
+    },
 
-        _.assign(instructorData[instructorId], data);
+    updateInstructors: function(instructors) {
+        instructors.forEach(function(instructor) {
+            updateDataForInstructor(instructor.faculty_id, {instructor: instructor});
+        });
         this.emitChange();
     }
 });

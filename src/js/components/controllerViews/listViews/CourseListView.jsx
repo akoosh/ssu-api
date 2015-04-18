@@ -1,12 +1,12 @@
 // CourseListView.jsx
 'use strict';
 
-var React                   = require('react');
-var Router                  = require('react-router');
-var Bootstrap               = require('react-bootstrap');
-var AppActions              = require('../../../actions/AppActions');
-var DataTable               = require('../../subviews/DataTable/DataTable');
-var CourseListDataStore     = require('../../../stores/CourseListDataStore');
+var React           = require('react');
+var Router          = require('react-router');
+var Bootstrap       = require('react-bootstrap');
+var AppActions      = require('../../../actions/AppActions');
+var DataTable       = require('../../subviews/DataTable/DataTable');
+var CourseDataStore = require('../../../stores/CourseDataStore');
 
 function formattedCourses(courses) {
     return courses.map(function(course) {
@@ -22,7 +22,7 @@ function formattedCourses(courses) {
 
 function getViewState() {
     return {
-        courses: formattedCourses(CourseListDataStore.getCourses())
+        courses: formattedCourses(CourseDataStore.getAllCourses())
     };
 }
 
@@ -39,12 +39,12 @@ var CourseListView = React.createClass({
     },
 
     componentDidMount: function() {
-        CourseListDataStore.addChangeListener(this.onChange);
+        CourseDataStore.addChangeListener(this.onChange);
         AppActions.fetchCourses();
     },
 
     componentWillUnmount: function() {
-        CourseListDataStore.removeChangeListener(this.onChange);
+        CourseDataStore.removeChangeListener(this.onChange);
     },
 
     onRowClick: function(course) {

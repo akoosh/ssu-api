@@ -1,7 +1,7 @@
 // SectionDataStore.js
 'use strict';
 
-var EventEmitter  = require('events').EventEmitter;
+var DataStoreUtils  = require('../utils/DataStoreUtils');
 var _             = require('lodash');
 
 var sectionData = {};
@@ -13,7 +13,7 @@ function getInitialSectionData() {
     };
 }
 
-var DataStore = _.assign({}, EventEmitter.prototype, {
+var DataStore = DataStoreUtils.createDataStore({
 
     getDataForSection: function(term, class_nbr) {
         return sectionData[term + class_nbr] || getInitialSectionData();
@@ -21,18 +21,6 @@ var DataStore = _.assign({}, EventEmitter.prototype, {
 
     hasDataForSection: function(term, class_nbr) {
         return Boolean(sectionData[term + class_nbr]);
-    },
-
-    emitChange: function() {
-        this.emit('change');
-    },
-
-    addChangeListener: function(callback) {
-        this.on('change', callback);
-    },
-
-    removeChangeListener: function(callback) {
-        this.removeListener('change', callback);
     },
 
     updateDataForSection: function(term, class_number, data) {
