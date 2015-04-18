@@ -1,4 +1,3 @@
 {
-    "node": true,
-    "globals": { "Promise": true }
+    "node": true
 }

@@ -1,4 +1,5 @@
-/** @jsx React.DOM */
+// StudentDetailView.jsx
+'use strict';
 
 var React                   = require('react');
 var Router                  = require('react-router');

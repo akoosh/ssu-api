@@ -1,4 +1,5 @@
-/** @jsx React.DOM */
+// ApiClientApp.jsx
+'use strict';
 
 var React           = require('react');
 var RouteHandler    = require('react-router').RouteHandler;

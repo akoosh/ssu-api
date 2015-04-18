@@ -1,4 +1,5 @@
-/** @jsx React.DOM */
+// TableBody.jsx
+'use strict';
 
 var React = require('react');
 var _     = require('lodash');

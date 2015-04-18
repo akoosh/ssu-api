@@ -1,4 +1,7 @@
-var $             = require('jquery');
+// AppApi.js
+'use strict';
+
+var $ = require('jquery');
 
 function makeApiRequest(url, callback) {
     $.ajax({
@@ -11,11 +14,11 @@ function makeApiRequest(url, callback) {
             } else {
                 callback(null, data);
             }
-        }.bind(this),
+        },
         error: function(xhr, status, err) {
             console.error(url, status, err.toString());
             callback(err);
-        }.bind(this)
+        }
     });
 }
 
