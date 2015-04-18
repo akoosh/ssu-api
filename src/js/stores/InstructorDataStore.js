@@ -1,5 +1,6 @@
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var AppConstants  = require('../constants/AppConstants');
+// InstructorDataStore.js
+'use strict';
+
 var EventEmitter  = require('events').EventEmitter;
 var _             = require('lodash');
 
@@ -10,14 +11,6 @@ function getInitialInstructorData() {
         instructor: {},
         sections: []
     };
-}
-
-function updateDataForInstructor(instructorId, data) {
-    if (!instructorData[instructorId]) {
-        instructorData[instructorId] = getInitialInstructorData();
-    }
-
-    _.assign(instructorData[instructorId], data);
 }
 
 var DataStore = _.assign({}, EventEmitter.prototype, {
@@ -42,21 +35,14 @@ var DataStore = _.assign({}, EventEmitter.prototype, {
         this.removeListener('change', callback);
     },
 
-});
+    updateDataForInstructor: function(instructorId, data) {
+        if (!instructorData[instructorId]) {
+            instructorData[instructorId] = getInitialInstructorData();
+        }
 
-DataStore.dispatcherId = AppDispatcher.register(function(payload) {
-    var action = payload.action;
-
-    switch(action.actionType) {
-        case AppConstants.RECEIVE_INSTRUCTOR_DATA:
-            updateDataForInstructor(action.instructor_id, action.data);
-            DataStore.emitChange();
-            break;
-        default:
-            break;
+        _.assign(instructorData[instructorId], data);
+        this.emitChange();
     }
-
-    return true;
 });
 
 module.exports = DataStore;
