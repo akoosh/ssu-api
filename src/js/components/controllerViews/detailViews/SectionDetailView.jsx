@@ -151,8 +151,8 @@ var InstructorDetailView = React.createClass({
                             <Bootstrap.Col xs={4}>
                                 <Bootstrap.Table>
                                     <tr><th>Average Grade</th><td>{this.state.averageGrade}</td></tr>
-                                    <tr><th>General Pass Rate</th><td>{(this.state.majorPassRate * 100).toFixed(0)}%</td></tr>
-                                    <tr><th>Major Pass Rate</th><td>{(this.state.generalPassRate * 100).toFixed(0)}%</td></tr>
+                                    <tr><th>General Pass Rate</th><td>{(this.state.generalPassRate * 100).toFixed(0)}%</td></tr>
+                                    <tr><th>Major Pass Rate</th><td>{(this.state.majorPassRate * 100).toFixed(0)}%</td></tr>
                                 </Bootstrap.Table>
                                 <BarChart data={this.state.gradeDistribution} width={800} height={200} fill={'#3182bd'}/>
                             </Bootstrap.Col>
