@@ -4,6 +4,12 @@ var AppApi        = require('../utils/AppApi');
 var Async         = require('async');
 var _             = require('lodash');
 
+// List data stores
+var StudentListDataStore    = require('../stores/StudentListDataStore');
+var InstructorListDataStore = require('../stores/InstructorListDataStore');
+var AdvisorListDataStore    = require('../stores/AdvisorListDataStore');
+var CourseListDataStore     = require('../stores/CourseListDataStore');
+
 var AppActions = {};
 
 AppActions.fetchStudents = function() {
@@ -11,10 +17,7 @@ AppActions.fetchStudents = function() {
         if (err) {
             console.log(err);
         } else {
-            AppDispatcher.handleAction({
-                actionType: AppConstants.RECEIVE_STUDENTS,
-                students: students
-            });
+            StudentListDataStore.updateStudents(students);
         }
     });
 };
@@ -50,10 +53,7 @@ AppActions.fetchInstructors = function() {
         if (err) {
             console.log(err);
         } else {
-            AppDispatcher.handleAction({
-                actionType: AppConstants.RECEIVE_INSTRUCTORS,
-                instructors: instructors
-            });
+            InstructorListDataStore.updateInstructors(instructors);
         }
     });
 };
@@ -85,10 +85,7 @@ AppActions.fetchAdvisors = function() {
         if (err) {
             console.log(err);
         } else {
-            AppDispatcher.handleAction({
-                actionType: AppConstants.RECEIVE_ADVISORS,
-                advisors: advisors
-            });
+            AdvisorListDataStore.updateAdvisors(advisors);
         }
     });
 };
@@ -120,10 +117,7 @@ AppActions.fetchCourses = function() {
         if (err) {
             console.log(err);
         } else {
-            AppDispatcher.handleAction({
-                actionType: AppConstants.RECEIVE_COURSES,
-                courses: courses
-            });
+            CourseListDataStore.updateCourses(courses);
         }
     });
 };

@@ -1,13 +1,10 @@
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var AppConstants  = require('../constants/AppConstants');
+// StudentListDataStore.js
+'use strict';
+
 var EventEmitter  = require('events').EventEmitter;
 var _             = require('lodash');
 
 var students = [];
-
-function loadStudents(newStudents) {
-    students = newStudents;
-}
 
 var DataStore = _.assign({}, EventEmitter.prototype, {
 
@@ -27,21 +24,10 @@ var DataStore = _.assign({}, EventEmitter.prototype, {
         this.removeListener('change', callback);
     },
 
-});
-
-DataStore.dispatcherId = AppDispatcher.register(function(payload) {
-    var action = payload.action;
-
-    switch(action.actionType) {
-        case AppConstants.RECEIVE_STUDENTS:
-            loadStudents(action.students);
-            DataStore.emitChange();
-            break;
-        default:
-            break;
+    updateStudents: function(newStudents) {
+        students = newStudents;
+        this.emitChange();
     }
-
-    return true;
 });
 
 module.exports = DataStore;

@@ -1,13 +1,10 @@
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var AppConstants  = require('../constants/AppConstants');
+// AdvisorListDataStore.js
+'use strict';
+
 var EventEmitter  = require('events').EventEmitter;
 var _             = require('lodash');
 
 var advisors = [];
-
-function loadAdvisors(newAdvisors) {
-    advisors = newAdvisors;
-}
 
 var DataStore = _.assign({}, EventEmitter.prototype, {
 
@@ -27,21 +24,10 @@ var DataStore = _.assign({}, EventEmitter.prototype, {
         this.removeListener('change', callback);
     },
 
-});
-
-DataStore.dispatcherId = AppDispatcher.register(function(payload) {
-    var action = payload.action;
-
-    switch(action.actionType) {
-        case AppConstants.RECEIVE_ADVISORS:
-            loadAdvisors(action.advisors);
-            DataStore.emitChange();
-            break;
-        default:
-            break;
+    updateAdvisors: function(newAdvisors) {
+        advisors = newAdvisors;
+        this.emitChange();
     }
-
-    return true;
 });
 
 module.exports = DataStore;
