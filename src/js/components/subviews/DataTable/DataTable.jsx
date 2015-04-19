@@ -35,6 +35,21 @@ function searchDataForQuery(query, data) {
 
 var DataTable = React.createClass({
 
+    propTypes: {
+        // Required: Array of objects to put in table form
+        data: React.PropTypes.array.isRequired,
+
+        // Optional: array that contains a subset of the keys of the objects
+        // in 'data'. If it is present, only these columns will be shown.
+        columns: React.PropTypes.array,
+
+        // Optional: function(data){} where data is the data for the row that is clicked.
+        onRowClick: React.PropTypes.func,
+
+        // Optional: if true, no search bar or pagification are displayed.
+        simple: React.PropTypes.bool
+    },
+
     getInitialState: function() {
         return {
             columns: [],
@@ -49,11 +64,12 @@ var DataTable = React.createClass({
         };
     },
 
-    setDerivedState: function(data) {
+    setDerivedState: function(props) {
         // columns are derived from data
         var columns = [];
-        if (data.length > 0) {
-            var keys = Object.keys(data[0]);
+
+        if (props.columns || props.data.length > 0) {
+            var keys = props.columns || Object.keys(props.data[0]);
             columns = keys.map(function(key) {
                 return {
                     key: key,
@@ -67,9 +83,9 @@ var DataTable = React.createClass({
             sortKey: null,
             sortOrder: 0,
             searchQuery: '',
-            numPages: data.length / this.state.perPage,
-            sortData: data,
-            searchData: data
+            numPages: props.data.length / this.state.perPage,
+            sortData: props.data,
+            searchData: props.data
         });
     },
 
@@ -98,11 +114,11 @@ var DataTable = React.createClass({
     },
 
     componentWillMount: function() {
-        this.setDerivedState(this.props.data);
+        this.setDerivedState(this.props);
     },
 
     componentWillReceiveProps: function(nextProps) {
-        this.setDerivedState(nextProps.data);
+        this.setDerivedState(nextProps);
     },
 
     onHeaderClick: function(event) {
@@ -194,7 +210,7 @@ var DataTable = React.createClass({
                     <Bootstrap.Col xs={12}>
                         <Bootstrap.Table striped bordered condensed hover>
                             <TableHeader simple={this.props.simple} columns={this.state.columns} sortKey={this.state.sortKey} sortOrder={this.state.sortOrder} onHeaderClick={this.onHeaderClick}/>
-                            <TableBody clickable={this.props.clickable} rows={this.pagifiedData()} columns={this.state.columns} sortKey={this.state.sortKey} onRowClick={this.onRowClick}/>
+                            <TableBody clickable={Boolean(this.props.onRowClick)} rows={this.pagifiedData()} columns={this.state.columns} sortKey={this.state.sortKey} onRowClick={this.onRowClick}/>
                         </Bootstrap.Table>
                     </Bootstrap.Col>
                 </Bootstrap.Row>
