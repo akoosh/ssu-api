@@ -18,7 +18,7 @@ function formattedSections(sections) {
             subject: section.course.subject,
             catalog: section.course.catalog,
             course_title: section.course.course_title,
-            units: section.class_units,
+            units: section.class_units === '0.00' ? '-' : section.class_units,
             section: section.section_number,
             component: section.component
         };
