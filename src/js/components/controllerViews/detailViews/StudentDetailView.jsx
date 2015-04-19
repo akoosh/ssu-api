@@ -7,6 +7,7 @@ var Bootstrap               = require('react-bootstrap');
 var _                       = require('lodash');
 var AppActions              = require('../../../actions/AppActions');
 var DataTable               = require('../../subviews/DataTable/DataTable');
+var TermHistory             = require('../../subviews/TermHistory');
 var StudentDataStore        = require('../../../stores/StudentDataStore');
 
 function formattedName(obj) {
@@ -24,41 +25,21 @@ function advisorList(advisements) {
     });
 }
 
-function classHistory(sections) {
-    var grouped = _.groupBy(sections, function(section) {
-        return section.section.term_description;
-    });
-
-    var history = {};
-    Object.keys(grouped).forEach(function(term) {
-        history[term] = grouped[term].map(function(section) {
-            return {
-                class_number: section.section.class_nbr,
-                subject: section.section.course.subject,
-                catalog: section.section.course.catalog,
-                course_title: section.section.course.course_title,
-                instructor: formattedName(section.section.instructor),
-                units: section.section.class_units === '0.00' ? '-' : section.section.class_units,
-                section: section.section.section_number,
-                component: section.section.component,
-                grade: section.grade || '-'
-            };
-        });
-    });
-
-    return history;
-}
-
-function sectionLinkParams(sections) {
-    var params = {};
-    sections.forEach(function(section) {
-        params[section.section.term_description + section.section.class_nbr] = {
+function formattedSections(sections) {
+    return sections.map(function(section) {
+        return {
             term: section.section.term,
-            class_nbr: section.section.class_nbr
+            class_number: section.section.class_nbr,
+            subject: section.section.course.subject,
+            catalog: section.section.course.catalog,
+            course_title: section.section.course.course_title,
+            instructor: formattedName(section.section.instructor),
+            units: section.section.class_units === '0.00' ? '-' : section.section.class_units,
+            section: section.section.section_number,
+            component: section.section.component,
+            grade: section.grade || '-'
         };
     });
-
-    return params;
 }
 
 var StudentDetailView = React.createClass({
@@ -74,8 +55,7 @@ var StudentDetailView = React.createClass({
         return {
             student: data.student,
             advisors: advisorList(data.advisors),
-            classHistory: classHistory(data.sections),
-            sectionLinkParams: sectionLinkParams(data.sections)
+            sections: formattedSections(data.sections)
         };
     },
 
@@ -100,8 +80,8 @@ var StudentDetailView = React.createClass({
         this.transitionTo('advisor-detail', {advisor_id: advisor.advisor_id});
     },
 
-    onSectionRowClick: function(term, section) {
-        this.transitionTo('section-detail', this.state.sectionLinkParams[term + section.class_number]);
+    onSectionRowClick: function(section) {
+        this.transitionTo('section-detail', {term: section.term, class_nbr: section.class_number});
     },
 
     render: function() {
@@ -120,15 +100,7 @@ var StudentDetailView = React.createClass({
 
                 <Bootstrap.Row>
                     <Bootstrap.Col xs={8}>
-                        <h2>Class History</h2>
-                        {Object.keys(this.state.classHistory).map(function(term) {
-                            return (
-                                <div key={term}>
-                                    <h4>{term}</h4>
-                                    <DataTable simple data={this.state.classHistory[term]} onRowClick={this.onSectionRowClick.bind(this, term)}/>
-                                </div>
-                            );
-                        }.bind(this))}
+                        <TermHistory label='Class History' data={this.state.sections} onRowClick={this.onSectionRowClick}/>
                     </Bootstrap.Col>
                 </Bootstrap.Row>
             </div>

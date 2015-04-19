@@ -7,39 +7,22 @@ var Bootstrap               = require('react-bootstrap');
 var _                       = require('lodash');
 var AppActions              = require('../../../actions/AppActions');
 var DataTable               = require('../../subviews/DataTable/DataTable');
+var TermHistory             = require('../../subviews/TermHistory');
 var InstructorDataStore     = require('../../../stores/InstructorDataStore');
 
-function classHistory(sections) {
-    var grouped = _.groupBy(sections, 'term_description');
-
-    var history = {};
-    Object.keys(grouped).forEach(function(term) {
-        history[term] = grouped[term].map(function(section) {
-            return {
-                class_number: section.class_nbr,
-                subject: section.course.subject,
-                catalog: section.course.catalog,
-                course_title: section.course.course_title,
-                units: section.class_units,
-                section: section.section_number,
-                component: section.component
-            };
-        });
-    });
-
-    return history;
-}
-
-function sectionLinkParams(sections) {
-    var params = {};
-    sections.forEach(function(section) {
-        params[section.term_description + section.class_nbr] = {
+function formattedSections(sections) {
+    return sections.map(function(section) {
+        return {
             term: section.term,
-            class_nbr: section.class_nbr
+            class_number: section.class_nbr,
+            subject: section.course.subject,
+            catalog: section.course.catalog,
+            course_title: section.course.course_title,
+            units: section.class_units,
+            section: section.section_number,
+            component: section.component
         };
     });
-
-    return params;
 }
 
 var InstructorDetailView = React.createClass({
@@ -54,8 +37,7 @@ var InstructorDetailView = React.createClass({
         var data = InstructorDataStore.getDataForInstructor(this.getParams().instructor_id);
         return {
             instructor: data.instructor,
-            classHistory: classHistory(data.sections),
-            sectionLinkParams: sectionLinkParams(data.sections)
+            sections: formattedSections(data.sections)
         };
     },
 
@@ -76,8 +58,8 @@ var InstructorDetailView = React.createClass({
         InstructorDataStore.removeChangeListener(this.onChange);
     },
 
-    onSectionRowClick: function(term, section) {
-        this.transitionTo('section-detail', this.state.sectionLinkParams[term + section.class_number]);
+    onSectionRowClick: function(section) {
+        this.transitionTo('section-detail', {term: section.term, class_nbr: section.class_number});
     },
 
     render: function() {
@@ -87,17 +69,9 @@ var InstructorDetailView = React.createClass({
                     {this.state.instructor.first_name} {this.state.instructor.last_name} <small>Instructor ID: {this.state.instructor.faculty_id}</small>
                 </Bootstrap.PageHeader>
 
-                <h2>Instructor History</h2>
                 <Bootstrap.Row>
                     <Bootstrap.Col xs={8}>
-                        {Object.keys(this.state.classHistory).map(function(term) {
-                            return (
-                                <div key={term}>
-                                    <h4>{term}</h4>
-                                    <DataTable simple data={this.state.classHistory[term]} onRowClick={this.onSectionRowClick.bind(this, term)}/>
-                                </div>
-                            );
-                        }.bind(this))}
+                        <TermHistory label='Instruction History' data={this.state.sections} onRowClick={this.onSectionRowClick}/>
                     </Bootstrap.Col>
                 </Bootstrap.Row>
             </div>
