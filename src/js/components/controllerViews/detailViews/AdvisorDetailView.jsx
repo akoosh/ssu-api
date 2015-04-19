@@ -80,7 +80,7 @@ var InstructorDetailView = React.createClass({
                         return (
                             <Bootstrap.TabPane key={i} eventKey={i} tab={term}>
                                 <h2>Advisees</h2>
-                                <DataTable clickable data={this.state.studentsByTerm[term]} onRowClick={this.onStudentRowClick}/>
+                                <DataTable data={this.state.studentsByTerm[term]} onRowClick={this.onStudentRowClick}/>
                             </Bootstrap.TabPane>
                         );
                     }.bind(this))}

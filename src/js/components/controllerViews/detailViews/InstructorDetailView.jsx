@@ -94,7 +94,7 @@ var InstructorDetailView = React.createClass({
                             return (
                                 <div key={term}>
                                     <h4>{term}</h4>
-                                    <DataTable simple clickable data={this.state.classHistory[term]} onRowClick={this.onSectionRowClick.bind(this, term)}/>
+                                    <DataTable simple data={this.state.classHistory[term]} onRowClick={this.onSectionRowClick.bind(this, term)}/>
                                 </div>
                             );
                         }.bind(this))}

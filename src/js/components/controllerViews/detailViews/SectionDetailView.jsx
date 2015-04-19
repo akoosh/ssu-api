@@ -142,7 +142,7 @@ var InstructorDetailView = React.createClass({
                         <Bootstrap.Row>
                             <Bootstrap.Col xs={6}>
                                 <h2>{this.state.students.length} Students</h2>
-                                <DataTable simple clickable data={this.state.students} onRowClick={this.onStudentRowClick}/>
+                                <DataTable simple data={this.state.students} onRowClick={this.onStudentRowClick}/>
                             </Bootstrap.Col>
                         </Bootstrap.Row>
                     </Bootstrap.TabPane>

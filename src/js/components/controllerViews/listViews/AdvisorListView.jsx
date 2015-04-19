@@ -43,7 +43,7 @@ var AdvisorListView = React.createClass({
         return (
             <div className='AdvisorListView'>
                 <Bootstrap.PageHeader>Advisors</Bootstrap.PageHeader>
-                <DataTable clickable data={this.state.advisors} onRowClick={this.onRowClick}/>
+                <DataTable data={this.state.advisors} onRowClick={this.onRowClick}/>
             </div>
         );
     }

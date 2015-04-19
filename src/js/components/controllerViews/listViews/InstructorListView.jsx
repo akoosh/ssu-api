@@ -43,7 +43,7 @@ var InstructorListView = React.createClass({
         return (
             <div className='InstructorListView'>
                 <Bootstrap.PageHeader>Instructors</Bootstrap.PageHeader>
-                <DataTable clickable data={this.state.instructors} onRowClick={this.onRowClick}/>
+                <DataTable data={this.state.instructors} onRowClick={this.onRowClick}/>
             </div>
         );
     }

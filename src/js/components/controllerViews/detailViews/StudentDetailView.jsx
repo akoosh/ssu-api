@@ -114,7 +114,7 @@ var StudentDetailView = React.createClass({
                 <h2>Advisors</h2>
                 <Bootstrap.Row>
                     <Bootstrap.Col xs={6}>
-                        <DataTable simple clickable data={this.state.advisors} onRowClick={this.onAdvisorRowClick}/>
+                        <DataTable simple data={this.state.advisors} onRowClick={this.onAdvisorRowClick}/>
                     </Bootstrap.Col>
                 </Bootstrap.Row>
 
@@ -125,7 +125,7 @@ var StudentDetailView = React.createClass({
                             return (
                                 <div key={term}>
                                     <h4>{term}</h4>
-                                    <DataTable simple clickable data={this.state.classHistory[term]} onRowClick={this.onSectionRowClick.bind(this, term)}/>
+                                    <DataTable simple data={this.state.classHistory[term]} onRowClick={this.onSectionRowClick.bind(this, term)}/>
                                 </div>
                             );
                         }.bind(this))}
