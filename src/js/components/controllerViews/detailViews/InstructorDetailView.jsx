@@ -21,7 +21,7 @@ function classHistory(sections) {
                 catalog: section.course.catalog,
                 course_title: section.course.course_title,
                 units: section.class_units,
-                section: section.section,
+                section: section.section_number,
                 component: section.component
             };
         });

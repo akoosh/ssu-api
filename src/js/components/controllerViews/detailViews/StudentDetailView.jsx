@@ -38,10 +38,10 @@ function classHistory(sections) {
                 catalog: section.section.course.catalog,
                 course_title: section.section.course.course_title,
                 instructor: formattedName(section.section.instructor),
-                units: section.section.class_units,
-                section: section.section.section,
+                units: section.section.class_units === '0.00' ? '-' : section.section.class_units,
+                section: section.section.section_number,
                 component: section.section.component,
-                grade: section.grade
+                grade: section.grade || '-'
             };
         });
     });
