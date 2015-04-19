@@ -46,7 +46,7 @@ function termDescriptionFromCode(term) {
     var description = '';
 
     if (term.length === 4) {
-        var season = term[3] === '3' ? 'Spring' : term[3] === 7 ? 'Fall' : '';
+        var season = term[3] === '3' ? 'Spring' : term[3] === '7' ? 'Fall' : '';
         var year = '20' + term.slice(1,3);
 
         description = season + ' ' + year;
