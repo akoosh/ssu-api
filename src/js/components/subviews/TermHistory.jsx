@@ -55,7 +55,7 @@ var TermHistory = React.createClass({
         return (
             <div className='TermHistory'>
                 <h2>{this.props.label}</h2>
-                {Object.keys(this.state.history).map(function(term) {
+                {Object.keys(this.state.history).sort().reverse().map(function(term) {
                     return (
                         <div key={term}>
                             <h4>{utils.termDescriptionFromCode(term)}</h4>
