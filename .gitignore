@@ -41,6 +41,8 @@ Thumbs.db
 ################
 *.swp
 *~
+*.iml
+.idea
 
 # Project specific #
 ####################
