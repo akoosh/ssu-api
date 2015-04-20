@@ -1,0 +1,14 @@
+# If you don't know what this file is,
+# go to the following website and find
+# out, and get the appropriate plugin
+# for your editor.
+#
+# http://editorconfig.org
+
+root = true
+
+[*.{js,jsx}]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
