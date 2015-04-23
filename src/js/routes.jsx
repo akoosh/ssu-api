@@ -17,6 +17,7 @@ var StudentListView         = require('./components/controllerViews/listViews/St
 var InstructorListView      = require('./components/controllerViews/listViews/InstructorListView');
 var AdvisorListView         = require('./components/controllerViews/listViews/AdvisorListView');
 var CourseListView          = require('./components/controllerViews/listViews/CourseListView');
+var DepartmentListView      = require('./components/controllerViews/listViews/DepartmentListView');
 var StudentDetailView       = require('./components/controllerViews/detailViews/StudentDetailView');
 var InstructorDetailView    = require('./components/controllerViews/detailViews/InstructorDetailView');
 var AdvisorDetailView       = require('./components/controllerViews/detailViews/AdvisorDetailView');
@@ -42,6 +43,8 @@ var routes = (
         <Route path='/courses/:subject'>
             <Route name='course-detail' path=':catalog_number' handler={CourseDetailView}/>
         </Route>
+
+        <Route name='departments' path='/departments' handler={DepartmentListView}/>
 
         <Route path='/sections/:term'>
             <Route name='section-detail' path=':class_nbr' handler={SectionDetailView}/>

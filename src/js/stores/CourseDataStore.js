@@ -2,7 +2,7 @@
 'use strict';
 
 var DataStoreUtils  = require('../utils/DataStoreUtils');
-var _             = require('lodash');
+var _               = require('lodash');
 
 var courseData = {};
 
@@ -39,6 +39,10 @@ var DataStore = DataStoreUtils.createDataStore({
 
     getAllCourses: function() {
         return _.pluck(courseData, 'course');
+    },
+
+    getAllSubjects: function() {
+        return _.uniq(_.pluck(this.getAllCourses(), 'subject')).sort();
     },
 
     getCourseBySubjectAndCatalogNumber: function(subject, catalog) {

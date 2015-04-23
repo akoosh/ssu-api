@@ -21,7 +21,8 @@ var Sidebar = React.createClass({
             {value: 'students', label: 'Students'},
             {value: 'instructors', label: 'Instructors'},
             {value: 'advisors', label: 'Advisors'},
-            {value: 'courses', label: 'Courses'}
+            {value: 'courses', label: 'Courses'},
+            {value: 'departments', label: 'Departments'}
         ].map(function(item, i) {
             var href = this.makeHref(item.value);
             var isActive = this.isActive(item.value);
