@@ -12,20 +12,33 @@ function alphabetizedSubjects(subjects) {
     return _.groupBy(subjects, '0');
 }
 
-function getViewState() {
-    return {
-        alphabetizedSubjects: alphabetizedSubjects(CourseDataStore.getAllSubjects())
-    };
-}
-
 var DepartmentListView = React.createClass({
 
+    mixins: [Router.state, Router.Navigation],
+
     getInitialState: function() {
-        return getViewState();
+        return this.getViewState();
     },
 
     onChange: function() {
-        this.setState(getViewState());
+        this.setState(this.getViewState());
+    },
+
+    getViewState: function() {
+        var subjects = CourseDataStore.getAllSubjects();
+        return {
+            alphabetizedSubjects: alphabetizedSubjects(subjects),
+            subjectHrefs: this.subjectHrefs(subjects)
+        };
+    },
+
+    subjectHrefs: function(subjects) {
+        var hrefs = {};
+        subjects.forEach(function(subject) {
+            hrefs[subject] = this.makeHref('department-detail', {subject: subject});
+        }.bind(this));
+
+        return hrefs;
     },
 
     componentDidMount: function() {
@@ -49,7 +62,7 @@ var DepartmentListView = React.createClass({
                                 <Bootstrap.TabPane key={i} eventKey={i} tab={letter}>
                                     <Bootstrap.ListGroup>
                                         {this.state.alphabetizedSubjects[letter].map(function(subject, i) {
-                                            return <Bootstrap.ListGroupItem key={i}>{subject}</Bootstrap.ListGroupItem>;
+                                            return <Bootstrap.ListGroupItem key={i} href={this.state.subjectHrefs[subject]}>{subject}</Bootstrap.ListGroupItem>;
                                         }.bind(this))}
                                     </Bootstrap.ListGroup>
                                 </Bootstrap.TabPane>

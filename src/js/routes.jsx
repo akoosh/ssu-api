@@ -22,6 +22,7 @@ var StudentDetailView       = require('./components/controllerViews/detailViews/
 var InstructorDetailView    = require('./components/controllerViews/detailViews/InstructorDetailView');
 var AdvisorDetailView       = require('./components/controllerViews/detailViews/AdvisorDetailView');
 var CourseDetailView        = require('./components/controllerViews/detailViews/CourseDetailView');
+var DepartmentDetailView    = require('./components/controllerViews/detailViews/DepartmentDetailView');
 var SectionDetailView       = require('./components/controllerViews/detailViews/SectionDetailView');
 
 var routes = (
@@ -45,6 +46,7 @@ var routes = (
         </Route>
 
         <Route name='departments' path='/departments' handler={DepartmentListView}/>
+        <Route name='department-detail' path='/departments/:subject' handler={DepartmentDetailView}/>
 
         <Route path='/sections/:term'>
             <Route name='section-detail' path=':class_nbr' handler={SectionDetailView}/>
