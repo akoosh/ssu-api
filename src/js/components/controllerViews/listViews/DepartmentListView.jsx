@@ -55,7 +55,6 @@ var DepartmentListView = React.createClass({
             <div className='DepartmentListView'>
                 <Bootstrap.PageHeader>Departments</Bootstrap.PageHeader>
 
-                <Bootstrap.Col xs={8}>
                     <Bootstrap.TabbedArea defaultActiveKey={0}>
                         {Object.keys(this.state.alphabetizedSubjects).map(function(letter, i) {
                             return (
@@ -69,7 +68,6 @@ var DepartmentListView = React.createClass({
                             );
                         }.bind(this))}
                     </Bootstrap.TabbedArea>
-                </Bootstrap.Col>
             </div>
         );
     }

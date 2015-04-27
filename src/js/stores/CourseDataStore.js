@@ -45,6 +45,12 @@ var DataStore = DataStoreUtils.createDataStore({
         return _.uniq(_.pluck(this.getAllCourses(), 'subject')).sort();
     },
 
+    getCoursesBySubject: function(subject) {
+        return this.getAllCourses().filter(function(course) {
+            return course.subject === subject;
+        });
+    },
+
     getCourseBySubjectAndCatalogNumber: function(subject, catalog) {
         var courseKey = subject + catalog;
         return (courseData[courseKey] || {}).course || {};
