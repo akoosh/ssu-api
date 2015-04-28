@@ -12,9 +12,8 @@ var AdvisorDataStore    = require('../stores/AdvisorDataStore');
 var CourseDataStore     = require('../stores/CourseDataStore');
 var SectionDataStore    = require('../stores/SectionDataStore');
 
-var AppActions = {};
 
-AppActions.fetchStudents = function() {
+function fetchStudents() {
     AppApi.getStudents(function(err, students) {
         if (err) {
             console.log(err);
@@ -22,9 +21,9 @@ AppActions.fetchStudents = function() {
             StudentDataStore.updateStudents(students);
         }
     });
-};
+}
 
-AppActions.fetchDataForStudent = function(student_id) {
+function fetchDataForStudent(student_id) {
     Async.parallel({
         student: function(callback) {
             AppApi.getStudentById(student_id, callback);
@@ -44,9 +43,9 @@ AppActions.fetchDataForStudent = function(student_id) {
             StudentDataStore.updateDataForStudent(student_id, results);
         }
     });
-};
+}
 
-AppActions.fetchInstructors = function() {
+function fetchInstructors() {
     AppApi.getInstructors(function(err, instructors) {
         if (err) {
             console.log(err);
@@ -54,9 +53,9 @@ AppActions.fetchInstructors = function() {
             InstructorDataStore.updateInstructors(instructors);
         }
     });
-};
+}
 
-AppActions.fetchDataForInstructor = function(instructor_id) {
+function fetchDataForInstructor(instructor_id) {
     Async.parallel({
         instructor: function(callback) {
             AppApi.getInstructorById(instructor_id, callback);
@@ -72,9 +71,9 @@ AppActions.fetchDataForInstructor = function(instructor_id) {
             InstructorDataStore.updateDataForInstructor(instructor_id, results);
         }
     });
-};
+}
 
-AppActions.fetchAdvisors = function() {
+function fetchAdvisors() {
     AppApi.getAdvisors(function(err, advisors) {
         if (err) {
             console.log(err);
@@ -82,9 +81,9 @@ AppActions.fetchAdvisors = function() {
             AdvisorDataStore.updateAdvisors(advisors);
         }
     });
-};
+}
 
-AppActions.fetchDataForAdvisor = function(advisor_id) {
+function fetchDataForAdvisor(advisor_id) {
     Async.parallel({
         advisor: function(callback) {
             AppApi.getAdvisorById(advisor_id, callback);
@@ -100,9 +99,9 @@ AppActions.fetchDataForAdvisor = function(advisor_id) {
             AdvisorDataStore.updateDataForAdvisor(advisor_id, results);
         }
     });
-};
+}
 
-AppActions.fetchCourses = function() {
+function fetchCourses() {
     AppApi.getCourses(function(err, courses) {
         if (err) {
             console.log(err);
@@ -110,9 +109,9 @@ AppActions.fetchCourses = function() {
             CourseDataStore.updateCourses(courses);
         }
     });
-};
+}
 
-AppActions.fetchDataForCourse = function(subject, catalog_number) {
+function fetchDataForCourse(subject, catalog_number) {
     Async.parallel({
         course: function(callback) {
             AppApi.getCourseBySubjectAndCatalogNumber(subject, catalog_number, callback);
@@ -128,9 +127,9 @@ AppActions.fetchDataForCourse = function(subject, catalog_number) {
             CourseDataStore.updateDataForCourse(subject, catalog_number, results);
         }
     });
-};
+}
 
-AppActions.fetchDataForSection = function(term, class_nbr) {
+function fetchDataForSection(term, class_nbr) {
     Async.parallel({
         section: function(callback) {
             AppApi.getSectionByTermAndClassNumber(term, class_nbr, callback);
@@ -146,6 +145,16 @@ AppActions.fetchDataForSection = function(term, class_nbr) {
             SectionDataStore.updateDataForSection(term, class_nbr, results);
         }
     });
-};
+}
 
-module.exports = AppActions;
+module.exports = {
+    fetchStudents:              fetchStudents,
+    fetchDataForStudent:        fetchDataForStudent,
+    fetchInstructors:           fetchInstructors,
+    fetchDataForInstructor:     fetchDataForInstructor,
+    fetchAdvisors:              fetchAdvisors,
+    fetchDataForAdvisor:        fetchDataForAdvisor,
+    fetchCourses:               fetchCourses,
+    fetchDataForCourse:         fetchDataForCourse,
+    fetchDataForSection:        fetchDataForSection
+};

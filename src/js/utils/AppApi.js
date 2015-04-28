@@ -21,87 +21,101 @@ function makeApiGetRequest(url, callback) {
     request.send();
 }
 
-var AppApi = {};
-
 // Student
 
-AppApi.getStudents = function(callback) {
+function getStudents(callback) {
     makeApiGetRequest('api/v0/students', callback);
-};
+}
 
-AppApi.getStudentById = function(student_id, callback) {
+function getStudentById(student_id, callback) {
     var path = 'api/v0/students/' + student_id;
     makeApiGetRequest(path, callback);
-};
+}
 
-AppApi.getAdvisorsByStudentId = function(student_id, callback) {
+function getAdvisorsByStudentId(student_id, callback) {
     var path = 'api/v0/students/' + student_id + '/advisors';
     makeApiGetRequest(path, callback);
-};
+}
 
-AppApi.getSectionsByStudentId = function(student_id, callback) {
+function getSectionsByStudentId(student_id, callback) {
     var path = 'api/v0/students/' + student_id + '/sections';
     makeApiGetRequest(path, callback);
-};
+}
 
 // Instructor
 
-AppApi.getInstructors = function(callback) {
+function getInstructors(callback) {
     makeApiGetRequest('api/v0/instructors', callback);
-};
+}
 
-AppApi.getInstructorById = function(instructor_id, callback) {
+function getInstructorById(instructor_id, callback) {
     var path = 'api/v0/instructors/' + instructor_id;
     makeApiGetRequest(path, callback);
-};
+}
 
-AppApi.getSectionsByInstructorId = function(instructor_id, callback) {
+function getSectionsByInstructorId(instructor_id, callback) {
     var path = 'api/v0/instructors/' + instructor_id + '/sections';
     makeApiGetRequest(path, callback);
-};
+}
 
 // Advisor
 
-AppApi.getAdvisors = function(callback) {
+function getAdvisors(callback) {
     makeApiGetRequest('api/v0/advisors', callback);
-};
+}
 
-AppApi.getAdvisorById = function(advisor_id, callback) {
+function getAdvisorById(advisor_id, callback) {
     var path = 'api/v0/advisors/' + advisor_id;
     makeApiGetRequest(path, callback);
-};
+}
 
-AppApi.getStudentsByAdvisorId = function(advisor_id, callback) {
+function getStudentsByAdvisorId(advisor_id, callback) {
     var path = 'api/v0/advisors/' + advisor_id + '/students';
     makeApiGetRequest(path, callback);
-};
+}
 
 // Course
 
-AppApi.getCourses = function(callback) {
+function getCourses(callback) {
     makeApiGetRequest('api/v0/courses', callback);
-};
+}
 
-AppApi.getCourseBySubjectAndCatalogNumber = function(subject, catalog_number, callback) {
+function getCourseBySubjectAndCatalogNumber(subject, catalog_number, callback) {
     var path = 'api/v0/courses/subjects/' + subject + '/' + catalog_number;
     makeApiGetRequest(path, callback);
-};
+}
 
-AppApi.getSectionsBySubjectAndCatalogNumber = function(subject, catalog_number, callback) {
+function getSectionsBySubjectAndCatalogNumber(subject, catalog_number, callback) {
     var path = 'api/v0/courses/subjects/' + subject + '/' + catalog_number + '/sections';
     makeApiGetRequest(path, callback);
-};
+}
 
 // Section
 
-AppApi.getSectionByTermAndClassNumber = function(term, class_nbr, callback) {
+function getSectionByTermAndClassNumber(term, class_nbr, callback) {
     var path = 'api/v0/sections/terms/' + term + '/' + class_nbr;
     makeApiGetRequest(path, callback);
-};
+}
 
-AppApi.getStudentsInSectionByTermAndClassNumber = function(term, class_nbr, callback) {
+function getStudentsInSectionByTermAndClassNumber(term, class_nbr, callback) {
     var path = 'api/v0/sections/terms/' + term + '/' + class_nbr + '/students';
     makeApiGetRequest(path, callback);
-};
+}
 
-module.exports = AppApi;
+module.exports = {
+    getStudents:                                getStudents,
+    getStudentById:                             getStudentById,
+    getAdvisorsByStudentId:                     getAdvisorsByStudentId,
+    getSectionsByStudentId:                     getSectionsByStudentId,
+    getInstructors:                             getInstructors,
+    getInstructorById:                          getInstructorById,
+    getSectionsByInstructorId:                  getSectionsByInstructorId,
+    getAdvisors:                                getAdvisors,
+    getAdvisorById:                             getAdvisorById,
+    getStudentsByAdvisorId:                     getStudentsByAdvisorId,
+    getCourses:                                 getCourses,
+    getCourseBySubjectAndCatalogNumber:         getCourseBySubjectAndCatalogNumber,
+    getSectionsBySubjectAndCatalogNumber:       getSectionsBySubjectAndCatalogNumber,
+    getSectionByTermAndClassNumber:             getSectionByTermAndClassNumber,
+    getStudentsInSectionByTermAndClassNumber:   getStudentsInSectionByTermAndClassNumber
+};
