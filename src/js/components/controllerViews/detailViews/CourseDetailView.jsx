@@ -8,7 +8,8 @@ var _                       = require('lodash');
 var AppActions              = require('../../../actions/AppActions');
 var DataTable               = require('../../subviews/DataTable/DataTable');
 var TermHistory             = require('../../subviews/TermHistory');
-var CourseDataStore     = require('../../../stores/CourseDataStore');
+var CourseDataStore         = require('../../../stores/CourseDataStore');
+var SectionDataStore        = require('../../../stores/SectionDataStore');
 
 function formattedName(obj) {
     return [obj.last_name, obj.first_name].join(', ');
@@ -32,24 +33,37 @@ var InstructorDetailView = React.createClass({
     mixins: [Router.State, Router.Navigation],
 
     getInitialState: function() {
-        return this.getViewState();
+        return _.assign({}, this.getCourseState(), this.getSectionState());
     },
 
-    getViewState: function() {
+    getCourseState: function() {
         var params = this.getParams();
-        var data = CourseDataStore.getDataForCourse(params.subject, params.catalog_number);
+        var courseData = CourseDataStore.getDataForCourse(params.subject, params.catalog_number);
         return {
-            course: data.course,
-            sections: formattedSections(data.sections)
+            course: courseData.course,
+            sections: formattedSections(courseData.sections)
         };
     },
 
-    onChange: function() {
-        this.setState(this.getViewState());
+    getSectionState: function() {
+        var params = this.getParams();
+        var sectionData = SectionDataStore.getSectionDataForCourse(params.subject, params.catalog_number);
+        return {
+            sectionData: sectionData
+        };
+    },
+
+    onCourseChange: function() {
+        this.setState(this.getCourseState());
+    },
+
+    onSectionChange: function() {
+        this.setState(this.getSectionState());
     },
 
     componentDidMount: function() {
-        CourseDataStore.addChangeListener(this.onChange);
+        CourseDataStore.addChangeListener(this.onCourseChange);
+        SectionDataStore.addChangeListener(this.onSectionChange);
 
         var params = this.getParams();
         if (!CourseDataStore.hasDataForCourse(params.subject, params.catalog_number)) {
@@ -58,7 +72,8 @@ var InstructorDetailView = React.createClass({
     },
 
     componentWillUnmount: function() {
-        CourseDataStore.removeChangeListener(this.onChange);
+        CourseDataStore.removeChangeListener(this.onCourseChange);
+        SectionDataStore.removeChangeListener(this.onSectionChange);
     },
 
     onSectionRowClick: function(section) {
@@ -74,11 +89,24 @@ var InstructorDetailView = React.createClass({
 
                 <Bootstrap.Row>
                     <Bootstrap.Col xs={8}>
-                    <h4>{this.state.course.course_description}</h4>
-
-                    <TermHistory label='Class History' data={this.state.sections} onRowClick={this.onSectionRowClick}/>
+                        <h4>{this.state.course.course_description}</h4>
                     </Bootstrap.Col>
                 </Bootstrap.Row>
+
+
+                <Bootstrap.TabbedArea defaultActiveKey={0}>
+                        <Bootstrap.TabPane eventKey={0} tab='Class History'>
+                            <Bootstrap.Col xs={8}>
+                                <TermHistory data={this.state.sections} onRowClick={this.onSectionRowClick}/>
+                            </Bootstrap.Col>
+                        </Bootstrap.TabPane>
+
+                        <Bootstrap.TabPane eventKey={1} tab='Trends'>
+                            <Bootstrap.Col xs={8}>
+                                <p>Sections: {this.state.sectionData.length}</p>
+                            </Bootstrap.Col>
+                        </Bootstrap.TabPane>
+                </Bootstrap.TabbedArea>
             </div>
         );
     }

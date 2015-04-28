@@ -12,7 +12,6 @@ var AdvisorDataStore    = require('../stores/AdvisorDataStore');
 var CourseDataStore     = require('../stores/CourseDataStore');
 var SectionDataStore    = require('../stores/SectionDataStore');
 
-
 function fetchStudents() {
     AppApi.getStudents(function(err, students) {
         if (err) {
@@ -125,6 +124,11 @@ function fetchDataForCourse(subject, catalog_number) {
             console.log(err);
         } else {
             CourseDataStore.updateDataForCourse(subject, catalog_number, results);
+
+            // Get data for all of the sections that are instances of this course.
+            results.sections.forEach(function(section) {
+                fetchDataForSection(section.term, section.class_nbr);
+            });
         }
     });
 }
