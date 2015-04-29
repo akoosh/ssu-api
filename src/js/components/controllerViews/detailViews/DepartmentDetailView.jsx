@@ -21,6 +21,12 @@ function formattedCourses(courses) {
     });
 }
 
+function coursesByLevel(courses) {
+    return _.groupBy(courses, function(course) {
+        return course.catalog[0] + '00-level';
+    });
+}
+
 var DepartmentDetailView = React.createClass({
 
     mixins: [Router.State, Router.Navigation],
@@ -30,8 +36,10 @@ var DepartmentDetailView = React.createClass({
     },
 
     getViewState: function() {
+        var courses = formattedCourses(CourseDataStore.getCoursesBySubject(this.getParams().subject));
         return {
-            courses: formattedCourses(CourseDataStore.getCoursesBySubject(this.getParams().subject))
+            courses: courses,
+            coursesByLevel: coursesByLevel(courses)
         };
     },
 
@@ -53,10 +61,25 @@ var DepartmentDetailView = React.createClass({
     },
 
     render: function() {
+        console.log('rendering with state:');
+        console.log(this.state);
         return (
             <div className='DepartmentDetailView'>
                 <Bootstrap.PageHeader>{this.getParams().subject} Department</Bootstrap.PageHeader>
-                <DataTable simple clickable data={this.state.courses} onRowClick={this.onCourseClick}/>
+
+                <Bootstrap.TabbedArea defaultActiveKey={0}>
+                    <Bootstrap.TabPane eventKey={0} tab='All'>
+                        <DataTable simple clickable data={this.state.courses} onRowClick={this.onCourseClick}/>
+                    </Bootstrap.TabPane>
+
+                    {Object.keys(this.state.coursesByLevel).map(function(level, i) {
+                        return (
+                            <Bootstrap.TabPane key={i} eventKey={i + 1} tab={level}>
+                                <DataTable simple clickable data={this.state.coursesByLevel[level]} onRowClick={this.onCourseClick}/>
+                            </Bootstrap.TabPane>
+                        );
+                    }.bind(this))}
+                </Bootstrap.TabbedArea>
             </div>
         );
     }
