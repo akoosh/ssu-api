@@ -3,7 +3,8 @@
 
 var COURSES_PATH     = './data/all-courses.csv';
 var REQUISITES_PATH  = './data/cs-course-requisites.csv';
-var ENROLLMENTS_PATH = './data/cs-enrollments-2137-2153.csv';
+var CS_ENROLLMENTS_PATH = './data/cs-enrollments-2093-2153.csv';
+var CS_STUDENT_ENROLLMENTS_PATH = './data/cs-student-enrollments-2093-2153.csv';
 
 var mongoose = require('mongoose');
 var Async    = require('async');
@@ -26,8 +27,13 @@ mongoose.connect('mongodb://localhost/students', function(err) {
             },
 
             function(callback) {
-                console.log('Processing enrollments...');
-                db.processFileWithSchema('enrollments', ENROLLMENTS_PATH, callback);
+                console.log('Processing CS enrollments...');
+                db.processFileWithSchema('enrollments', CS_ENROLLMENTS_PATH, callback);
+            },
+
+            function(callback) {
+                console.log('Processing CS student enrollments...');
+                db.processFileWithSchema('enrollments', CS_STUDENT_ENROLLMENTS_PATH, callback);
             }
         ], function(err) {
             if (err) {
