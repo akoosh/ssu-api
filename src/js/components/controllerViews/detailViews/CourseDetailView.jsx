@@ -22,7 +22,7 @@ function formattedSections(sections) {
             class_number: section.class_nbr,
             instructor: formattedName(section.instructor),
             units: section.class_units === '0.00' ? '-' : section.class_units,
-            section: section.section_nbr,
+            section: section.section_number,
             component: section.component
         };
     });
