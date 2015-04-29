@@ -22,7 +22,8 @@ var gradePoints = {
 var grades = _.invert(gradePoints);
 
 function gradePointsFromGrade(grade) {
-    return gradePoints[grade] || 0;
+    var ret = grade in gradePoints ? gradePoints[grade] : -1;
+    return ret;
 }
 
 function gradeFromGradePoints(gradePoint) {
@@ -39,6 +40,17 @@ function nearestGradeFromGradePoints(gradePoint) {
 
     var nearest = _.min(diffs, 'difference');
     return grades[nearest.gradePoint] || '';
+}
+
+function averageGrade(grades) {
+    if (grades.length) {
+        var gradePoints = grades.map(gradePointsFromGrade).filter(function(points) { return points >= 0.0; });
+        var average = _.sum(gradePoints) / gradePoints.length;
+
+        return nearestGradeFromGradePoints(average);
+    } else {
+        return '';
+    }
 }
 
 // Turns '2153' into 'Spring 2015'
@@ -65,6 +77,7 @@ module.exports = {
     gradeFromGradePoints        : gradeFromGradePoints,
     gradePointsFromGrade        : gradePointsFromGrade,
     nearestGradeFromGradePoints : nearestGradeFromGradePoints,
+    averageGrade                : averageGrade,
     termDescriptionFromCode     : termDescriptionFromCode,
     termCodeFromDescription     : termCodeFromDescription
 };

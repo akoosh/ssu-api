@@ -6,7 +6,9 @@ var Router                  = require('react-router');
 var Bootstrap               = require('react-bootstrap');
 var _                       = require('lodash');
 var AppActions              = require('../../../actions/AppActions');
+var utils                   = require('../../../utils/schoolUtils');
 var DataTable               = require('../../subviews/DataTable/DataTable');
+var GradeDistribution       = require('../../subviews/GradeDistribution');
 var TermHistory             = require('../../subviews/TermHistory');
 var CourseDataStore         = require('../../../stores/CourseDataStore');
 var SectionDataStore        = require('../../../stores/SectionDataStore');
@@ -28,7 +30,7 @@ function formattedSections(sections) {
     });
 }
 
-var InstructorDetailView = React.createClass({
+var CourseDetailView = React.createClass({
 
     mixins: [Router.State, Router.Navigation],
 
@@ -47,7 +49,10 @@ var InstructorDetailView = React.createClass({
 
     getSectionState: function() {
         var params = this.getParams();
-        var sectionData = SectionDataStore.getSectionDataForCourse(params.subject, params.catalog_number);
+        var sectionData = SectionDataStore.getSectionDataForCourse(params.subject, params.catalog_number).filter(function(data) {
+            return Boolean(utils.averageGrade(_.pluck(data.students, 'grade')));
+        }).reverse();
+
         return {
             sectionData: sectionData
         };
@@ -80,9 +85,15 @@ var InstructorDetailView = React.createClass({
         this.transitionTo('section-detail', {term: section.term, class_nbr: section.class_number});
     },
 
+    sectionClickHandlerForSection: function(section) {
+        return function(event) {
+            this.transitionTo('section-detail', {term: section.term, class_nbr: section.class_nbr});
+        }.bind(this);
+    },
+
     render: function() {
         return (
-            <div className='InstructorDetailView'>
+            <div className='CourseDetailView'>
                 <Bootstrap.PageHeader>
                     {this.state.course.subject} {this.state.course.catalog}: {this.state.course.course_title}
                 </Bootstrap.PageHeader>
@@ -101,10 +112,15 @@ var InstructorDetailView = React.createClass({
                             </Bootstrap.Col>
                         </Bootstrap.TabPane>
 
-                        <Bootstrap.TabPane eventKey={1} tab='Trends'>
-                            <Bootstrap.Col xs={8}>
-                                <p>Sections: {this.state.sectionData.length}</p>
-                            </Bootstrap.Col>
+                        <Bootstrap.TabPane eventKey={1} tab='Grade Distributions'>
+                            {this.state.sectionData.map(function(data, i) {
+                                return (
+                                    <div key={i} onClick={this.sectionClickHandlerForSection(data.section)} className='clickable'>
+                                        <h2>{data.section.term_description}: {formattedName(data.section.instructor)} <small>Class Number: {data.section.class_nbr}, Section: {data.section.section_number}, Students: {data.students.length}</small></h2>
+                                        <GradeDistribution students={data.students}/>
+                                    </div>
+                                );
+                            }.bind(this))}
                         </Bootstrap.TabPane>
                 </Bootstrap.TabbedArea>
             </div>
@@ -112,4 +128,4 @@ var InstructorDetailView = React.createClass({
     }
 });
 
-module.exports = InstructorDetailView;
+module.exports = CourseDetailView;

@@ -24,7 +24,7 @@ var DataStore = DataStoreUtils.createDataStore({
     },
 
     getSectionDataForCourse: function(subject, catalog) {
-        return _.values(sectionData).map(function(data) {
+        return _.values(sectionData).filter(function(data) {
             return data.section.course.subject === subject && data.section.course.catalog === catalog;
         });
     },

@@ -8,6 +8,7 @@ var BarChart                = require('react-d3/barchart').BarChart;
 var _                       = require('lodash');
 var AppActions              = require('../../../actions/AppActions');
 var DataTable               = require('../../subviews/DataTable/DataTable');
+var GradeDistribution       = require('../../subviews/GradeDistribution');
 var SectionDataStore        = require('../../../stores/SectionDataStore');
 var utils                   = require('../../../utils/schoolUtils');
 
@@ -31,49 +32,6 @@ function formattedStudents(students) {
     });
 }
 
-function gradeDistribution(students) {
-    var dist = _.groupBy(students, 'grade');
-
-    return [
-        'F',
-        'D-',
-        'D',
-        'D+',
-        'C-',
-        'C',
-        'C+',
-        'B-',
-        'B',
-        'B+',
-        'A-',
-        'A'
-    ].map(function(grade) {
-        return {
-            label: grade,
-            value: (dist[grade] || []).length
-        };
-    });
-}
-
-function averageGrade(grades) {
-    if (grades.length) {
-        var gradePoints = grades.map(utils.gradePointsFromGrade);
-        var average = _.sum(gradePoints) / gradePoints.length;
-
-        return utils.nearestGradeFromGradePoints(average);
-    } else {
-        return '';
-    }
-}
-
-function passRate(grades, required) {
-    var passing = grades.filter(function(grade) {
-        return utils.gradePointsFromGrade(grade) >= utils.gradePointsFromGrade(required);
-    });
-
-    return (passing.length / grades.length) || 0;
-}
-
 var InstructorDetailView = React.createClass({
 
     mixins: [Router.State, Router.Navigation],
@@ -85,14 +43,9 @@ var InstructorDetailView = React.createClass({
     getViewState: function() {
         var params = this.getParams();
         var data = SectionDataStore.getDataForSection(params.term, params.class_nbr);
-        var grades = _.pluck(data.students, 'grade');
         return {
             section: data.section,
             students: formattedStudents(data.students),
-            gradeDistribution: gradeDistribution(data.students),
-            averageGrade: averageGrade(grades),
-            majorPassRate: passRate(grades, 'C-'),
-            generalPassRate: passRate(grades, 'D-')
         };
     },
 
@@ -148,16 +101,7 @@ var InstructorDetailView = React.createClass({
                     </Bootstrap.TabPane>
 
                     <Bootstrap.TabPane eventKey={1} tab='Grade Distribution'>
-                        <Bootstrap.Row>
-                            <Bootstrap.Col xs={4}>
-                                <Bootstrap.Table>
-                                    <tr><th>Average Grade</th><td>{this.state.averageGrade}</td></tr>
-                                    <tr><th>General Pass Rate</th><td>{(this.state.generalPassRate * 100).toFixed(0)}%</td></tr>
-                                    <tr><th>Major Pass Rate</th><td>{(this.state.majorPassRate * 100).toFixed(0)}%</td></tr>
-                                </Bootstrap.Table>
-                                <BarChart data={this.state.gradeDistribution} width={800} height={200} fill={'#3182bd'}/>
-                            </Bootstrap.Col>
-                        </Bootstrap.Row>
+                        <GradeDistribution students={this.state.students}/>
                     </Bootstrap.TabPane>
                 </Bootstrap.TabbedArea>
             </div>
