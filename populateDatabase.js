@@ -3,7 +3,7 @@
 
 var COURSES_PATH     = './data/all-courses.csv';
 var REQUISITES_PATH  = './data/cs-course-requisites.csv';
-var CS_ENROLLMENTS_PATH = './data/cs-enrollments-2093-2153.csv';
+var CS_ENROLLMENTS_PATH = './data/enrollments-2093-2153-shuffled.csv';
 
 var mongoose = require('mongoose');
 var Async    = require('async');
