@@ -17,6 +17,7 @@ var HomeView = React.createClass({
                         <li><Link to='instructors'>Instructors</Link></li>
                         <li><Link to='advisors'>Advisors</Link></li>
                         <li><Link to='courses'>Courses</Link></li>
+                        <li><Link to='departments'>Departments</Link></li>
                     </ul>
                 </Bootstrap.Jumbotron>
             </div>
