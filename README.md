@@ -15,6 +15,13 @@ feature, there is probably no work being done on it. Likewise, if there is
 work being done on some topic or feature, an issue should be created for
 it as a place to discuss it.
 
+## Cloning this repository
+
+This is a private repository so to clone it you have to format the get clone like
+this:
+
+`git clone https://yourusername@github.com/CS-Department/ssu-api.git` 
+
 ## Dependencies
 
 - [Node.js](nodejs.org) - The command is `nodejs` on Linux, but I make a link `/usr/bin/node -> /usr/bin/nodejs`
@@ -56,4 +63,4 @@ to generate http requests of any type.
 `/public`, from which the server will serve static files. The client will be located at
 [localhost:8080/](localhost:8080/). For development simply run `gulp` in its own
 terminal tab, and the default task will build the project and then watch for
-changes. 
+changes.
